@@ -1998,13 +1998,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
    dump3<<endl<<endl;
 #endif
 
-   
+   int constant_POs=0;
    //Renumbering POs
    for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
    {
        if(it_out->second.getInput()->getSignal()==2)
        {
-           cout<<"AAAAAAAAAAAAAAAAAAAAAAA<<"<<endl;
+           
+//           cout<<"AAAAAAAAAAAAAAAAAAAAAAA<<"<<endl;
 #if DEBUG >= debug_value
         dump3<<it_out->second.getId()<<"==>"<<it_out->second.getInput()->getId()<<endl;
 #endif
@@ -2012,7 +2013,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
        }
        else
        {
-           cout<<"REAJOIREJIJREOI<<"<<endl;
+           constant_POs++;
+//           cout<<"REAJOIREJIJREOI<<"<<endl;
 #if DEBUG >= debug_value
         dump3<<it_out->second.getId()<<"==>"<<it_out->second.getInput()->getSignal()<<endl;
 #endif
@@ -2028,7 +2030,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
 
 //   for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
 //       it_in->second.printNode();
-   
+   cout<<"Constant POs:"<<constant_POs<<endl;
     this->name+="_ANDs_removed_";
    this->name+=to_string(1-THRESHOLD);
     cout<<"Writing output file (AIG):"<<this->name<<endl;

@@ -35,8 +35,8 @@ int main(int argc, char** argv) {
     mnist_obj.setBitsProbabilities(read_mnist);
     
 //    graph_obj.setANDsProbabilities(mnist_obj);
-//    graph_obj.propagateAndDeleteAll(mnist_obj);
-    graph_obj.applyMnistRecursive(mnist_obj);
+    graph_obj.propagateAndDeleteAll(mnist_obj);
+//    graph_obj.applyMnistRecursive(mnist_obj);
     return 0;
 }
 

@@ -33,12 +33,19 @@ int main(int argc, char** argv) {
     ifstream read_mnist("train-images.idx3-ubyte",ifstream::binary);
     mnist_obj.readIdx(read_mnist,"train-images.idx3-ubyte");
     mnist_obj.setBitsProbabilities(read_mnist);
+
     
 //    graph_obj.setANDsProbabilities(mnist_obj);
-    graph_obj.propagateAndDeleteAll(mnist_obj);
-    
-    
+//    graph_obj.propagateAndDeleteAll(mnist_obj);
 //    graph_obj.applyMnistRecursive(mnist_obj);
+
+    while(true)
+    {
+        int node_name;
+        cout<<"Node?"<<endl;
+        cin>>node_name;
+        graph_obj.findAny(node_name)->printNode();
+    }
     return 0;
 }
 

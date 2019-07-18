@@ -1614,7 +1614,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     info_file_name=this->name;
     info_file_name+=to_string(1-THRESHOLD);
     info_file_name+="_simplif_info.txt";
-    ofstream simpl_info(info_file_name),dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt");
+    ofstream simpl_info(info_file_name),dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt"),dump_PO("dump_PO.txt");
     map<unsigned int,float>::iterator probs_it;
     vector<int> visits;
     visits.push_back(2);
@@ -1872,7 +1872,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
                     if(all_outputs.find(current->getId())!=all_outputs.end())
                     {
 #if DEBUG >= debug_value                       
-                        dump1<<"Renumbering output:"<<current->getId()<<" with:"<<new_node->getId()<<endl;
+                        dump_PO<<"Renumbering output:"<<current->getId()<<" with:"<<new_node->getId()<<endl;
 #endif
                         all_outputs.find(current->getId())->second.setId(new_node->getId());
                         polarity=((int)pol_new_node)^all_outputs.find(current->getId())->second.getInputPolarity();

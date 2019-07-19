@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     graph graph_obj;
     mnist mnist_obj;
     string file_name;
-    file_name="A2.aig";
+    file_name="A1.aig";
 //    file_name="A1_ANDs_removed_1_ABC.aig";
 //    file_name="andre.aig";
 //    file_name="andre_ANDs_removed_1.aig";
@@ -35,8 +35,8 @@ int main(int argc, char** argv) {
     mnist_obj.setBitsProbabilities(read_mnist);
 
     
-    graph_obj.setANDsProbabilities(mnist_obj);;
-//    graph_obj.propagateAndDeleteAll(mnist_obj);
+//    graph_obj.setANDsProbabilities(mnist_obj);
+    graph_obj.propagateAndDeleteAll(mnist_obj);
 //    graph_obj.applyMnistRecursive(mnist_obj);
 
     while(true)

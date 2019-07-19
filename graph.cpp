@@ -606,6 +606,7 @@ void graph::readAIG(ifstream& file, string param_name){
     for(int f=0;f<O;f++){
         getline(file,line);
        lhs=stoi(wordSelector(line,1));
+//       POs_order.push_back(lhs);
       
 //        lhs=decode(file);
 //        cout<<line<<endl;
@@ -2021,6 +2022,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
             it_out->second.setId(it_out->second.getInput()->getSignal());
        }
    }
+   cout<<"Constant POs:"<<constant_POs<<endl;
 #endif
 #endif
    
@@ -2030,7 +2032,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
 
 //   for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
 //       it_in->second.printNode();
-   cout<<"Constant POs:"<<constant_POs<<endl;
+   
     this->name+="_ANDs_removed_";
    this->name+=to_string(1-THRESHOLD);
     cout<<"Writing output file (AIG):"<<this->name<<endl;

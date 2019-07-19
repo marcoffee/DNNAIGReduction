@@ -26,7 +26,7 @@
 #define IGNORE_OUTPUTS 0
 #define NN 2
 #define PROBS_FROM_FILE 1
-#define RENUMBER 1
+#define RENUMBER 0
 
 
 #define posY_max 28
@@ -291,6 +291,7 @@ protected:
     map<unsigned int,AND> all_ANDS;
     string name;
     map <unsigned int,float> ANDs_probabilities;
+//    vector<unsigned int> POs_order;
     
     ofstream log;
     

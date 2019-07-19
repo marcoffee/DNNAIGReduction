@@ -26,7 +26,7 @@
 #define IGNORE_OUTPUTS 0
 #define NN 2
 #define PROBS_FROM_FILE 1
-#define RENUMBER 0
+#define RENUMBER 1
 
 
 #define posY_max 28

@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
     mnist_obj.setBitsProbabilities(read_mnist);
 #else
     ifstream read_mnist("t10k-images.idx3-ubyte",ifstream::binary);
-    mnist_obj.readIdx(read_mnist,"t10k-labels.idx1-ubyte");
+    mnist_obj.readIdx(read_mnist,"t10k-images.idx3-ubyte");
     mnist_obj.setBitsProbabilities(read_mnist);
 #endif
 

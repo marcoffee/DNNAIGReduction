@@ -645,7 +645,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
     map<unsigned int, output>::iterator it_out;
     
     int posY=0,posX=0;
-    int correct_answers=0,img_count,offset=0;
+    int correct_answers=0,img_count=0,offset=0;
     ofstream vamo;
     ofstream dump_app;
     ofstream check_bits;
@@ -812,9 +812,6 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
        
        
 #if DEBUG >=1
-#if TEST ==0
-        if(img_count<=0)
-#endif
         {
             dump_app<<"image index:"<<img_count+1<<". Label:"<<mnist_obj.getLabel(img_count)<<endl;
             dump_app<<endl<<"Inputs' signals:"<<endl;
@@ -850,7 +847,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
 //            cout<<"iter->first:"<<iter->first->getId()+(all_outputs.find(iter->first->getId())->second.getInputPolarity())<<".iter->second:"<<iter->second<<".all_outputs.find(iter->first->getId())->second.getInputPolarity()):"<<(all_outputs.find(iter->first->getId())->second.getInputPolarity())<<endl;
 //               iter->second=(((int)iter->second)^(all_outputs.find(iter->first->getId())->second.getInputPolarity()));
 //            aux_vec.push_back(it_out->second.getSignal());
-            bitset<64> jk(it_out->second.getBitVector());
+//            bitset<64> jk(it_out->second.getBitVector());
 //            cout<<"bit vector signal "<<it_out->second.getId()<<" "<<jk<<endl;
             for(int u=0;u<BITS_PACKAGE_SIZE;u++)
             {

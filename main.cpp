@@ -23,16 +23,22 @@ int main(int argc, char** argv) {
     graph graph_obj;
     mnist mnist_obj;
     string file_name;
-//    file_name="A2.aig";
-    file_name="A1_ANDs_removed_1.aig";
+    file_name="A1.aig";
+//    file_name="A1_ANDs_removed_1.aig";
 //    file_name="andre.aig";
 //    file_name="andre_ANDs_removed_1.aig";
     ifstream read(file_name.c_str(),ifstream::binary);
     graph_obj.readAIG(read,file_name);
     
+#if TRAIN_SET == 1
     ifstream read_mnist("train-images.idx3-ubyte",ifstream::binary);
     mnist_obj.readIdx(read_mnist,"train-images.idx3-ubyte");
     mnist_obj.setBitsProbabilities(read_mnist);
+#else
+    ifstream read_mnist("t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"t10k-labels.idx1-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+#endif
 
     
 //    graph_obj.setANDsProbabilities(mnist_obj);

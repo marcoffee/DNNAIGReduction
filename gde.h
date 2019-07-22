@@ -27,6 +27,7 @@
 #define NN 2
 #define PROBS_FROM_FILE 1
 #define RENUMBER 1
+#define TRAIN_SET 0
 
 
 #define posY_max 28

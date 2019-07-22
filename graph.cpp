@@ -861,7 +861,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
             cout<<endl;
 #endif
             
-  
+            b++;
        }
 //    cout<<"images_bits size:"<<images_bits.size()<<endl;
 //    cout<<"images_bits[0] size:"<<images_bits[0].size()<<endl;

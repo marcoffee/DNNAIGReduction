@@ -811,7 +811,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         }
        
        
-#if DEBUG >=2
+#if DEBUG >=1
 #if TEST ==0
         if(img_count<=0)
 #endif

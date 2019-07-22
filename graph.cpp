@@ -606,7 +606,7 @@ void graph::readAIG(ifstream& file, string param_name){
     for(int f=0;f<O;f++){
         getline(file,line);
        lhs=stoi(wordSelector(line,1));
-//       POs_order.push_back(lhs);
+       
       
 //        lhs=decode(file);
 //        cout<<line<<endl;
@@ -625,7 +625,7 @@ void graph::readAIG(ifstream& file, string param_name){
            cout<<"CONSTANT BEING INSTANTIATED AS PO!"<<endl;
        }
 
-       
+        POs_order.push_back(lhs);
         output output_obj(lhs);
         output_obj.pushInput(findAny(lhs),polarity0);
         this->pushPO(lhs,output_obj);
@@ -802,7 +802,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
        map<node*,int>::iterator iter;
        
 
-       unsigned long long int mask=1,aux10;
+       unsigned long long int mask=1;
        //inverting outputs depending on node's polarity
         for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         {
@@ -842,13 +842,11 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
        
        images_bits.clear();
        //Separating the outputs in to groups of 16 bits
-       for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
+       int b=0;
+//       for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
+       while(b<all_outputs.size())
        {
-//            cout<<"iter->first:"<<iter->first->getId()+(all_outputs.find(iter->first->getId())->second.getInputPolarity())<<".iter->second:"<<iter->second<<".all_outputs.find(iter->first->getId())->second.getInputPolarity()):"<<(all_outputs.find(iter->first->getId())->second.getInputPolarity())<<endl;
-//               iter->second=(((int)iter->second)^(all_outputs.find(iter->first->getId())->second.getInputPolarity()));
-//            aux_vec.push_back(it_out->second.getSignal());
-//            bitset<64> jk(it_out->second.getBitVector());
-//            cout<<"bit vector signal "<<it_out->second.getId()<<" "<<jk<<endl;
+           it_out=all_outputs.find(POs_order[b]);
             for(int u=0;u<BITS_PACKAGE_SIZE;u++)
             {
                 mask=1;

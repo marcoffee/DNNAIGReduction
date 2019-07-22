@@ -291,7 +291,7 @@ protected:
     map<unsigned int,AND> all_ANDS;
     string name;
     map <unsigned int,float> ANDs_probabilities;
-//    vector<unsigned int> POs_order;
+    vector<unsigned int> POs_order;
     
     ofstream log;
     

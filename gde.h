@@ -13,12 +13,12 @@
 
 #ifndef GDE_H
 #define GDE_H
-#define THRESHOLD 0
+#define THRESHOLD 0.001
 
 #define DBGVAR( os, var ) \
   (os) << "DBG: " << __FILE__ << "(" << __LINE__ << ") "\
        << #var << " = [" << (var) << "]" << std::endl
-#define DEBUG 1
+#define DEBUG 0
 #define debug_value 1
 #define SIMPLIFIEDAIG 1
 #define TEST 0

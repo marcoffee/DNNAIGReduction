@@ -217,6 +217,7 @@ public:
     
     //modifiers
     void pushInput(node* param,bool param_polarity);
+    void clearInput();
             
     //member access
     node* getInput();

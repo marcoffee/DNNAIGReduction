@@ -77,3 +77,9 @@ unsigned long long int output::runDFS(){
         
     return this->signal;
 }
+
+
+void output::clearInput(){
+    node* null_node=NULL;
+    this->input=null_node;
+}

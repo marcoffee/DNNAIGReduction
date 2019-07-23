@@ -439,9 +439,8 @@ void graph::writeAIG(){
     write<<"aig "<<M<<" "<<all_inputs.size()<<" "<<all_latches.size()<<" "<<all_outputs.size()<<" "<<all_ANDS.size()<<endl;
 //    for(map<unsigned int,input>::iterator it1=all_inputs.begin();it1!=all_inputs.end();it1++)
 //        encodeToFile(write,it1->second.getId()/2);
+
     
-    
-    //LATCHES GO HERE
     for(map<unsigned int,output>::iterator it2=all_outputs.begin();it2!=all_outputs.end();it2++)
         write<<it2->second.getId()+((int)it2->second.getInputPolarity())<<endl;
         
@@ -627,7 +626,8 @@ void graph::readAIG(ifstream& file, string param_name){
 
         POs_order.push_back(lhs);
         output output_obj(lhs);
-        output_obj.pushInput(findAny(lhs),polarity0);
+        if(lhs>1)
+            output_obj.pushInput(findAny(lhs),polarity0);
         this->pushPO(lhs,output_obj);
 #if DEBUG >= 2
         cout<<"pushing output "<<lhs<<" Polarity:"<<polarity0<<endl;
@@ -1773,6 +1773,16 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
                     current->clearOutputs();
                     current->getInputs()[0]->removeOutput(current->getId());
                     current->getInputs()[1]->removeOutput(current->getId());
+                    //treating if constant=0 node is a PO.
+                    if(all_outputs.find(current->getId())!=all_outputs.end())
+                    {
+#if DEBUG >= debug_value                       
+                        dump_PO<<"PO is a constant 0:"<<current->getId()<<endl;//<<" with:"<<new_node->getId()<<endl;
+#endif
+                        all_outputs.find(current->getId())->second.clearInput();
+                        all_outputs.find(current->getId())->second.setId(0);
+
+                    }
 #if DEBUG >= debug_value
                     dump1<<"0 || 0:";
                     current->writeNode(dump1);
@@ -1784,6 +1794,16 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
                     current->clearOutputs();
                     current->getInputs()[0]->removeOutput(current->getId());
                     current->getInputs()[1]->removeOutput(current->getId());
+                    //treating if constant=1 node is a PO.
+                    if(all_outputs.find(current->getId())!=all_outputs.end())
+                    {
+#if DEBUG >= debug_value                       
+                        dump_PO<<"PO is a constant 1:"<<current->getId()<<endl;//<<" with:"<<new_node->getId()<<endl;
+#endif
+                        all_outputs.find(current->getId())->second.clearInput();
+                        all_outputs.find(current->getId())->second.setId(1);
+
+                    }
 #if DEBUG >= debug_value
                     dump1<<"1 & 1:";
                     current->writeNode(dump1);

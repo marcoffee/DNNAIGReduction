@@ -656,8 +656,8 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
     string program_output_name;
     program_output_name="Scores_";
     program_output_name+=this->name;
-    program_output_name+="_";
-    program_output_name+=(to_string(1-THRESHOLD));
+//    program_output_name+="_";
+//    program_output_name+=(to_string(1-THRESHOLD));
     program_output_name+=".csv";
     
         vamo.open(program_output_name);
@@ -1698,8 +1698,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         probs_it->second=stof(line);
     }
     
-    for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
-        dump_probs<<probs_it->first<<":"<<probs_it->second<<endl;
+//    for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
+//        dump_probs<<probs_it->first<<":"<<probs_it->second<<endl;
         //        cout<<probs_it->second<<",";
 #endif
             
@@ -1709,7 +1709,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     {
         if(probs_it->second<= THRESHOLD)
         {
-//            cout<<"probes_it->first:"<<probs_it->first<<endl;
+            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 //            all_ANDS.find(probs_it->first)->second.printNode();
             all_ANDS.find(probs_it->first)->second.setSignal(0);
             all_ANDS.find(probs_it->first)->second.clearOutputs();
@@ -1721,6 +1721,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         
         if(probs_it->second>= 1-THRESHOLD)
         {
+            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
             all_ANDS.find(probs_it->first)->second.setSignal(1);
             all_ANDS.find(probs_it->first)->second.clearOutputs();
             all_ANDS.find(probs_it->first)->second.getInputs()[0]->removeOutput(probs_it->first);

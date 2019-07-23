@@ -22,12 +22,12 @@
 #define debug_value 1
 #define ONLYDANGLE 0
 #define SIMPLIFIEDAIG 1
-#define TEST 0
+#define TEST 1
 #define IGNORE_OUTPUTS 0
 #define NN 2
 #define PROBS_FROM_FILE 1
 #define RENUMBER 1
-#define TRAIN_SET 0
+#define TRAIN_SET 1
 
 
 #define posY_max 28

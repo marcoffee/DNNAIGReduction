@@ -31,12 +31,12 @@ int main(int argc, char** argv) {
     graph_obj.readAIG(read,file_name);
     
 #if TRAIN_SET == 1
-    ifstream read_mnist("train-images.idx3-ubyte",ifstream::binary);
-    mnist_obj.readIdx(read_mnist,"train-images.idx3-ubyte");
+    ifstream read_mnist("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
     mnist_obj.setBitsProbabilities(read_mnist);
 #else
-    ifstream read_mnist("t10k-images.idx3-ubyte",ifstream::binary);
-    mnist_obj.readIdx(read_mnist,"t10k-images.idx3-ubyte");
+    ifstream read_mnist("../t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
     mnist_obj.setBitsProbabilities(read_mnist);
 #endif
 

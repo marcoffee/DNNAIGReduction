@@ -13,7 +13,7 @@
 
 #ifndef GDE_H
 #define GDE_H
-#define THRESHOLD 0.004
+#define THRESHOLD 0.0005
 
 #define DBGVAR( os, var ) \
   (os) << "DBG: " << __FILE__ << "(" << __LINE__ << ") "\

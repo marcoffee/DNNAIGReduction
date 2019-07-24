@@ -2068,6 +2068,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
    this->name+=to_string(1-THRESHOLD);
     cout<<"Writing output file (AIG):"<<this->name<<endl;
     this->writeAIG();
-    cout<<"Writing output file (AAG):"<<this->name<<endl;
-    this->writeAAG();
+//    cout<<"Writing output file (AAG):"<<this->name<<endl;
+//    this->writeAAG();
 }

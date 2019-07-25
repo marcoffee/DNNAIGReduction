@@ -13,7 +13,7 @@
 
 #ifndef GDE_H
 #define GDE_H
-#define THRESHOLD 0
+//#define THRESHOLD 0
 
 #define DBGVAR( os, var ) \
   (os) << "DBG: " << __FILE__ << "(" << __LINE__ << ") "\
@@ -296,6 +296,7 @@ protected:
     string name;
     map <unsigned int,float> ANDs_probabilities;
     vector<unsigned int> POs_order;
+    float threshold;
     
     ofstream log;
     
@@ -303,6 +304,7 @@ protected:
     
 public:
     graph();
+    graph(float);
    virtual ~graph();
     
     

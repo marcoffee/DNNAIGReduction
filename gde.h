@@ -107,7 +107,7 @@ public:
     virtual void replaceInput(int swap_index,node* new_node,bool polarity){}
 //    virtual void removeOutput(node*){}
     virtual void removeOutput(unsigned int){}
-    virtual void recursiveRemoveOutput(unsigned int){}
+//    virtual void recursiveRemoveOutput(unsigned int){}
     virtual void clearOutputs(){}
     
     
@@ -146,7 +146,7 @@ public:
    unsigned long long int  runDFS() override;
 //   void removeOutput(node* node_to_remove) override;
    void removeOutput(unsigned int id_to_remove) override;
-   void recursiveRemoveOutput(unsigned int id_to_remove) override;
+//   void recursiveRemoveOutput(unsigned int id_to_remove) override;
    void clearOutputs() override;
    
    
@@ -270,7 +270,7 @@ public:
 #if IGNORE_OUTPUTS == 0
 //   void removeOutput(node* node_to_remove) override;
    void removeOutput(unsigned int id_to_remove) override;
-   void recursiveRemoveOutput(unsigned int id_to_remove) override;
+//   void recursiveRemoveOutput(unsigned int id_to_remove) override;
    void clearOutputs() override;
    void pushOutput(node* param) override;
 #endif
@@ -315,6 +315,7 @@ public:
     void pushLatch(unsigned int index,latch latch_obj);
     void pushPO(unsigned int index,output output_obj);
     AND* pushAnd(unsigned int index,AND AND_obj);
+    void recursiveRemoveOutput(unsigned int id_to_remove,node* remove_from);
     
     //member access
     input* findInput(unsigned int);

@@ -1710,22 +1710,29 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     {
         if(probs_it->second<= THRESHOLD)
         {
+#if DEBUG >=2
             dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
-            
+#endif
             all_ANDS.find(probs_it->first)->second.setSignal(0);
             all_ANDS.find(probs_it->first)->second.clearOutputs();
-            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
-            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
+            this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
+            this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
+//            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
+//            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
             zero_count++;
         }
         
         if(probs_it->second>= 1-THRESHOLD)
         {
+#if DEBUG >=2
             dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
+#endif
             all_ANDS.find(probs_it->first)->second.setSignal(1);
             all_ANDS.find(probs_it->first)->second.clearOutputs();
-            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);;
-            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
+            this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
+            this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
+//            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);;
+//            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
             one_count++;
         }
     }
@@ -2070,6 +2077,26 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
    this->name+=to_string(1-THRESHOLD);
     cout<<"Writing output file (AIG):"<<this->name<<endl;
     this->writeAIG();
-    cout<<"Writing output file (AAG):"<<this->name<<endl;
-    this->writeAAG();
+//    cout<<"Writing output file (AAG):"<<this->name<<endl;
+//    this->writeAAG();
+}
+
+
+
+void graph::recursiveRemoveOutput(unsigned int id_to_remove, node* remove_from){
+    for(int i=0;i<remove_from->getOutputs().size();i++)
+    {
+        if(remove_from->getOutputs()[i]->getId()==id_to_remove)
+        {
+            remove_from->removeOutput(id_to_remove);
+//            remove_from->getOutputs().erase(remove_from->getOutputs().begin()+i);
+            break;
+        }
+    }
+    
+    if(remove_from->getOutputs().size()==0 && all_outputs.find(remove_from->getId())==all_outputs.end())
+    {
+        recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[0]);
+        recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[1]);
+    }
 }

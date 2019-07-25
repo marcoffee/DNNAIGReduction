@@ -100,17 +100,17 @@ void input::removeOutput(unsigned int id_to_remove) {
     }
 }
 
-void input::recursiveRemoveOutput(unsigned int id_to_remove){
-    for(int i=0;i<outputs.size();i++)
-    {
-        if(outputs[i]->getId()==id_to_remove)
-        {
-            outputs.erase(outputs.begin()+i);
-            break;
-        }
-    }
-    
-}
+//void input::recursiveRemoveOutput(unsigned int id_to_remove){
+//    for(int i=0;i<outputs.size();i++)
+//    {
+//        if(outputs[i]->getId()==id_to_remove)
+//        {
+//            outputs.erase(outputs.begin()+i);
+//            break;
+//        }
+//    }
+//    
+//}
 
 void input::printNode(){
     cout<<"Input:"<<this->id<<". Outputs:";

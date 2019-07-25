@@ -365,6 +365,9 @@ void graph::clearCircuit(){
     this->all_latches.clear();
     this->all_outputs.clear();
     this->name.clear();
+    this->POs_order.clear();
+    this->ANDs_probabilities.clear();
+    this->threshold=0;
   //  this->papi_obj.clear();
     this->log.close();
 }
@@ -2096,9 +2099,9 @@ void graph::recursiveRemoveOutput(unsigned int id_to_remove, node* remove_from){
     
     if(remove_from->getOutputs().size()==0 && all_outputs.find(remove_from->getId())==all_outputs.end())
     {
-        if(remove_from->getInputs()[0]->getOutputs().size()>0)
+        if(remove_from->getInputs()[0]->getOutputs().size()>0 && all_inputs.find(remove_from->getInputs()[0]->getId()==all_inputs.end()))
             recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[0]);
-        if(remove_from->getInputs()[1]->getOutputs().size()>0)
+        if(remove_from->getInputs()[1]->getOutputs().size()>0 && all_inputs.find(remove_from->getInputs()[1]->getId()==all_inputs.end()))
             recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[1]);
     }
 }

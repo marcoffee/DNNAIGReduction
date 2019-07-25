@@ -22,9 +22,9 @@ using namespace std;
 int main(int argc, char** argv) {
 
         string file_name;
-//        file_name="../A1.aig";
+    file_name="../A1.aig";
 //    file_name="A1_ANDs_removed_1.aig";
-    file_name="andre.aig";
+//    file_name="andre.aig";
 //    file_name="andre_ANDs_removed_1.aig";
     ifstream read(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
@@ -39,8 +39,9 @@ int main(int argc, char** argv) {
         mnist_obj.setBitsProbabilities(read_mnist);
     #endif
     
-    for(float th=0.0003;th<0.001;th=th+0.0001)
-    {
+//    for(float th=0.0003;th<0.001;th=th+0.0001)
+//    {
+        float th=0;
         graph graph_obj(th);
         graph_obj.clearCircuit();
 
@@ -51,7 +52,7 @@ int main(int argc, char** argv) {
 
     //    graph_obj.setANDsProbabilities(mnist_obj);
         graph_obj.propagateAndDeleteAll(mnist_obj);
-//        graph_obj.applyMnistRecursive(mnist_obj);
+        graph_obj.applyMnistRecursive(mnist_obj);
 
     //    while(true)
     //    {
@@ -61,7 +62,7 @@ int main(int argc, char** argv) {
     //        graph_obj.findAny(node_name)->printNode();
     //    }
 //        graph_obj.~graph();
-    }
+//    }
     return 0;
 }
 

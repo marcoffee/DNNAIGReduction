@@ -2097,11 +2097,14 @@ void graph::recursiveRemoveOutput(unsigned int id_to_remove, node* remove_from){
         }
     }
     
-    if(remove_from->getOutputs().size()==0 && all_outputs.find(remove_from->getId())==all_outputs.end())
+    if(all_inputs.find(remove_from->getId())==all_inputs.end())
     {
-        if(remove_from->getInputs()[0]->getOutputs().size()>0 && all_inputs.find(remove_from->getInputs()[0]->getId())==all_inputs.end())
-            recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[0]);
-        if(remove_from->getInputs()[1]->getOutputs().size()>0 && all_inputs.find(remove_from->getInputs()[1]->getId())==all_inputs.end())
-            recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[1]);
+        if(remove_from->getOutputs().size()==0 && all_outputs.find(remove_from->getId())==all_outputs.end())
+        {
+            if(remove_from->getInputs()[0]->getOutputs().size()>0)
+                recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[0]);
+            if(remove_from->getInputs()[1]->getOutputs().size()>0)
+                recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[1]);
+        }
     }
 }

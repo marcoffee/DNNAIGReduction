@@ -13,19 +13,19 @@
 
 #ifndef GDE_H
 #define GDE_H
-#define THRESHOLD 0.0002
+#define THRESHOLD 0
 
 #define DBGVAR( os, var ) \
   (os) << "DBG: " << __FILE__ << "(" << __LINE__ << ") "\
        << #var << " = [" << (var) << "]" << std::endl
-#define DEBUG 0
+#define DEBUG 1
 #define debug_value 1
 #define SIMPLIFIEDAIG 1
 #define TEST 0
 #define IGNORE_OUTPUTS 0
 #define PROBS_FROM_FILE 1
 #define RENUMBER 1
-#define TRAIN_SET 0
+#define TRAIN_SET 1
 
 #define NN 2
 #define ONLYDANGLE 0
@@ -107,6 +107,7 @@ public:
     virtual void replaceInput(int swap_index,node* new_node,bool polarity){}
 //    virtual void removeOutput(node*){}
     virtual void removeOutput(unsigned int){}
+    virtual void recursiveRemoveOutput(unsigned int){}
     virtual void clearOutputs(){}
     
     
@@ -145,6 +146,7 @@ public:
    unsigned long long int  runDFS() override;
 //   void removeOutput(node* node_to_remove) override;
    void removeOutput(unsigned int id_to_remove) override;
+   void recursiveRemoveOutput(unsigned int id_to_remove) override;
    void clearOutputs() override;
    
    
@@ -268,6 +270,7 @@ public:
 #if IGNORE_OUTPUTS == 0
 //   void removeOutput(node* node_to_remove) override;
    void removeOutput(unsigned int id_to_remove) override;
+   void recursiveRemoveOutput(unsigned int id_to_remove) override;
    void clearOutputs() override;
    void pushOutput(node* param) override;
 #endif

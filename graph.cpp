@@ -1711,13 +1711,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         if(probs_it->second<= THRESHOLD)
         {
             dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
-//            all_ANDS.find(probs_it->first)->second.printNode();
+            
             all_ANDS.find(probs_it->first)->second.setSignal(0);
             all_ANDS.find(probs_it->first)->second.clearOutputs();
-            all_ANDS.find(probs_it->first)->second.getInputs()[0]->removeOutput(probs_it->first);
-            all_ANDS.find(probs_it->first)->second.getInputs()[1]->removeOutput(probs_it->first);
+            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
+            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
             zero_count++;
-//            all_ANDS.find(probs_it->first)->second.printNode();
         }
         
         if(probs_it->second>= 1-THRESHOLD)
@@ -1725,8 +1724,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
             dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
             all_ANDS.find(probs_it->first)->second.setSignal(1);
             all_ANDS.find(probs_it->first)->second.clearOutputs();
-            all_ANDS.find(probs_it->first)->second.getInputs()[0]->removeOutput(probs_it->first);
-            all_ANDS.find(probs_it->first)->second.getInputs()[1]->removeOutput(probs_it->first);
+            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);;
+            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
             one_count++;
         }
     }
@@ -2071,6 +2070,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
    this->name+=to_string(1-THRESHOLD);
     cout<<"Writing output file (AIG):"<<this->name<<endl;
     this->writeAIG();
-//    cout<<"Writing output file (AAG):"<<this->name<<endl;
-//    this->writeAAG();
+    cout<<"Writing output file (AAG):"<<this->name<<endl;
+    this->writeAAG();
 }

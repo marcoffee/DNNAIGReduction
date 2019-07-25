@@ -239,9 +239,27 @@ void AND::removeOutput(unsigned int id_to_remove) {
         {
 //            cout<<"AND:"<<this->id<<" removing output:"<<outputs[i]->getId()<<endl;
             outputs.erase(outputs.begin()+i);
+            break;
 //            cout<<"after remove:";
 //            this->printNode();
         }
+    }
+}
+
+void AND::recursiveRemoveOutput(unsigned int id_to_remove){
+    for(int i=0;i<outputs.size();i++)
+    {
+        if(outputs[i]->getId()==id_to_remove)
+        {
+            outputs.erase(outputs.begin()+i);
+            break;
+        }
+    }
+    
+    if(outputs.size()==0)
+    {
+        this->inputs[0]->fixLSB()->recursiveRemoveOutput(this->id);
+        this->inputs[1]->fixLSB()->recursiveRemoveOutput(this->id);
     }
 }
 #endif

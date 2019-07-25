@@ -23,9 +23,9 @@ int main(int argc, char** argv) {
     graph graph_obj;
     mnist mnist_obj;
     string file_name;
-//    file_name="../A1.aig";
+    file_name="../A1.aig";
 //    file_name="A1_ANDs_removed_1.aig";
-    file_name="andre.aig";
+//    file_name="andre.aig";
 //    file_name="andre_ANDs_removed_1.aig";
     ifstream read(file_name.c_str(),ifstream::binary);
     graph_obj.readAIG(read,file_name);
@@ -42,8 +42,8 @@ int main(int argc, char** argv) {
 
     
 //    graph_obj.setANDsProbabilities(mnist_obj);
-//    graph_obj.propagateAndDeleteAll(mnist_obj);
-//    graph_obj.applyMnistRecursive(mnist_obj);
+    graph_obj.propagateAndDeleteAll(mnist_obj);
+    graph_obj.applyMnistRecursive(mnist_obj);
 
     while(true)
     {

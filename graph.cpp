@@ -1055,7 +1055,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
 
 void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
 //    cout<<all_inputs.size()<<"="<<mnist_obj.getProbabilities().size()*mnist_obj.getProbabilities()[0].size()<<endl;
-    int conta=0,posX=0,posY=0;
+    int PI_constant=0,posX=0,posY=0;
     
     map<unsigned int, input>::iterator it_in;
     map<unsigned int, output>::iterator it_out;
@@ -1089,7 +1089,7 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
       if(mnist_obj.getPIsProbabilities()[posY][posX]<= THRESHOLD)
       {
           it_in->second.setSignal(0);
-          conta++;
+          PI_constant++;
       }   
       posX++;
       if(posX==posX_max)
@@ -1102,9 +1102,9 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
           }
       }
   }
-  cout<<"# of PI that pass threshold:"<<conta<<endl;
+  cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
   simpl_info<<"Threshold:"<<to_string(1-THRESHOLD);
-  simpl_info<<"# of PI that pass threshold:"<<conta<<endl;
+  simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
     
 #if TEST == 1
 //  int conts=0;
@@ -1622,7 +1622,7 @@ void graph::setANDsProbabilities(mnist& mnist_obj){
 }
 
 void graph::propagateAndDeleteAll(mnist& mnist_obj) {
-    int conta=0,posX=0,posY=0;
+    int PI_constant=0,posX=0,posY=0;
     map<unsigned int, input>::iterator it_in;
     map<unsigned int, output>::iterator it_out;
     map<unsigned int, AND>::iterator it_and;
@@ -1662,7 +1662,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         if(mnist_obj.getPIsProbabilities()[posY][posX]<= THRESHOLD)
         {
             it_in->second.setSignal(0);
-            conta++;
+            PI_constant++;
         }   
         posX++;
         if(posX==posX_max)
@@ -1673,9 +1673,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
                 posY=0;
         }
     }
-  cout<<"# of PI that pass threshold:"<<conta<<endl;
+  cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
   simpl_info<<"Threshold:"<<to_string(1-THRESHOLD)<<endl;
-  simpl_info<<"# of PI that pass threshold:"<<conta<<endl;
+  simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
 #if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
   all_inputs.find(4)->second.setSignal(2);
@@ -2004,6 +2004,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     cout<<"Inputs removed:"<<PIs_removed<<endl;
     simpl_info<<"ANDs removed:"<<ands_removed<<endl;
     simpl_info<<"Inputs removed:"<<PIs_removed<<endl<<endl;
+    simpl_info<<"all_ands.size():"<<all_ANDS.size()<<endl;
+    
+    simpl_info<<endl<<to_string(1-THRESHOLD)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<all_ANDS.size()<<endl;
     
 #if DEBUG >= debug_value
     dump3<<"ANDs removed:"<<ands_removed<<endl;

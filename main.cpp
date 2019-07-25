@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     
 //    for(float th=0.0003;th<0.001;th=th+0.0001)
 //    {
-    th=0;
+    int th=0;
         graph graph_obj(th);
         mnist mnist_obj;
         string file_name;

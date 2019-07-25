@@ -15,8 +15,10 @@
 
 #include "gde.h"
 
-graph::graph(){
-
+graph::graph(){}
+        
+graph::graph(float th){
+    this->threshold=th;
 }
 graph::~graph(){}
 
@@ -656,8 +658,6 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
     string program_output_name;
     program_output_name="Scores_";
     program_output_name+=this->name;
-//    program_output_name+="_";
-//    program_output_name+=(to_string(1-THRESHOLD));
     program_output_name+=".csv";
     
         vamo.open(program_output_name);
@@ -1067,7 +1067,7 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
     
     string info_file_name;
     info_file_name=this->name;
-    info_file_name+=to_string(1-THRESHOLD);
+    info_file_name+=to_string(1-threshold);
     info_file_name+="_simplif_info.txt";
     ofstream simpl_info(info_file_name);
     //Initializing all inputs to 2. 2 means the variable is not a constant
@@ -1086,7 +1086,7 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
   for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
   {
 //        cout<<mnist_obj.getProbabilities()[posY][posX]<<",";
-      if(mnist_obj.getPIsProbabilities()[posY][posX]<= THRESHOLD)
+      if(mnist_obj.getPIsProbabilities()[posY][posX]<= threshold)
       {
           it_in->second.setSignal(0);
           PI_constant++;
@@ -1103,7 +1103,7 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
       }
   }
   cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
-  simpl_info<<"Threshold:"<<to_string(1-THRESHOLD);
+  simpl_info<<"Threshold:"<<to_string(1-threshold);
   simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
     
 #if TEST == 1
@@ -1629,7 +1629,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     string info_file_name;
     info_file_name=this->name;
     info_file_name+="_";
-    info_file_name+=to_string(1-THRESHOLD);
+    info_file_name+=to_string(1-threshold);
     info_file_name+="_simplif_info.txt";
     ofstream simpl_info(info_file_name),dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt"),dump_PO("dump_PO.txt");
     map<unsigned int,float>::iterator probs_it;
@@ -1659,7 +1659,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     //Inputs with probability of being 0 less than threshold are set to zero
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
-        if(mnist_obj.getPIsProbabilities()[posY][posX]<= THRESHOLD)
+        if(mnist_obj.getPIsProbabilities()[posY][posX]<= threshold)
         {
             it_in->second.setSignal(0);
             PI_constant++;
@@ -1674,7 +1674,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         }
     }
   cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
-  simpl_info<<"Threshold:"<<to_string(1-THRESHOLD)<<endl;
+  simpl_info<<"Threshold:"<<to_string(1-threshold)<<endl;
   simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
 #if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
@@ -1708,7 +1708,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
   //ANDs with probability of being 0 or 1 higher than threshold are set to constant    
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
-        if(probs_it->second<= THRESHOLD)
+        if(probs_it->second<= threshold)
         {
 #if DEBUG >=2
             dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1722,7 +1722,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
             zero_count++;
         }
         
-        if(probs_it->second>= 1-THRESHOLD)
+        if(probs_it->second>= 1-threshold)
         {
 #if DEBUG >=2
             dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -2012,7 +2012,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     simpl_info<<"Inputs removed:"<<PIs_removed<<endl<<endl;
     simpl_info<<"all_ands.size():"<<all_ANDS.size()<<endl;
     
-    simpl_info<<endl<<to_string(1-THRESHOLD)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<all_ANDS.size()<<endl;
+    simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<all_ANDS.size()<<endl;
     
 #if DEBUG >= debug_value
     dump3<<"ANDs removed:"<<ands_removed<<endl;
@@ -2074,7 +2074,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
 //       it_in->second.printNode();
    
     this->name+="_ANDs_removed_";
-   this->name+=to_string(1-THRESHOLD);
+   this->name+=to_string(1-threshold);
     cout<<"Writing output file (AIG):"<<this->name<<endl;
     this->writeAIG();
 //    cout<<"Writing output file (AAG):"<<this->name<<endl;
@@ -2096,7 +2096,9 @@ void graph::recursiveRemoveOutput(unsigned int id_to_remove, node* remove_from){
     
     if(remove_from->getOutputs().size()==0 && all_outputs.find(remove_from->getId())==all_outputs.end())
     {
-        recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[0]);
-        recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[1]);
+        if(remove_from->getInputs()[0]->getOutputs().size()>0)
+            recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[0]);
+        if(remove_from->getInputs()[1]->getOutputs().size()>0)
+            recursiveRemoveOutput(remove_from->getId(),remove_from->getInputs()[1]);
     }
 }

@@ -367,7 +367,7 @@ void graph::clearCircuit(){
     this->name.clear();
     this->POs_order.clear();
     this->ANDs_probabilities.clear();
-    this->threshold=0;
+//    this->threshold=0;
   //  this->papi_obj.clear();
     this->log.close();
 }

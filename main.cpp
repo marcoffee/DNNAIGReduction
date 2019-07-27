@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
 
 
     //    graph_obj.setANDsProbabilities(mnist_obj);
-        graph_obj.propagateAndDeleteAll(mnist_obj);
+//        graph_obj.propagateAndDeleteAll(mnist_obj);
         graph_obj.applyMnistRecursive(mnist_obj);
 
     //    while(true)

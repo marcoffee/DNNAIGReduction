@@ -101,7 +101,7 @@ void mnist::readIdx(ifstream& file,string imgs_name){
 //    }
     }
     
-#if DEBUG >=4
+#if DEBUG >=1
     int contador=0;
     for(int a=0;a<all_bits.size();a++)
     {
@@ -211,7 +211,7 @@ void mnist::setBitsProbabilities(ifstream& file){
         {
 //            aux.push_back((float)counter[line][column]/60000);
             aux.push_back((float)counter[line][column]/all_bits.size());
-            cout<<(float)counter[line][column]/60000<<" == "<<(float)counter[line][column]/all_bits.size()<<endl;
+//            cout<<(float)counter[line][column]/60000<<" == "<<(float)counter[line][column]/all_bits.size()<<endl;
         }
         
         this->input_probabilities.push_back(aux);

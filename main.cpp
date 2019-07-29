@@ -22,7 +22,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
         string file_name;
-    file_name="../A1.aig";
+    file_name="../A2.aig";
 //    file_name="A1_ANDs_removed_1.aig";
 //    file_name="andre.aig";
 //    file_name="andre_ANDs_removed_1.aig";
@@ -39,9 +39,9 @@ int main(int argc, char** argv) {
         mnist_obj.setBitsProbabilities(read_mnist);
 #endif
     
-    for(float th=0.0001;th<0.001;th=th+0.0001)
-    {
-//        float th=0;
+//    for(float th=0.0001;th<0.001;th=th+0.0001)
+//    {
+        float th=0.001;
         graph graph_obj(th);
         graph_obj.clearCircuit();
 
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     //        graph_obj.findAny(node_name)->printNode();
     //    }
 //        graph_obj.~graph();
-    }
+//    }
     return 0;
 }
 

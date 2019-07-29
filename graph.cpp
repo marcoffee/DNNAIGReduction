@@ -1988,7 +1988,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     {
         if(it_and->second.getOutputs().size()==0) //&& all_outputs.find(it_and->first)==all_outputs.end())
         {
+#if DEBUG >= 2
             write2<<it_and->first<<",";
+#endif
 //            cout<<"Erasing AND:"<<it_and->first<<endl;
             it_and=all_ANDS.erase(it_and);
             ands_removed++;

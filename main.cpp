@@ -26,25 +26,30 @@ int main(int argc, char** argv) {
 //    file_name="A1_ANDs_removed_1.aig";
 //    file_name="andre.aig";
 //    file_name="andre_ANDs_removed_1.aig";
-    ifstream read(file_name.c_str(),ifstream::binary);
+    ifstream read;
     mnist mnist_obj;
     
-    #if TRAIN_SET == 1
+#if TRAIN_SET == 1
         ifstream read_mnist("../train-images.idx3-ubyte",ifstream::binary);
         mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
         mnist_obj.setBitsProbabilities(read_mnist);
-    #else
+#else
         ifstream read_mnist("../t10k-images.idx3-ubyte",ifstream::binary);
         mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
         mnist_obj.setBitsProbabilities(read_mnist);
-    #endif
+#endif
     
-//    for(float th=0.0003;th<0.001;th=th+0.0001)
-//    {
-        float th=0;
+    for(float th=0.0001;th<0.001;th=th+0.0001)
+    {
+#if TRAIN_SET == 0
+        file_name="../A1_ANDs_removed_";
+        file_name.append(to_string(1-th));
+        file_name.append(".aig");
+#endif
+        read.open(file_name.c_str(),ifstream::binary);
+//        float th=0;
         graph graph_obj(th);
         graph_obj.clearCircuit();
-
         graph_obj.readAIG(read,file_name);
 
 
@@ -52,7 +57,7 @@ int main(int argc, char** argv) {
 
     //    graph_obj.setANDsProbabilities(mnist_obj);
 //        graph_obj.propagateAndDeleteAll(mnist_obj);
-//        graph_obj.applyMnistRecursive(mnist_obj);
+        graph_obj.applyMnistRecursive(mnist_obj);
 
     //    while(true)
     //    {
@@ -62,7 +67,7 @@ int main(int argc, char** argv) {
     //        graph_obj.findAny(node_name)->printNode();
     //    }
 //        graph_obj.~graph();
-//    }
+    }
     return 0;
 }
 

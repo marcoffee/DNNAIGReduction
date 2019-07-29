@@ -31,6 +31,9 @@ void mnist::readIdx(ifstream& file,string imgs_name){
     labels_name.replace(labels_name.find_first_of("-"),7,"-labels");
     
     cout<<"Reading IDX file "<<imgs_name<<endl;
+    if(file.is_open())
+        cout<<"File is opened!"<<endl;
+    
     labels_name.at(labels_name.find_last_of("3"))='1';
     cout<<"Labels file:     "<<labels_name<<endl;
     

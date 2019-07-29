@@ -101,7 +101,7 @@ void mnist::readIdx(ifstream& file,string imgs_name){
 //    }
     }
     
-#if DEBUG >=1
+#if DEBUG >=0
     int contador=0;
     for(int a=0;a<all_bits.size();a++)
     {
@@ -117,7 +117,7 @@ void mnist::readIdx(ifstream& file,string imgs_name){
         cout<<endl;
     }
 #endif
-#if DEBUG>=2
+#if DEBUG>=1
     cout<<"all_bits size:"<<all_bits.size()<<endl;
     cout<<"all_bits[0] size:"<<all_bits[0].size()<<endl;
     cout<<"all_bits[0][0] size:"<<all_bits[0][0].size()<<endl;

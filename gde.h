@@ -20,12 +20,12 @@
        << #var << " = [" << (var) << "]" << std::endl
 #define DEBUG 1
 #define debug_value 1
-#define SIMPLIFIEDAIG 1
+#define SIMPLIFIEDAIG 0
 #define TEST 0
 #define IGNORE_OUTPUTS 0
 #define PROBS_FROM_FILE 1
 #define RENUMBER 1
-#define TRAIN_SET 1
+#define TRAIN_SET 0
 
 #define NN 2
 #define ONLYDANGLE 0

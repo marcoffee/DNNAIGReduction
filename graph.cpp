@@ -692,7 +692,9 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         posY=0;
         posX=0;
         int control=0;
-//        dump_app<<"ignorando inputs:"<<endl;
+#if DEBUG >= 1
+        dump_app<<"ignorando inputs:"<<endl;
+#endif
         while(control< (posX_max*posY_max))
        {
             if(removed_inputs.find((((posY)*(posX_max)) +posX+1)*2)==removed_inputs.end())
@@ -708,12 +710,16 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                 }
                 it_in->second.setBitVector(bits.to_ullong());
 //                it_in->second.setSignal(mnist_obj.getBit(img_count,posY,posX));
-//                dump_app<<it_in->second.getId()<<"="<<((((posY)*(posX_max)) +posX+1)*2)<<endl;
+#if DEBUG >= 1
+                dump_app<<it_in->second.getId()<<"="<<((((posY)*(posX_max)) +posX+1)*2)<<endl;
+#endif
                 
                 it_in++;
             }
-//            else
-//                dump_app<<"ignoring:"<<((((posY)*(posX_max)) +posX+1)*2)<<" holding on it_in:"<<it_in->second.getId()<<endl;
+#if DEBUG >= 1
+            else
+                dump_app<<"ignoring:"<<((((posY)*(posX_max)) +posX+1)*2)<<" holding on it_in:"<<it_in->second.getId()<<endl;
+#endif
             control++;
             posX++;
             if(posX==posX_max)

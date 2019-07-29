@@ -209,8 +209,9 @@ void mnist::setBitsProbabilities(ifstream& file){
         aux.clear();
         for(column=0;column<posX_max;column++)
         {
-            aux.push_back((float)counter[line][column]/60000);
-//            cout<<(float)counter[line][column]/60000<<",";
+//            aux.push_back((float)counter[line][column]/60000);
+            aux.push_back((float)counter[line][column]/all_bits.size());
+            cout<<(float)counter[line][column]/60000<<" == "<<(float)counter[line][column]/all_bits.size()<<endl;
         }
         
         this->input_probabilities.push_back(aux);

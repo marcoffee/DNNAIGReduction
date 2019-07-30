@@ -270,6 +270,6 @@ vector<vector<float> > mnist::getPIsProbabilities() {
 
  void mnist::clearMnist(){
      this->all_bits.clear();
-     this->input_probabilities.clear();
+//     this->input_probabilities.clear();
      this->labels.clear();
  }

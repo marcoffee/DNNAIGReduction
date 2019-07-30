@@ -29,11 +29,13 @@ public:
     mnist();
     mnist(const mnist& orig);
     virtual ~mnist();
+    void clearMnist();
     
     int getBit(int img_index, int posY, int posX);
     int getLabel(int);
     vector <vector <vector <int> > > getAllBits();
     vector<vector<float> > getPIsProbabilities();
+   
     
     void readIdx(ifstream&,string);
     void setBitsProbabilities(ifstream&);

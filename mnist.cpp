@@ -266,3 +266,10 @@ int mnist::getLabel(int param){
 vector<vector<float> > mnist::getPIsProbabilities() {
     return this->input_probabilities;
 }
+
+
+ void mnist::clearMnist(){
+     this->all_bits.clear();
+     this->input_probabilities.clear();
+     this->labels.clear();
+ }

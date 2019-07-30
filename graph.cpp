@@ -17,14 +17,19 @@
 
 graph::graph(){}
         
-graph::graph(float th){
-    this->threshold=th;
-}
+//graph::graph(float th){
+//    this->threshold=th;
+//}
 graph::~graph(){}
 
 void graph::setName(string param){
     this->name=param;
 }
+
+void graph::setThrehsold(float param) {
+    this->threshold=param;
+}
+
 
 input* graph::pushPI(unsigned int index,input input_obj){
     this->all_inputs.insert(pair<unsigned int,input>(index,input_obj));

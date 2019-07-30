@@ -304,7 +304,7 @@ protected:
     
 public:
     graph();
-    graph(float);
+//    graph(float);
    virtual ~graph();
     
     
@@ -312,6 +312,7 @@ public:
     void readAAG(ifstream&,string);
     void readAIG(ifstream&,string);
     void setName(string);
+    void setThrehsold(float);
     void clearCircuit();
     input* pushPI(unsigned int index,input input_obj);
     void pushLatch(unsigned int index,latch latch_obj);

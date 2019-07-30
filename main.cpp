@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
 
     //    graph_obj.setANDsProbabilities(mnist_obj);
         graph_obj.propagateAndDeleteAll(mnist_obj);
-        graph_obj.applyMnistRecursive(mnist_obj);
+//        graph_obj.applyMnistRecursive(mnist_obj);
         
         mnist_obj.clearMnist();
         read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);

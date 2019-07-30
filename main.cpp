@@ -32,16 +32,16 @@ int main(int argc, char** argv) {
     mnist mnist_obj;
     graph graph_obj;
     
-    for(float th=0.0001;th<0.001;th=th+0.0001)
-    {
-//        float th=0.001;
+//    for(float th=0.0001;th<0.001;th=th+0.0001)
+//    {
+        float th=0.001;
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(th);
         
-        mnist_obj.clearMnist();
-        read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
-        mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
-        mnist_obj.setBitsProbabilities(read_mnist);
+//        mnist_obj.clearMnist();
+//        read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+//        mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+//        mnist_obj.setBitsProbabilities(read_mnist);
         
         graph_obj.readAIG(read,file_name);
 
@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
 
 
     //    graph_obj.setANDsProbabilities(mnist_obj);
-        graph_obj.propagateAndDeleteAll(mnist_obj);
+//        graph_obj.propagateAndDeleteAll(mnist_obj);
 //        graph_obj.applyMnistRecursive(mnist_obj);
         
         mnist_obj.clearMnist();
@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
     //        graph_obj.findAny(node_name)->printNode();
     //    }
 //        graph_obj.~graph();
-    }
+//    }
     return 0;
 }
 

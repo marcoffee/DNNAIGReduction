@@ -97,6 +97,7 @@ void mnist::readIdx(ifstream& file,string imgs_name){
                 }
             }
         }
+        
 
 #if DEBUG >=4
         cout<<endl;
@@ -145,6 +146,12 @@ void mnist::readIdx(ifstream& file,string imgs_name){
 //        cout<<num<<",";
         labels.push_back(num);
     }
+    
+#if DEBUG >=1
+    cout<<"labels size:"<<labels.size()<<endl;
+    cout<<"labels[0]:"<<labels[0]<<endl;
+    cout<<"labels[1]:"<<labels[1]<<endl;
+#endif
     
     
 }

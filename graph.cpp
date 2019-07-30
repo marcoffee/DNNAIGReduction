@@ -666,6 +666,12 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
     string program_output_name;
     program_output_name="Scores_";
     program_output_name+=this->name;
+    if(mnist_obj.getAllBits().size()==60000)
+        program_output_name+="_train";
+    else if (mnist_obj.getAllBits().size()==10000)
+        program_output_name+="_test";
+    else
+        cout<<"mnist size unknown"<<endl;
     program_output_name+=".csv";
     
         vamo.open(program_output_name);
@@ -1701,8 +1707,21 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     ANDs_probabilities.clear();
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         this->ANDs_probabilities.insert(pair<unsigned int,float>(it_and->second.getId(),0.0));
-    string line;
-    ifstream in_file ("ands_probs.txt");
+    string ands_probs_name,line;
+    
+    ands_probs_name="../ands_probs_";
+    if(this->name.find("A1")!=string::npos)
+        ands_probs_name+="A1.txt";
+    else if(this->name.find("A2")!=string::npos)
+        ands_probs_name+="A2.txt";
+    else if(this->name.find("A3")!=string::npos)
+        ands_probs_name+="A3.txt";
+    else if(this->name.find("A4")!=string::npos)
+        ands_probs_name+="A4.txt";
+    else
+        cout<<"ERROR, graph name has no A1-4"<<endl;
+    ifstream in_file (ands_probs_name);
+    
     it_and=all_ANDS.begin();
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {

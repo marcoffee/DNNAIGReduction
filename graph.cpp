@@ -715,7 +715,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                 bits.reset();
                 for(int u=offset;u<offset+BITS_PACKAGE_SIZE;u++)
                 {
-                    if(u>=num_imgs)
+                    if(u>=num_imgs-1)
                         break;
                     bits.set(u-offset,(bool)mnist_obj.getBit(u,posY,posX));
                 }

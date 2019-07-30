@@ -39,6 +39,7 @@ int main(int argc, char** argv) {
         graph_obj.setThrehsold(th);
         
         mnist_obj.clearMnist();
+        read_mnist.close();
         read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
         mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
         mnist_obj.setBitsProbabilities(read_mnist);

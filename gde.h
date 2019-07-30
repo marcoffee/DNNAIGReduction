@@ -20,7 +20,7 @@
        << #var << " = [" << (var) << "]" << std::endl
 #define DEBUG 1
 #define debug_value 1
-#define SIMPLIFIEDAIG 1
+#define SIMPLIFIEDAIG 0
 #define TEST 1
 #define IGNORE_OUTPUTS 0
 #define PROBS_FROM_FILE 1

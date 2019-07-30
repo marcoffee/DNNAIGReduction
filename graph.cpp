@@ -751,7 +751,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
        all_inputs.find(8)->second.setSignal(1);
 #endif
 
-#else
+//#else
         bitset<BITS_PACKAGE_SIZE> bits;
         posY=0;
         posX=0;
@@ -763,6 +763,8 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
 //            cout<<"offset:"<<offset<<endl;
             for(int u=offset;u<offset+BITS_PACKAGE_SIZE;u++)
             {
+                if(u>=num_imgs)
+                    break;
 //                cout<<u<<",";
                 bits.set(u-offset,(bool)mnist_obj.getBit(u,posY,posX));
 //                dump_sig_vector<<"u:"<<u<<"->"<<(bool)mnist_obj.getBit(u,posY,posX)<<endl;

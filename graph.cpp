@@ -752,7 +752,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
        all_inputs.find(8)->second.setSignal(1);
 #endif
 
-//#else
+#else
         bitset<BITS_PACKAGE_SIZE> bits;
         posY=0;
         posX=0;

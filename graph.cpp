@@ -665,13 +665,14 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
 
     string program_output_name;
     program_output_name="Scores_";
-    program_output_name+=this->name;
-    if(mnist_obj.getAllBits().size()==60000)
-        program_output_name+="_train";
-    else if (mnist_obj.getAllBits().size()==10000)
-        program_output_name+="_test";
+    
+    if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
+        this->name+="_train";
+    else if (mnist_obj.getAllBits().size()==10000 && this->name.find("test")==string::npos)
+        this->name+="_test";
     else
         cout<<"mnist size unknown"<<endl;
+    program_output_name+=this->name;
     program_output_name+=".csv";
     
         vamo.open(program_output_name);
@@ -1073,6 +1074,13 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
     if(offset>num_imgs)
         offset=num_imgs;
     }
+    ofstream csv_final;
+    csv_final.open("todos_scores.csv",ios::app);
+    csv_final<<this->name<<","<<(float)correct_answers/(img_count+1);
+    if(this->name.find("test")!=string::npos)
+        csv_final<<endl;
+    else
+        csv_final<<",";
     cout<<"Circuit "<<this->name<<" has precision:"<<(float)correct_answers/(img_count+1)<<endl;
 }
 
@@ -2051,8 +2059,18 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     simpl_info<<"Inputs removed:"<<PIs_removed<<endl<<endl;
     simpl_info<<"all_ands.size():"<<all_ANDS.size()<<endl;
     
-    simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<all_ANDS.size()<<endl;
+    if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
+        this->name+="_train";
+    else if (mnist_obj.getAllBits().size()==10000 && this->name.find("test")==string::npos)
+        this->name+="_test";
+    else
+        cout<<"mnist size unknown"<<endl;
     
+    ofstream csv_final;
+    csv_final.open("todos_scores.csv",ios::app);
+    simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
+    csv_final<<this->name<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size();
+
 #if DEBUG >= debug_value
     dump3<<"ANDs removed:"<<ands_removed<<endl;
     dump3<<"Inputs removed:"<<PIs_removed<<endl;

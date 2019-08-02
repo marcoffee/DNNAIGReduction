@@ -15,8 +15,15 @@
 
 #include "gde.h"
 
-graph::graph(){}
-        
+graph::graph(){
+    this->constant1.setId(1);
+    this->constant1.setSignal(1);
+    this->constant1.setBitVector(UINT_MAX);
+    this->constant0.setId(0);
+    this->constant0.setSignal(0);
+    this->constant0.setBitVector(0);
+}
+    
 //graph::graph(float th){
 //    this->threshold=th;
 //}
@@ -574,24 +581,43 @@ void graph::readAIG(ifstream& file, string param_name){
         debs<<"delta1:"<<delta1<<" delta2:"<<delta2<<". ";
         debs<<"rhs0:"<<rhs0<<" rhs1:"<<rhs1<<endl;
 #endif
-        if(rhs0 % 2!=0)
+        if(rhs0>1)
         {
-            polar=true;
-            rhs0--;
+            if(rhs0 % 2!=0)
+            {
+                polar=true;
+                rhs0--;
+            }
+            else
+                polar=false;
+            AND_ptr->pushInput(this->findAny(rhs0),polar);
         }
         else
-            polar=false;
-        AND_ptr->pushInput(this->findAny(rhs0),polar);
-        
+        {
+            if(rhs0==1)
+                AND_ptr->pushInput(&constant1,false);
+            else
+                AND_ptr->pushInput(&constant1,false);
+        }
 
-        if(rhs1 % 2!=0)
+        if(rhs1>1)
         {
-            polar=true;
-            rhs1--;
+            if(rhs1 % 2!=0)
+            {
+                polar=true;
+                rhs1--;
+            }
+            else
+                polar=false;
+            AND_ptr->pushInput(this->findAny(rhs1),polar);
         }
         else
-            polar=false;
-        AND_ptr->pushInput(this->findAny(rhs1),polar);
+        {
+            if(rhs0==1)
+                AND_ptr->pushInput(&constant1,false);
+            else
+                AND_ptr->pushInput(&constant1,false);
+        }
         
         
 //        this->findAny(rhs1)->printNode();

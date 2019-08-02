@@ -298,6 +298,7 @@ protected:
     map <unsigned int,float> ANDs_probabilities;
     vector<unsigned int> POs_order;
     float threshold;
+    node constant1,constant0;
     
     ofstream log;
     

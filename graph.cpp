@@ -2073,7 +2073,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     ofstream csv_final;
     csv_final.open("todos_scores.csv",ios::app);
     simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
-    csv_final<<this->name<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size();
+    csv_final<<this->name<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
 
 #if DEBUG >= debug_value
     dump3<<"ANDs removed:"<<ands_removed<<endl;

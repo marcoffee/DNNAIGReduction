@@ -695,11 +695,15 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         cout<<"Applying images from "<<offset<<" to "<<offset+BITS_PACKAGE_SIZE<<endl;
         
         
-#if SIMPLIFIEDAIG == 1
+
 #if TEST == 0
         //getting input signals from MNIST image
         set<int> removed_inputs;
         string line;
+#if SIMPLIFIEDAIG == 0
+        ofstream aux_ofstr("removed_inputs.txt");
+        aux_ofstr.close();
+#endif
         ifstream in_file("removed_inputs.txt");
         while(getline(in_file,line))
             removed_inputs.insert(stoi(line));
@@ -709,11 +713,12 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         bitset<BITS_PACKAGE_SIZE> bits;
         posY=0;
         posX=0;
-        int control=0;
+        int pixel_count=0;
 #if DEBUG >= 1
         dump_app<<"ignorando inputs:"<<endl;
 #endif
-        while(control< (posX_max*posY_max))
+        cout<<"chosen positions:";
+        while(pixel_count< (posX_max*posY_max))
        {
             if(removed_inputs.find((((posY)*(posX_max)) +posX+1)*2)==removed_inputs.end())
             {
@@ -726,7 +731,13 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                         break;
                     bits.set(u-offset,(bool)mnist_obj.getBit(u,posY,posX));
                 }
-                it_in->second.setBitVector(bits.to_ullong());
+                if(name.find("A3")==string::npos)
+                    it_in->second.setBitVector(bits.to_ullong());
+                else if(((posY)*(posX_max) +posX)%8 == 0)
+                {
+                    cout<<(posY)*(posX_max) +posX<<",";
+                    it_in->second.setBitVector(bits.to_ullong());
+                }
 //                it_in->second.setSignal(mnist_obj.getBit(img_count,posY,posX));
 #if DEBUG >= 1
                 dump_app<<it_in->second.getId()<<"="<<((((posY)*(posX_max)) +posX+1)*2)<<endl;
@@ -738,7 +749,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
             else
                 dump_app<<"ignoring:"<<((((posY)*(posX_max)) +posX+1)*2)<<" holding on it_in:"<<it_in->second.getId()<<endl;
 #endif
-            control++;
+            pixel_count++;
             posX++;
             if(posX==posX_max)
             {
@@ -748,7 +759,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                             posY=0;
             }
        }
-        cout<<endl<<"control:"<<control<<endl;
+        cout<<endl<<"pixel_count:"<<pixel_count<<endl;
 #else 
        all_inputs.find(2)->second.setSignal(1);
        all_inputs.find(4)->second.setSignal(1);
@@ -756,46 +767,46 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
        all_inputs.find(8)->second.setSignal(1);
 #endif
 
-#else
-        bitset<BITS_PACKAGE_SIZE> bits;
-        posY=0;
-        posX=0;
-        //getting input signals from MNIST image
-        for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
-        {
-//            dump_sig_vector<<endl<<"INPUT:"<<it_in->second.getId()<<endl;
-            bits.reset();
-//            cout<<"offset:"<<offset<<endl;
-            for(int u=offset;u<offset+BITS_PACKAGE_SIZE;u++)
-            {
-                if(u>=num_imgs)
-                    break;
-//                cout<<u<<",";
-                bits.set(u-offset,(bool)mnist_obj.getBit(u,posY,posX));
-//                dump_sig_vector<<"u:"<<u<<"->"<<(bool)mnist_obj.getBit(u,posY,posX)<<endl;
-//                dump_sig_vector<<bits<<endl;
-            }
-//            check_bits<<bits;
-//               it_in->second.setSignal(mnist_obj.getBit(img_count,posY,posX));
-               posX++;
-               if(posX==posX_max)
-               {
-//                   check_bits<<endl;
-                   posY++;
-                   posX=0;
-                   if(posY==posY_max)
-                   {
-                       posY=0;
-//                       check_bits<<"end of image"<<endl;
-                   }
-               }
-            
-//            check_bits<<it_in->second.getId()<<":"<<bits<<endl;
-            it_in->second.setBitVector(bits.to_ullong());
-            //check_bits<<"raw:"<<bits.to_ullong()<<endl;
-            //check_bits<<it_in->second.getBitVector();
-        }
-#endif
+//#else
+//        bitset<BITS_PACKAGE_SIZE> bits;
+//        posY=0;
+//        posX=0;
+//        //getting input signals from MNIST image
+//        for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
+//        {
+////            dump_sig_vector<<endl<<"INPUT:"<<it_in->second.getId()<<endl;
+//            bits.reset();
+////            cout<<"offset:"<<offset<<endl;
+//            for(int u=offset;u<offset+BITS_PACKAGE_SIZE;u++)
+//            {
+//                if(u>=num_imgs)
+//                    break;
+////                cout<<u<<",";
+//                bits.set(u-offset,(bool)mnist_obj.getBit(u,posY,posX));
+////                dump_sig_vector<<"u:"<<u<<"->"<<(bool)mnist_obj.getBit(u,posY,posX)<<endl;
+////                dump_sig_vector<<bits<<endl;
+//            }
+////            check_bits<<bits;
+////               it_in->second.setSignal(mnist_obj.getBit(img_count,posY,posX));
+//               posX++;
+//               if(posX==posX_max)
+//               {
+////                   check_bits<<endl;
+//                   posY++;
+//                   posX=0;
+//                   if(posY==posY_max)
+//                   {
+//                       posY=0;
+////                       check_bits<<"end of image"<<endl;
+//                   }
+//               }
+//            
+////            check_bits<<it_in->second.getId()<<":"<<bits<<endl;
+//            it_in->second.setBitVector(bits.to_ullong());
+//            //check_bits<<"raw:"<<bits.to_ullong()<<endl;
+//            //check_bits<<it_in->second.getBitVector();
+//        }
+//#endif
 
         //initializing all ANDs with -1
         for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)

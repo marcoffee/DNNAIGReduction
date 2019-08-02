@@ -27,6 +27,7 @@
 #define RENUMBER 1
 #define TRAIN_SET 1
 
+#define ONLY_MSB_PI 1
 #define NN 2
 #define ONLYDANGLE 0
 #define posY_max 28

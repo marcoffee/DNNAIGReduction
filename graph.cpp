@@ -625,7 +625,9 @@ void graph::readAIG(ifstream& file, string param_name){
 //        cout<<"delta:"<<delta1<<","<<delta2<<" and:"<<and_index*2<<","<<rhs0<<","<<rhs1<<"\t";
         
 #if IGNORE_OUTPUTS == 0
+    if(rhs0>1)
        this->findAny(rhs0)->pushOutput(AND_ptr);
+    if(rhs1>1)
        this->findAny(rhs1)->pushOutput(AND_ptr); 
 #endif
     }

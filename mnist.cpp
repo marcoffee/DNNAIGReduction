@@ -232,21 +232,21 @@ void mnist::setBitsProbabilities(ifstream& file){
     
     
 #if DEBUG >=2
-    ofstream out("idVsprobs");
+    ofstream out2("idVsprobs");
     for (int i=0;i<input_probabilities.size();i++)
     {
         for(int j=0;j<input_probabilities[i].size();j++)
-            out<<((((i)*(posX_max)) +j+1)*2)<<":"<<input_probabilities[i][j]<<endl;
+            out2<<((((i)*(posX_max)) +j+1)*2)<<":"<<input_probabilities[i][j]<<endl;
     }
 #endif
     
 #if DEBUG >=2
-    ofstream out("probs density.csv");
+    ofstream out3("probs density.csv");
     for (int i=0;i<input_probabilities.size();i++)
     {
         for(int j=0;j<input_probabilities[i].size();j++)
-            out<<input_probabilities[i][j]<<",";
-        out<<endl;
+            out3<<input_probabilities[i][j]<<",";
+        out3<<endl;
     }
 #endif
 

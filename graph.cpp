@@ -669,7 +669,11 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
     if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
         this->name+="_train";
     else if (mnist_obj.getAllBits().size()==10000 && this->name.find("test")==string::npos)
+    {
+        if(name.find("train")!=string::npos)
+            name.erase(name.find("train"),5);
         this->name+="_test";
+    }
     else
         cout<<"mnist size unknown"<<endl;
     program_output_name+=this->name;

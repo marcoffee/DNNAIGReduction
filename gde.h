@@ -18,7 +18,7 @@
 #define DBGVAR( os, var ) \
   (os) << "DBG: " << __FILE__ << "(" << __LINE__ << ") "\
        << #var << " = [" << (var) << "]" << std::endl
-#define DEBUG 2
+#define DEBUG 0
 #define debug_value 1
 #define SIMPLIFIEDAIG 0
 #define TEST 0
@@ -27,7 +27,7 @@
 #define RENUMBER 1
 #define TRAIN_SET 1
 
-#define ONLY_MSB_PI 1
+//#define ONLY_MSB_PI 1
 #define NN 2
 #define ONLYDANGLE 0
 #define posY_max 28

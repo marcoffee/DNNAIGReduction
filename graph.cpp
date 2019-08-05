@@ -761,10 +761,13 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                 }
                 if(name.find("A3")==string::npos)
                     it_in->second.setBitVector(bits.to_ullong());
-                else if(((posY)*(posX_max) +posX)%8 == 0)
+                else if (((posY)*(posX_max)+posX)>0)
                 {
-                    cout<<(posY)*(posX_max) +posX<<",";
-                    it_in->second.setBitVector(bits.to_ullong());
+                    if(((posY)*(posX_max)+posX)%7 == 0)
+                    {
+                        cout<<(posY)*(posX_max) +posX<<",";
+                        it_in->second.setBitVector(bits.to_ullong());
+                    }
                 }
 //                it_in->second.setSignal(mnist_obj.getBit(img_count,posY,posX));
 #if DEBUG >= 1

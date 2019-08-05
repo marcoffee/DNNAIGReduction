@@ -1071,11 +1071,8 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                     }
                 }
                 //checking if current image is correct
-#if NN == 2
+
                int highest_score=-32768;
-#elif NN == 1
-                int highest_score=0;
-#endif
                
                int highest_index=0;
                for(int k=0;k<aux_vec.size();k++)

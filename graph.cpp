@@ -763,7 +763,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                     it_in->second.setBitVector(bits.to_ullong());
                 else if (((posY)*(posX_max)+posX)>0)
                 {
-                    if(((posY)*(posX_max)+posX)%7 == 0)
+                    if((posX+1)%8 == 0)
                     {
                         cout<<(posY)*(posX_max) +posX<<",";
                         it_in->second.setBitVector(bits.to_ullong());

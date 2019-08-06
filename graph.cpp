@@ -745,7 +745,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
 #if DEBUG >= 1
         dump_app<<"ignorando inputs:"<<endl;
 #endif
-        cout<<"chosen positions:";
+//        cout<<"chosen positions:";
         while(pixel_count< (posX_max*posY_max))
        {
             if(removed_inputs.find((((posY)*(posX_max)) +posX+1)*2)==removed_inputs.end())
@@ -765,7 +765,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                 {
                     if((posX+1)%8 == 0)
                     {
-                        cout<<(posY)*(posX_max) +posX<<",";
+//                        cout<<(posY)*(posX_max) +posX<<",";
                         it_in->second.setBitVector(bits.to_ullong());
                     }
                 }
@@ -1389,7 +1389,7 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
         dump2<<it_and->second.getId()<<":"<<it_and->second.getSignal()<<"|";
 #endif 
     
-#if ONLYDANGLE == 0
+
     //making sure outputs wont be deleted, by adding themselfs to their fanout list
     for(it_out=this->all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.getInput()->pushOutput(it_out->second.getInput());
@@ -1470,7 +1470,6 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
 #endif
         it_out->second.setId(it_out->second.getInput()->getId());
    }
-#endif
    
     //Reordering AND's inputs (bigger first)
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)

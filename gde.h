@@ -27,7 +27,7 @@
 #define RENUMBER 1
 
 
-#define ONLYDANGLE 0
+//#define ONLYDANGLE 0
 #define posY_max 28
 #define posX_max 224
 

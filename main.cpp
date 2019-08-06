@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
     graph_obj.applyMnistRecursive(mnist_obj);
     
     
-    for(float th=0.002;th<0.0021;th=th+0.0001)
+    for(float th=0.002;th<=0.0021;th=th+0.0001)
     {
       
         graph_obj.clearCircuit();

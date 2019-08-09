@@ -658,9 +658,7 @@ void graph::readAIG(ifstream& file, string param_name){
                 polarity0=false;
        }
        else
-       {
            cout<<"CONSTANT BEING INSTANTIATED AS PO!"<<endl;
-       }
 
         POs_order.push_back(lhs);
         output output_obj(lhs);
@@ -1774,6 +1772,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         ands_probs_name+="A4.txt";
     else
         cout<<"ERROR, graph name has no A1-4"<<endl;
+    dump1<<"circuit name:"<<this->name<<". Pros file name:"<<ands_probs_name<<endl;
     ifstream in_file (ands_probs_name);
     
     it_and=all_ANDS.begin();

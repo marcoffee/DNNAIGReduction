@@ -2203,3 +2203,54 @@ void graph::recursiveRemoveOutput(unsigned int id_to_remove, node* remove_from){
         }
     }
 }
+
+void graph::setDepthsInToOut(){
+    int retval,depth=0;
+    map<unsigned int,output>::iterator it_out;
+    map<unsigned int,AND>::iterator it_and;
+    map<unsigned int,input>::iterator it_in;
+    ofstream write;
+    
+    for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
+        it_in->second.setDepth(-1);
+    //initializing all ANDs with -1
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        it_and->second.setDepth(-1);
+    //initializing all Outputs with -1
+    for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
+        it_out->second.setDepth(-1);
+    
+    for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
+    {
+    write.close();
+#if DEBUG >= 1
+    write.open("log.txt",ios::app);
+    write<<"OUTPUT BFS:"<<it_out->first<<endl;
+#endif
+        //findAny(it_out->second.getId())->writeNode();
+//        depth=findAny(it_out->second.getId())->computeDepthInToOut();
+        depth=it_out->second.computeDepthInToOut();
+        it_out->second.setDepth(depth);
+    }
+}
+
+void graph::printDepths(){
+    map<unsigned int, AND>::iterator it;
+    map<unsigned int, input>::iterator it2;
+    map<unsigned int, output>::iterator it3;
+    
+    cout<<"Inputs' depths:"<<endl;
+    for(it2=all_inputs.begin();it2!=all_inputs.end();it2++)
+        cout<<it2->second.getId()<<":"<<it2->second.getDepth()<<endl;
+    cout<<endl;
+    
+    cout<<"Outputs' depths:"<<endl;
+    for(it3=all_outputs.begin();it3!=all_outputs.end();it3++)
+        cout<<it3->second.getId()<<":"<<it3->second.getDepth()<<endl;
+    cout<<endl;
+                
+    cout<<"ANDs' depths:"<<endl;
+    for(it=all_ANDS.begin();it!=all_ANDS.end();it++)
+        cout<<it->second.getId()<<":"<<it->second.getDepth()<<"|";//<<endl;
+    cout<<endl;
+}

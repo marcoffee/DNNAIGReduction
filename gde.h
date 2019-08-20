@@ -18,7 +18,7 @@
 #define DBGVAR( os, var ) \
   (os) << "DBG: " << __FILE__ << "(" << __LINE__ << ") "\
        << #var << " = [" << (var) << "]" << std::endl
-#define DEBUG 0
+#define DEBUG 1
 #define debug_value 1
 #define SIMPLIFIEDAIG 1
 #define TEST 0
@@ -72,7 +72,7 @@ protected:
     unsigned int id;
     int signal;
     unsigned long long int bit_vector;
-//    int depth;//,lala;//,lele,lili;
+//    int depth;
     
 public:
     node();
@@ -131,6 +131,7 @@ class input: public node {
 public:
     input();
     using node::node; //enable use of constructor from node
+    using node::setDepth;
     using node::getDepth;
     using node::getId;
     using node::getSignal;
@@ -244,6 +245,8 @@ class AND : public node{
 public:
     AND();
     using node::node; 
+    using node::setDepth;
+    using node::getDepth;
     using node::getSignal;
     virtual ~AND();
     

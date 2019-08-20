@@ -29,6 +29,7 @@ int input::computeDepthInToOut(){
     int depth;
     ofstream write;
     depth=0;
+    this->signal=0;
     return 0; //inputs always return 0 when computing the circuit depth
 }
 

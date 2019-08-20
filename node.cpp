@@ -33,13 +33,13 @@ unsigned int node::getId(){
     return this->id;
 }
 
-//void node::setDepth(int param){
-//    this->depth=param;
-//}
+void node::setDepth(int param){
+    this->signal=param;
+}
 
-//int node::getDepth(){
-//    return this->depth;
-//}
+int node::getDepth(){
+    return this->signal;
+}
 
 node* node::fixLSB(){
     return ((node*)(((uintptr_t)this) & ~01));

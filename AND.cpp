@@ -56,27 +56,28 @@ void AND::pushInput(node* param, bool param_polarity){
 }
 
 int AND::computeDepthInToOut(){
-    int depth;
-
-    if(depth==-1)
+//    int depth;
+    
+    cout<<"visiting AND:"<<this->id<<endl;
+    if(this->signal==-1)
     {
         int depth1,depth2;
 //        depth1=((node*)(inputs[0]/2))->computeDepthInToOut();
 //        depth2=((node*)(inputs[1]/2))->computeDepthInToOut();
 
-        depth1=this->getInputs()[0]->computeDepthInToOut();
-        depth2=this->getInputs()[1]->computeDepthInToOut();
+        depth1=this->getInputs()[0]->fixLSB()->computeDepthInToOut();
+        depth2=this->getInputs()[1]->fixLSB()->computeDepthInToOut();
         int v;         
         unsigned int r;  
         v=depth1-depth2;
         int const mask = v >> sizeof(int) * CHAR_BIT - 1;
 
         r = (v + mask) ^ mask;
-        depth=(((depth1+depth2)+r)/2) +1 ;
-        return depth;
+        signal=(((depth1+depth2)+r)/2) +1 ;
+        return signal;
     }
     else 
-        return depth;
+        return signal;
     
 }
 

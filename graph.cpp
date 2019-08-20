@@ -1475,10 +1475,10 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
 
    
 //    this->name+="_after_remove";
-//   this->name+="_";
-//   this->name+=to_string(1-THRESHOLD);
-//    cout<<"Writing output file (AIG):"<<this->name<<endl;
-//    this->writeAIG();
+   this->name+="_";
+   this->name+=to_string(1-threshold);
+    cout<<"Writing output file (AIG):"<<this->name<<endl;
+    this->writeAIG();
 //    cout<<"Writing output file (AAG):"<<this->name<<endl;
 //    this->writeAAG();
 }
@@ -2222,7 +2222,6 @@ void graph::setDepthsInToOut(){
     
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
-    write.close();
 #if DEBUG >= 3
     write.open("log.txt",ios::app);
     write<<"OUTPUT BFS:"<<it_out->first<<endl;
@@ -2239,7 +2238,9 @@ void graph::setDepthsInToOut(){
         if(it_out->second.getDepth()>greater)
             greater=it_out->second.getDepth();
     }
-    cout<<"greater:"<<greater<<endl;
+    write.open("Depths.txt",ios::app);
+    write<<this->name<<","<<greater<<endl;
+    write.close();
 }
 
 void graph::printDepths(){

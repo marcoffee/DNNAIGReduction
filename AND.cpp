@@ -58,7 +58,7 @@ void AND::pushInput(node* param, bool param_polarity){
 int AND::computeDepthInToOut(){
 //    int depth;
     
-    cout<<"visiting AND:"<<this->id<<endl;
+//    cout<<"visiting AND:"<<this->id<<endl;
     if(this->signal==-1)
     {
         int depth1,depth2;

@@ -2223,7 +2223,7 @@ void graph::setDepthsInToOut(){
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
     write.close();
-#if DEBUG >= 1
+#if DEBUG >= 3
     write.open("log.txt",ios::app);
     write<<"OUTPUT BFS:"<<it_out->first<<endl;
 #endif
@@ -2232,6 +2232,14 @@ void graph::setDepthsInToOut(){
         depth=it_out->second.computeDepthInToOut();
         it_out->second.setDepth(depth);
     }
+    
+    int greater=-1;
+    for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
+    {
+        if(it_out->second.getDepth()>greater)
+            greater=it_out->second.getDepth();
+    }
+    cout<<"greater:"<<greater<<endl;
 }
 
 void graph::printDepths(){

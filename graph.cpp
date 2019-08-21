@@ -1477,8 +1477,18 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
 //    this->name+="_after_remove";
    this->name+="_";
    this->name+=to_string(1-threshold);
-    cout<<"Writing output file (AIG):"<<this->name<<endl;
-    this->writeAIG();
+    if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
+        this->name+="_train_old";
+    else if (mnist_obj.getAllBits().size()==10000 && this->name.find("test")==string::npos)
+        this->name+="_test_old";
+    else
+        cout<<"mnist size unknown"<<endl;
+    ofstream csv_final;
+    csv_final.open("todos_scores_old.csv",ios::app);
+    simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<ands_removed<<","<<all_ANDS.size()<<endl;
+    csv_final<<this->name<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<ands_removed<<","<<all_ANDS.size()<<endl;
+//    cout<<"Writing output file (AIG):"<<this->name<<endl;
+//    this->writeAIG();
 //    cout<<"Writing output file (AAG):"<<this->name<<endl;
 //    this->writeAAG();
 }
@@ -2101,14 +2111,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     simpl_info<<"all_ands.size():"<<all_ANDS.size()<<endl;
     
     if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
-        this->name+="_train";
+        this->name+="_train_new";
     else if (mnist_obj.getAllBits().size()==10000 && this->name.find("test")==string::npos)
-        this->name+="_test";
+        this->name+="_test_new";
     else
         cout<<"mnist size unknown"<<endl;
     
     ofstream csv_final;
-    csv_final.open("todos_scores.csv",ios::app);
+    csv_final.open("todos_scores_new.csv",ios::app);
     simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
     csv_final<<this->name<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
 

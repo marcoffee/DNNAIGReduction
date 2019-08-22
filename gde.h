@@ -25,9 +25,10 @@
 #define IGNORE_OUTPUTS 0
 #define PROBS_FROM_FILE 1
 #define RENUMBER 1
+#define LEAVE_DANGLE 1
 
 
-//#define ONLYDANGLE 0
+
 #define posY_max 28
 #define posX_max 224
 

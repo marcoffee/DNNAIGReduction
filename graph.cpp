@@ -1811,8 +1811,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
 #endif
             all_ANDS.find(probs_it->first)->second.setSignal(0);
             all_ANDS.find(probs_it->first)->second.clearOutputs();
+#if LEAVE_DANGLE == 0
             this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
             this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
+#endif
+            
 //            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
 //            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
             zero_count++;
@@ -1825,8 +1828,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
 #endif
             all_ANDS.find(probs_it->first)->second.setSignal(1);
             all_ANDS.find(probs_it->first)->second.clearOutputs();
+#if LEAVE_DANGLE == 0
             this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
             this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
+#endif
 //            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);;
 //            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
             one_count++;

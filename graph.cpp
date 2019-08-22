@@ -1484,7 +1484,7 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
     else
         cout<<"mnist size unknown"<<endl;
     ofstream csv_final;
-    csv_final.open("todos_scores_old.csv",ios::app);
+    csv_final.open("todos_scores.csv",ios::app);
     simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<ands_removed<<","<<all_ANDS.size()<<endl;
     csv_final<<this->name<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<ands_removed<<","<<all_ANDS.size()<<endl;
 //    cout<<"Writing output file (AIG):"<<this->name<<endl;
@@ -2118,7 +2118,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         cout<<"mnist size unknown"<<endl;
     
     ofstream csv_final;
-    csv_final.open("todos_scores_new.csv",ios::app);
+    csv_final.open("todos_scores.csv",ios::app);
     simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
     csv_final<<this->name<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
 

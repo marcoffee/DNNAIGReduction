@@ -22,7 +22,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
     string file_name;
-    file_name="../A1.aig";
+    file_name="../A3_ABC.aig";
 //    file_name="A1_ANDs_removed_1.aig";
 //    file_name="andre.aig";
 //    file_name="andre_ANDs_removed_1.aig";
@@ -44,12 +44,12 @@ int main(int argc, char** argv) {
 
     graph_obj.readAIG(read,file_name);
     
-//    graph_obj.propagateAndDeleteAll(mnist_obj);
-    graph_obj.propagateAndDeletePIBased(mnist_obj);
+    graph_obj.propagateAndDeleteAll(mnist_obj);
+//    graph_obj.propagateAndDeletePIBased(mnist_obj);
 //    graph_obj.setDepthsInToOut();
 //        graph_obj.setANDsProbabilities(mnist_obj);
 
-//    graph_obj.applyMnistRecursive(mnist_obj);
+    graph_obj.applyMnistRecursive(mnist_obj);
 
 
     mnist_obj.clearMnist();
@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
     graph_obj.applyMnistRecursive(mnist_obj);
     
     
-    for(float th=0.01;th<=0.1;th=th+0.01)
+    for(float th=0.0001;th<=0.001;th=th+0.0001)
     {
       
         graph_obj.clearCircuit();
@@ -76,10 +76,10 @@ int main(int argc, char** argv) {
 
 
 //        graph_obj.setANDsProbabilities(mnist_obj);
-//        graph_obj.propagateAndDeleteAll(mnist_obj);
-        graph_obj.propagateAndDeletePIBased(mnist_obj);
+        graph_obj.propagateAndDeleteAll(mnist_obj);
+//        graph_obj.propagateAndDeletePIBased(mnist_obj);
 //        graph_obj.setDepthsInToOut();
-//        graph_obj.applyMnistRecursive(mnist_obj);
+        graph_obj.applyMnistRecursive(mnist_obj);
         
 
         mnist_obj.clearMnist();
@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
         graph_obj.applyMnistRecursive(mnist_obj);
     }
     
-        for(float th=0.1;th<=0.35;th=th+0.05)
+        for(float th=0.001;th<=0.01;th=th+0.0005)
     {
       
         graph_obj.clearCircuit();
@@ -106,10 +106,10 @@ int main(int argc, char** argv) {
 
 
 //        graph_obj.setANDsProbabilities(mnist_obj);
-//        graph_obj.propagateAndDeleteAll(mnist_obj);
-        graph_obj.propagateAndDeletePIBased(mnist_obj);
+        graph_obj.propagateAndDeleteAll(mnist_obj);
+//        graph_obj.propagateAndDeletePIBased(mnist_obj);
 //        graph_obj.setDepthsInToOut();
-//        graph_obj.applyMnistRecursive(mnist_obj);
+        graph_obj.applyMnistRecursive(mnist_obj);
         
 
         mnist_obj.clearMnist();

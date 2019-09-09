@@ -25,7 +25,7 @@
 #define IGNORE_OUTPUTS 0
 #define PROBS_FROM_FILE 1
 #define RENUMBER 1
-#define LEAVE_DANGLE 1
+#define LEAVE_DANGLE 0
 
 
 
@@ -300,7 +300,7 @@ protected:
     map <unsigned int,float> ANDs_probabilities;
     vector<unsigned int> POs_order;
     float threshold;
-    node constant1,constant0;
+//    node constant1,constant0;
     
     ofstream log;
     

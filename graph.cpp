@@ -2313,19 +2313,19 @@ void graph::writeProbsHistogram(){
         getline(in_file,line);
         line.erase(0,line.find(",")+1);
         probs_it->second=stof(line);
-        if(probs_it->second==1)
+        if(probs_it->second==0)
             probs_concentration[0]++;
-        if(probs_it->second<=0.99 && probs_it->second>=0.9)
+        if(probs_it->second<=0.01 && probs_it->second>=0.1)
             probs_concentration[1]++;
-        if(probs_it->second<=0.89 && probs_it->second>=0.8)
+        if(probs_it->second<=0.11 && probs_it->second>=0.2)
             probs_concentration[2]++;
-        if(probs_it->second<=0.79 && probs_it->second>=0.7)
+        if(probs_it->second<=0.21 && probs_it->second>=0.3)
             probs_concentration[3]++;
-        if(probs_it->second<=0.69 && probs_it->second>=0.6)
+        if(probs_it->second<=0.31 && probs_it->second>=0.4)
             probs_concentration[4]++;
-        if(probs_it->second<=0.59 && probs_it->second>=0.5)
+        if(probs_it->second<=0.41 && probs_it->second>=0.5)
             probs_concentration[5]++;
-        if(probs_it->second<=0.49)
+        if(probs_it->second<=0.51)
             probs_concentration[6]++;
     }
     

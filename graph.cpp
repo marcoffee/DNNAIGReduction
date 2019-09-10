@@ -2331,7 +2331,7 @@ void graph::writeProbsHistogram(){
     
         string file_name="Probs_histogram_";
     file_name+=this->name;
-    file_name+=".csv"
+    file_name+=".csv";
     ofstream write(file_name);
     write<<"Prob Range,# Nodes"<<endl;
     write<<"100,"<<probs_concentration[0]<<endl;

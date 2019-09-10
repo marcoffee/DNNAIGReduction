@@ -2285,7 +2285,7 @@ void graph::printDepths(){
 }
 
 
-void graph::writeProbsHistogram(int circuit_num){
+void graph::writeProbsHistogram(){
     ANDs_probabilities.clear();
     map<unsigned int, AND>::iterator it_and;
     map<unsigned int,float>::iterator probs_it;
@@ -2294,27 +2294,14 @@ void graph::writeProbsHistogram(int circuit_num){
     string ands_probs_name,line;
     
     ands_probs_name="../ands_probs_";
-    if(circuit_num==1)
-    {
+    if(this->name.find("A1")!=string::npos)
         ands_probs_name+="A1.txt";
-        this->name="A1";
-    }
-    else if(circuit_num==2)
-    {
+    else if(this->name.find("A2")!=string::npos)
         ands_probs_name+="A2.txt";
-            this->name="A2";
-    }
-
-    else if(circuit_num==3)
-    {
+    else if(this->name.find("A3")!=string::npos)
         ands_probs_name+="A3.txt";
-        this->name="A2";
-    }
-    else if(circuit_num==4)
-    {
+    else if(this->name.find("A4")!=string::npos)
         ands_probs_name+="A4.txt";
-        this->name="A2";
-    }
     else
         cout<<"ERROR, graph name has no A1-4"<<endl;
     ifstream in_file (ands_probs_name);
@@ -2342,9 +2329,9 @@ void graph::writeProbsHistogram(int circuit_num){
             probs_concentration[6]++;
     }
     
-    string file_name="Probs_histogram_";
+        string file_name="Probs_histogram_";
     file_name+=this->name;
-    file_name+=".csv";
+    file_name+=".csv"
     ofstream write(file_name);
     write<<"Prob Range,# Nodes"<<endl;
     write<<"100,"<<probs_concentration[0]<<endl;
@@ -2358,6 +2345,5 @@ void graph::writeProbsHistogram(int circuit_num){
     for(int a=0;a<probs_concentration.size();a++)
         total+=probs_concentration[a];
     write<<"total sum:"<<total<<",all_ands size:"<<this->all_ANDS.size()<<endl;
-    write.close();
 
 }

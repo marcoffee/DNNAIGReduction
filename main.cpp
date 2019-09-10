@@ -20,33 +20,30 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-    graph graph_obj;
-    graph_obj.writeProbsHistogram(1);
-    graph_obj.writeProbsHistogram(2);
-    graph_obj.writeProbsHistogram(4);
+
+    string file_name;
+    file_name="../A3_ABC.aig";
+//    file_name="A1_ANDs_removed_1.aig";
+//    file_name="andre.aig";
+//    file_name="andre_ANDs_removed_1.aig";
+    ifstream read,read_mnist;
+    read.open(file_name.c_str(),ifstream::binary);
     
-//    string file_name;
-//    file_name="../A3_ABC.aig";
-////    file_name="A1_ANDs_removed_1.aig";
-////    file_name="andre.aig";
-////    file_name="andre_ANDs_removed_1.aig";
-//    ifstream read,read_mnist;
-//    read.open(file_name.c_str(),ifstream::binary);
-//    
-//    mnist mnist_obj;
-//    graph graph_obj;
-//    
-//    float th=0;
-//    graph_obj.clearCircuit();
-//    graph_obj.setThrehsold(th);
-//
-//    mnist_obj.clearMnist();
-//    read_mnist.close();
-//    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
-//    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
-//    mnist_obj.setBitsProbabilities(read_mnist);
-//
-//    graph_obj.readAIG(read,file_name);
+    mnist mnist_obj;
+    graph graph_obj;
+    
+    float th=0;
+    graph_obj.clearCircuit();
+    graph_obj.setThrehsold(th);
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+
+    graph_obj.readAIG(read,file_name);
+    graph_obj.writeProbsHistogram();
 //    
 //    graph_obj.propagateAndDeleteAll(mnist_obj);
 ////    graph_obj.propagateAndDeletePIBased(mnist_obj);

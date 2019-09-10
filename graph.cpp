@@ -2226,12 +2226,11 @@ void graph::setDepthsInToOut(){
     map<unsigned int,input>::iterator it_in;
     ofstream write;
     
+    //Initializing depths
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
         it_in->second.setDepth(-1);
-    //initializing all ANDs with -1
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         it_and->second.setDepth(-1);
-    //initializing all Outputs with -1
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setDepth(-1);
     
@@ -2256,6 +2255,12 @@ void graph::setDepthsInToOut(){
     write.open("Depths.txt",ios::app);
     write<<this->name<<","<<greater<<endl;
     write.close();
+    
+//    vector<int> all_depths;
+//    for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
+//        all_depths.push_back(it_in->second.getDepth());
+//    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+//        all_depths.push_back(it_and->second.getDepth());
 }
 
 void graph::printDepths(){
@@ -2277,4 +2282,82 @@ void graph::printDepths(){
     for(it=all_ANDS.begin();it!=all_ANDS.end();it++)
         cout<<it->second.getId()<<":"<<it->second.getDepth()<<"|";//<<endl;
     cout<<endl;
+}
+
+
+void graph::writeProbsHistogram(int circuit_num){
+    ANDs_probabilities.clear();
+    map<unsigned int, AND>::iterator it_and;
+    map<unsigned int,float>::iterator probs_it;
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        this->ANDs_probabilities.insert(pair<unsigned int,float>(it_and->second.getId(),0.0));
+    string ands_probs_name,line;
+    
+    ands_probs_name="../ands_probs_";
+    if(circuit_num==1)
+    {
+        ands_probs_name+="A1.txt";
+        this->name="A1";
+    }
+    else if(circuit_num==2)
+    {
+        ands_probs_name+="A2.txt";
+            this->name="A2";
+    }
+
+    else if(circuit_num==3)
+    {
+        ands_probs_name+="A3.txt";
+        this->name="A2";
+    }
+    else if(circuit_num==4)
+    {
+        ands_probs_name+="A4.txt";
+        this->name="A2";
+    }
+    else
+        cout<<"ERROR, graph name has no A1-4"<<endl;
+    ifstream in_file (ands_probs_name);
+    
+    it_and=all_ANDS.begin();
+    vector<int> probs_concentration (7,0);
+    for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
+    {
+        getline(in_file,line);
+        line.erase(0,line.find(",")+1);
+        probs_it->second=stof(line);
+        if(probs_it->second==1)
+            probs_concentration[0]++;
+        if(probs_it->second<=0.99 && probs_it->second>=0.9)
+            probs_concentration[1]++;
+        if(probs_it->second<=0.89 && probs_it->second>=0.8)
+            probs_concentration[2]++;
+        if(probs_it->second<=0.79 && probs_it->second>=0.7)
+            probs_concentration[3]++;
+        if(probs_it->second<=0.69 && probs_it->second>=0.6)
+            probs_concentration[4]++;
+        if(probs_it->second<=0.59 && probs_it->second>=0.5)
+            probs_concentration[5]++;
+        if(probs_it->second<=0.49)
+            probs_concentration[6]++;
+    }
+    
+    string file_name="Probs_histogram_";
+    file_name+=this->name;
+    file_name+=".csv";
+    ofstream write(file_name);
+    write<<"Prob Range,# Nodes"<<endl;
+    write<<"100,"<<probs_concentration[0]<<endl;
+    write<<"99-90,"<<probs_concentration[1]<<endl;
+    write<<"89-80,"<<probs_concentration[2]<<endl;
+    write<<"79-70,"<<probs_concentration[3]<<endl;
+    write<<"69-60,"<<probs_concentration[4]<<endl;
+    write<<"59-50,"<<probs_concentration[5]<<endl;
+    write<<"<49,"<<probs_concentration[6]<<endl<<endl;
+    int total=0;
+    for(int a=0;a<probs_concentration.size();a++)
+        total+=probs_concentration[a];
+    write<<"total sum:"<<total<<",all_ands size:"<<this->all_ANDS.size()<<endl;
+    write.close();
+
 }

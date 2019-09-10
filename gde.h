@@ -341,6 +341,7 @@ public:
     void setDepthsOutToIn();
     void writeAAG();
     void writeAIG();
+    void writeProbsHistogram(int circuit_num);
     void applyMnistRecursive(mnist&);
     void propagateAndDeletePIBased(mnist&);
     void cutAIG();

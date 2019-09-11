@@ -664,6 +664,12 @@ void graph::readAIG(ifstream& file, string param_name){
         output output_obj(lhs);
         if(lhs>1)
             output_obj.pushInput(findAny(lhs),polarity0);
+//        else if(lhs==0)
+//            output_obj.setSignal(0);
+//        else if(lhs==1)
+//            output_obj.setSignal(1);
+//        else
+//            cout<<"ERROR, this if statement should not be reached, (readAIG)"<<endl;
         this->pushPO(lhs,output_obj);
 #if DEBUG >= 2
         cout<<"pushing output "<<lhs<<" Polarity:"<<polarity0<<endl;
@@ -2352,7 +2358,7 @@ void graph::writeProbsHistogram(){
             probs_concentration[8]++;
         if(probs_it->second>0.8 && probs_it->second<=0.9)
             probs_concentration[9]++;
-        if(probs_it->second>0.9 && probs_it->second<0)
+        if(probs_it->second>0.9 && probs_it->second<1)
             probs_concentration[10]++;
         if(probs_it->second==1)
             probs_concentration[11]++;

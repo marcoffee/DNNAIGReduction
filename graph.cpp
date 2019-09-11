@@ -1801,6 +1801,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
 #endif
             
     int one_count=0,zero_count=0;
+    struct rusage buf; 
+    int start,stop;
+    if(getrusage(RUSAGE_SELF,&buf)==-1)
+        cout<<"GETRUSAGE FAILURE!"<<endl;
+    start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    
   //ANDs with probability of being 0 or 1 higher than threshold are set to constant    
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
@@ -1844,6 +1850,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
             one_count++;
         }
     }
+    
+    if(getrusage(RUSAGE_SELF,&buf)==-1)
+        cout<<"GETRUSAGE FAILURE!"<<endl;
+    stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    cout<<"Time to recursive remove outputs:"<<stop-start<<endl;
     
 //    for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
 //       it_in->second.printNode();

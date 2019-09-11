@@ -2326,7 +2326,7 @@ void graph::writeProbsHistogram(){
     ifstream in_file (ands_probs_name);
     
     it_and=all_ANDS.begin();
-    vector<int> probs_concentration (7,0);
+    vector<int> probs_concentration (12,0);
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
         getline(in_file,line);
@@ -2344,25 +2344,30 @@ void graph::writeProbsHistogram(){
             probs_concentration[4]++;
         if(probs_it->second>0.4 && probs_it->second<=0.5)
             probs_concentration[5]++;
-        if(probs_it->second>0.5)
+        if(probs_it->second>0.5 && probs_it->second<=0.6)
             probs_concentration[6]++;
+        if(probs_it->second>0.6 && probs_it->second<=0.7)
+            probs_concentration[7]++;
+        if(probs_it->second>0.7 && probs_it->second<=0.8)
+            probs_concentration[8]++;
+        if(probs_it->second>0.8 && probs_it->second<=0.9)
+            probs_concentration[9]++;
+        if(probs_it->second>0.9 && probs_it->second<0)
+            probs_concentration[10]++;
+        if(probs_it->second==1)
+            probs_concentration[11]++;
+        
     }
     
-        string file_name="Probs_histogram_";
+    string file_name="Prob(1)_histogram_";
     file_name+=this->name;
     file_name+=".csv";
     ofstream write(file_name);
     write<<"Prob Range,# Nodes"<<endl;
-    write<<"100,"<<probs_concentration[0]<<endl;
-    write<<"99-90,"<<probs_concentration[1]<<endl;
-    write<<"89-80,"<<probs_concentration[2]<<endl;
-    write<<"79-70,"<<probs_concentration[3]<<endl;
-    write<<"69-60,"<<probs_concentration[4]<<endl;
-    write<<"59-50,"<<probs_concentration[5]<<endl;
-    write<<"<49,"<<probs_concentration[6]<<endl<<endl;
+    write<<"0,"<<probs_concentration[0]<<endl<<"]0-10],"<<probs_concentration[1]<<endl<<"]10-20],"<<probs_concentration[2]<<endl<<"]20-30],"<<probs_concentration[3]<<endl<<"]30-40],"<<probs_concentration[4]<<endl<<"]40-50],"<<probs_concentration[5]<<endl<<"]50-60],"<<probs_concentration[6]<<"]60-70],"<<probs_concentration[7]<<"]70-80],"<<probs_concentration[8]<<"]80-90],"<<probs_concentration[9]<<"]90-100[,"<<probs_concentration[10]<<"100,"<<probs_concentration[11]<<endl;
     int total=0;
     for(int a=0;a<probs_concentration.size();a++)
         total+=probs_concentration[a];
     write<<"total sum:"<<total<<",all_ands size:"<<this->all_ANDS.size()<<endl;
-
+    write.close();
 }

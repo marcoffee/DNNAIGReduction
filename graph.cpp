@@ -2082,7 +2082,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         dump2<<it_and->second.getId()<<":"<<it_and->second.getSignal()<<"|";
 #endif 
     
-#if ONLYDANGLE == 0
+#if LEAVE_DANGLE == 0
     //making sure outputs wont be deleted, by adding themselfs to their fanout list
     for(it_out=this->all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {

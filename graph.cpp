@@ -2245,6 +2245,7 @@ void graph::recursiveRemoveOutput(unsigned int id_to_remove, node* remove_from){
 }
 
 void graph::setDepthsInToOut(){
+    cout<<"Setting AIG depths."<<endl;
     int retval,depth=0;
     map<unsigned int,output>::iterator it_out;
     map<unsigned int,AND>::iterator it_and;
@@ -2367,7 +2368,7 @@ void graph::writeProbsHistogram(){
     file_name+=".csv";
     ofstream write(file_name);
     write<<"Prob Range,# Nodes"<<endl;
-    write<<"0,"<<probs_concentration[0]<<endl<<"]0-10],"<<probs_concentration[1]<<endl<<"]10-20],"<<probs_concentration[2]<<endl<<"]20-30],"<<probs_concentration[3]<<endl<<"]30-40],"<<probs_concentration[4]<<endl<<"]40-50],"<<probs_concentration[5]<<endl<<"]50-60],"<<probs_concentration[6]<<"]60-70],"<<probs_concentration[7]<<"]70-80],"<<probs_concentration[8]<<"]80-90],"<<probs_concentration[9]<<"]90-100[,"<<probs_concentration[10]<<"100,"<<probs_concentration[11]<<endl;
+    write<<"0,"<<probs_concentration[0]<<endl<<"]0-10],"<<probs_concentration[1]<<endl<<"]10-20],"<<probs_concentration[2]<<endl<<"]20-30],"<<probs_concentration[3]<<endl<<"]30-40],"<<probs_concentration[4]<<endl<<"]40-50],"<<probs_concentration[5]<<endl<<"]50-60],"<<probs_concentration[6]<<endl<<"]60-70],"<<probs_concentration[7]<<endl<<"]70-80],"<<probs_concentration[8]<<endl<<"]80-90],"<<probs_concentration[9]<<endl<<"]90-100[,"<<probs_concentration[10]<<endl<<"100,"<<probs_concentration[11]<<endl;
     int total=0;
     for(int a=0;a<probs_concentration.size();a++)
         total+=probs_concentration[a];

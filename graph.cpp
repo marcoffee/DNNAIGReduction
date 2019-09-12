@@ -2265,8 +2265,6 @@ void graph::setDepthsInToOut(){
     write.open("log.txt",ios::app);
     write<<"OUTPUT BFS:"<<it_out->first<<endl;
 #endif
-        //findAny(it_out->second.getId())->writeNode();
-//        depth=findAny(it_out->second.getId())->computeDepthInToOut();
         depth=it_out->second.computeDepthInToOut();
         it_out->second.setDepth(depth);
     }
@@ -2277,15 +2275,13 @@ void graph::setDepthsInToOut(){
         if(it_out->second.getDepth()>greater)
             greater=it_out->second.getDepth();
     }
+    this->graph_depth=greater;
+    
+#if DEBUG >= 2
     write.open("Depths.txt",ios::app);
     write<<this->name<<","<<greater<<endl;
     write.close();
-    
-//    vector<int> all_depths;
-//    for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
-//        all_depths.push_back(it_in->second.getDepth());
-//    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
-//        all_depths.push_back(it_and->second.getDepth());
+#endif
 }
 
 void graph::printDepths(){
@@ -2313,6 +2309,7 @@ void graph::printDepths(){
 void graph::writeProbsHistogram(){
     ANDs_probabilities.clear();
     map<unsigned int, AND>::iterator it_and;
+    map<unsigned int, output>::iterator it_out;
     map<unsigned int,float>::iterator probs_it;
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         this->ANDs_probabilities.insert(pair<unsigned int,float>(it_and->second.getId(),0.0));
@@ -2376,4 +2373,17 @@ void graph::writeProbsHistogram(){
         total+=probs_concentration[a];
     write<<"total sum:"<<total<<",all_ands size:"<<this->all_ANDS.size()<<endl;
     write.close();
+    
+    this->setDepthsInToOut();
+    vector<int> depth_counter (this->graph_depth,0);
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        depth_counter[it_and->second.getDepth()]++;
+    
+    file_name="Depth_histogram_";
+    file_name+=this->name;
+    file_name+=".csv";
+    ofstream write2(file_name);
+    for(int a=0;a<depth_counter.size();a++)
+        write2<<a<<","<<depth_counter[a]<<endl;
+    write2.close();
 }

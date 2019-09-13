@@ -1723,23 +1723,24 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     map<unsigned int,float>::iterator probs_it;
     vector<int> visits;
     visits.push_back(2);
-    //Initializing all inputs to 2. 2 means the variable is not a constant
+    
+    this->setDepthsInToOut();
+    for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
+        this->all_depths.push_back(0);
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        this->all_depths.push_back(it_and->second.getDepth());
+    
+    //Initializing nodes
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
         visits.push_back(2);
         it_in->second.setSignal(2);
     }
-    
-    //Initializing all ANDs to -1
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
     {
         visits.push_back(-1);
         it_and->second.setSignal(-1);
     }
-//    for(int a=0;a<visits.size();a++)
-//        cout<<visits[a]<<",";
-//    cout<<endl;
-    //initializing all Outputs to -1
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setSignal(-1); 
     
@@ -1796,14 +1797,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     {
         getline(in_file,line);
         line.erase(0,line.find(",")+1);
-//        cout<<line<<endl;
-//        cout<<stoi(line)<<",";;
         probs_it->second=stof(line);
     }
-    
-//    for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
-//        dump_probs<<probs_it->first<<":"<<probs_it->second<<endl;
-        //        cout<<probs_it->second<<",";
 #endif
             
     int one_count=0,zero_count=0;
@@ -1861,9 +1856,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         cout<<"GETRUSAGE FAILURE!"<<endl;
     stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     cout<<"Time to recursive remove outputs:"<<stop-start<<endl;
-    
-//    for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
-//       it_in->second.printNode();
   cout<<"# of ANDs to be constant 1:"<<one_count<<endl;
   cout<<"# of ANDs to be constant 0:"<<zero_count<<endl;
   simpl_info<<"# of ANDs to be constant 1:"<<one_count<<endl;
@@ -1891,17 +1883,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         //2 means not a constant
         while(!stackzin.empty())
         {            
-            current=stackzin.top();//back();
-//            if(current->getInputs()[0]->getSignal()==-1)
-//            if(current->getInputs()[0]->getId()/2 >= all_inputs.size() && visits[(current->getInputs()[0]->getId()/2)-all_inputs.size()]==-1){
+            current=stackzin.top();
             if(visits[current->getInputs()[0]->getId()/2]==-1)
                 stackzin.push(current->getInputs()[0]);
-//            else if(current->getInputs()[1]->getSignal()==-1)
-//            else if(current->getInputs()[1]->getId()/2 >= all_inputs.size() && visits[(current->getInputs()[1]->getId()/2)-all_inputs.size()]==-1){
             else if(visits[current->getInputs()[1]->getId()/2]==-1)
-                stackzin.push(current->getInputs()[1]);
-            
-//            else if(current->getInputs()[0]->getSignal()>-1 && current->getInputs()[1]->getSignal()>-1)
+                stackzin.push(current->getInputs()[1]);            
             else if(visits[current->getInputs()[1]->getId()/2]>-1 && visits[current->getInputs()[0]->getId()/2]>-1)
             {
                 if(current->getSignal()==-1)
@@ -2098,6 +2084,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     
     //Removing ANDs with 0 fanouts
     int ands_removed=0,PIs_removed=0,id=0;
+    vector<int> removed_nodes_counter_by_depth(this->graph_depth,0);
     ofstream write2("removed_ANDs.txt");  
     it_and=all_ANDS.begin();
     while(it_and!=all_ANDS.end())
@@ -2107,8 +2094,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
 #if DEBUG >= 2
             write2<<it_and->first<<",";
 #endif
-//            cout<<"Erasing AND:"<<it_and->first<<endl;
             it_and=all_ANDS.erase(it_and);
+            removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()]]++;
             ands_removed++;
         }
         else
@@ -2129,6 +2116,15 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
         else
             it_in++;
     }
+    
+    string file_name;
+    file_name="Removed_nodes_depths_";
+    file_name+=this->name;
+    file_name+=".csv";
+    ofstream write5(file_name);
+    for(int a=0;a<removed_nodes_counter_by_depth.size();a++)
+        write5<<a<<","<<removed_nodes_counter_by_depth[a]<<endl;
+    write5.close();
 //    for(int a=0;a<visits.size();a++)
 //        cout<<visits[a]<<",";
 //    cout<<endl;

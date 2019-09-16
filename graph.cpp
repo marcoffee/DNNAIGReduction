@@ -2090,8 +2090,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     int ands_removed=0,PIs_removed=0,id=0;
     cout<<"graph depth:"<<this->graph_depth<<endl;
     vector<int> removed_nodes_counter_by_depth(this->graph_depth,0);
-    dump1<<"graph depth:"<<this->graph_depth<<endl;
-    dump1<<"removed_nodes_counter_by_depth size:"<<removed_nodes_counter_by_depth.size()<<endl;
+//    dump1<<"graph depth:"<<this->graph_depth<<endl;
+//    dump1<<"removed_nodes_counter_by_depth size:"<<removed_nodes_counter_by_depth.size()<<endl;
     ofstream write2("removed_ANDs.txt");  
     it_and=all_ANDS.begin();
     while(it_and!=all_ANDS.end())
@@ -2101,9 +2101,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
 #if DEBUG >= 2
             write2<<it_and->first<<",";
 #endif
-            dump1<<"AND:"<<it_and->second.getId()<<", depth:"<<this->all_depths[it_and->second.getId()/2]<<", depth counter:"<<removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]<<endl;
-            it_and=all_ANDS.erase(it_and);
+//            dump1<<"AND:"<<it_and->second.getId()<<", depth:"<<this->all_depths[it_and->second.getId()/2]<<", depth counter:"<<removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]<<endl;
             removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]++;
+            it_and=all_ANDS.erase(it_and);
             ands_removed++;
         }
         else
@@ -2131,10 +2131,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     string file_name;
     file_name="Removed_nodes_depths_";
     file_name+=this->name;
+    file_name+="_";
     file_name+=this->threshold;
     file_name+=".csv";
     ofstream write5(file_name);
-    write5<<sum<<","<<PIs_removed<<endl;
+    write5<<sum<<","<<ands_removed<<endl;
     for(int a=0;a<removed_nodes_counter_by_depth.size();a++)
         write5<<a<<","<<removed_nodes_counter_by_depth[a]<<endl;
     write5.close();
@@ -2221,8 +2222,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
    
     this->name+="_ANDs_removed_";
    this->name+=to_string(1-threshold);
-    cout<<"Writing output file (AIG):"<<this->name<<endl;
-    this->writeAIG();
+//    cout<<"Writing output file (AIG):"<<this->name<<endl;
+//    this->writeAIG();
 //    cout<<"Writing output file (AAG):"<<this->name<<endl;
 //    this->writeAAG();
 }

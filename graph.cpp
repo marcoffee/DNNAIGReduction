@@ -2132,7 +2132,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     file_name="Removed_nodes_depths_";
     file_name+=this->name;
     file_name+="_";
-    file_name+=this->threshold;
+    file_name+=to_string(1-this->threshold);
     file_name+=".csv";
     ofstream write5(file_name);
     write5<<sum<<","<<ands_removed<<endl;

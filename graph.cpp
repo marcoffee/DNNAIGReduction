@@ -1728,7 +1728,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
         this->all_depths.push_back(0);
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+    {
+        dump2<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<"|";
         this->all_depths.push_back(it_and->second.getDepth());
+    }
+    dump2<<endl;
     
     //Initializing nodes
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
@@ -2084,7 +2088,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     
     //Removing ANDs with 0 fanouts
     int ands_removed=0,PIs_removed=0,id=0;
+    cout<<"graph depth:"<<this->graph_depth<<endl;
     vector<int> removed_nodes_counter_by_depth(this->graph_depth,0);
+    dump1<<"graph depth:"<<this->graph_depth<<endl;
+    dump1<<"removed_nodes_counter_by_depth size:"<<removed_nodes_counter_by_depth.size()<<endl;
     ofstream write2("removed_ANDs.txt");  
     it_and=all_ANDS.begin();
     while(it_and!=all_ANDS.end())
@@ -2094,8 +2101,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
 #if DEBUG >= 2
             write2<<it_and->first<<",";
 #endif
+            dump1<<"AND:"<<it_and->second.getId()<<", depth:"<<this->all_depths[it_and->second.getId()/2]<<", depth counter:"<<removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]<<endl;
             it_and=all_ANDS.erase(it_and);
-            removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()]]++;
+            removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]++;
             ands_removed++;
         }
         else

@@ -2288,7 +2288,7 @@ void graph::setDepthsInToOut(){
     }
     this->graph_depth=greater;
     
-#if DEBUG >= 2
+#if DEBUG >= 0
     write.open("Depths.txt",ios::app);
     write<<this->name<<","<<greater<<endl;
     write.close();

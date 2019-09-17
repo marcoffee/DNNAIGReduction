@@ -2131,13 +2131,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     string file_name;
     file_name="Removed_nodes_depths_";
     file_name+=this->name;
-    file_name+="_";
-    file_name+=to_string(1-this->threshold);
     file_name+=".csv";
-    ofstream write5(file_name);
-    write5<<sum<<","<<ands_removed<<endl;
+    ofstream write5(file_name,ios::app);
+    dump1<<file_name<<":"<<sum<<","<<ands_removed<<endl;
+    write5<<to_string(1-threshold);
     for(int a=0;a<removed_nodes_counter_by_depth.size();a++)
-        write5<<a<<","<<removed_nodes_counter_by_depth[a]<<endl;
+        write5<<","<<removed_nodes_counter_by_depth[a];
+    write5<<endl;
     write5.close();
 //    for(int a=0;a<visits.size();a++)
 //        cout<<visits[a]<<",";

@@ -1729,10 +1729,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         this->all_depths.push_back(0);
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
     {
-        dump2<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<"|";
+//        dump2<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<"|";
         this->all_depths.push_back(it_and->second.getDepth());
     }
-    dump2<<endl;
+//    dump2<<endl;
     
     //Initializing nodes
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)

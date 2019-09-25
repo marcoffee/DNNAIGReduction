@@ -1819,9 +1819,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         {
             
             if(option==1)
-               new_th=((1-min_th)*all_ANDS.find(probs_it->first)->second.getDepth()/this->graph_depth)+min_th;
+               new_th=((1-min_th)*all_depths[probs_it->first/2]/this->graph_depth)+min_th;
         }
-        dump1<<all_ANDS.find(probs_it->first)->second.getId()<<":"<<all_ANDS.find(probs_it->first)->second.getDepth()<<", new_th:"<<new_th<<endl;
+        dump1<<probs_it->first<<":"<<all_depths[probs_it->first/2]<<", new_th:"<<new_th<<endl;
 //        if(probs_it->second<= threshold)
 //        {
 //#if DEBUG >=2

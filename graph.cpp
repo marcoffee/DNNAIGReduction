@@ -1804,24 +1804,30 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         probs_it->second=stof(line);
     }
 #endif
-            
+    vector<float> new_ths(graph_depth,0);
+    double new_th=0;
+    if(option>0)
+    {
+        if(option==1)
+        {
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=(((1-min_th)*k)/graph_depth)+min_th;
+        }
+    }
+//    dump1<<probs_it->first<<":"<<all_depths[probs_it->first/2]<<", new_th:"<<new_th<<endl;
+    for(int k=0;k<new_ths.size();k++)
+        dump1<<k<<":"<<new_ths[k]<<endl;
     int one_count=0,zero_count=0;
     struct rusage buf; 
     int start,stop;
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-    double new_th=0;
+    
   //ANDs with probability of being 0 or 1 higher than threshold are set to constant    
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
-        if(option>0)
-        {
-            
-            if(option==1)
-               new_th=((1-min_th)*all_depths[probs_it->first/2]/this->graph_depth)+min_th;
-        }
-        dump1<<probs_it->first<<":"<<all_depths[probs_it->first/2]<<", new_th:"<<new_th<<endl;
+        
 //        if(probs_it->second<= threshold)
 //        {
 //#if DEBUG >=2

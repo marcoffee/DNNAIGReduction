@@ -1709,7 +1709,7 @@ void graph::setANDsProbabilities(mnist& mnist_obj){
     
 }
 
-void graph::propagateAndDeleteAll(mnist& mnist_obj) {
+void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     int PI_constant=0,posX=0,posY=0;
     map<unsigned int, input>::iterator it_in;
     map<unsigned int, output>::iterator it_out;
@@ -1811,51 +1811,58 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj) {
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-    
+    double new_th=0;
   //ANDs with probability of being 0 or 1 higher than threshold are set to constant    
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
-        if(probs_it->second<= threshold)
+        if(option>0)
         {
-#if DEBUG >=2
-            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
-#endif
-            all_ANDS.find(probs_it->first)->second.setSignal(0);
-            all_ANDS.find(probs_it->first)->second.clearOutputs();
-#if LEAVE_DANGLE == 0
-            if(all_outputs.find(probs_it->first)==all_outputs.end())
-            {
-                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
-                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
-            }
-#endif
             
-//            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
-//            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
-            zero_count++;
+            if(option==1)
+               new_th=((1-min_th)*all_ANDS.find(probs_it->first)->second.getDepth()/this->graph_depth)+min_th;
         }
-        
-        
-        if(probs_it->second>= 1-threshold)
-        {
-#if DEBUG >=2
-            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
-#endif
-            all_ANDS.find(probs_it->first)->second.setSignal(1);
-            all_ANDS.find(probs_it->first)->second.clearOutputs();
-#if LEAVE_DANGLE == 0
-            if(all_outputs.find(probs_it->first)==all_outputs.end())
-            {
-                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
-                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
-            }
-#endif
-//            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);;
-//            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
-            one_count++;
-        }
+        dump1<<all_ANDS.find(probs_it->first)->second.getId()<<":"<<all_ANDS.find(probs_it->first)->second.getDepth()<<", new_th:"<<new_th<<endl;
+//        if(probs_it->second<= threshold)
+//        {
+//#if DEBUG >=2
+//            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
+//#endif
+//            all_ANDS.find(probs_it->first)->second.setSignal(0);
+//            all_ANDS.find(probs_it->first)->second.clearOutputs();
+//#if LEAVE_DANGLE == 0
+//            if(all_outputs.find(probs_it->first)==all_outputs.end())
+//            {
+//                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
+//                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
+//            }
+//#endif
+//            
+////            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
+////            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
+//            zero_count++;
+//        }
+//        
+//        
+//        if(probs_it->second>= 1-threshold)
+//        {
+//#if DEBUG >=2
+//            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
+//#endif
+//            all_ANDS.find(probs_it->first)->second.setSignal(1);
+//            all_ANDS.find(probs_it->first)->second.clearOutputs();
+//#if LEAVE_DANGLE == 0
+//            if(all_outputs.find(probs_it->first)==all_outputs.end())
+//            {
+//                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
+//                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
+//            }
+//#endif
+////            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);;
+////            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
+//            one_count++;
+//        }
     }
-    
+    return ;
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
     stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;

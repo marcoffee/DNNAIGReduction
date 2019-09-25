@@ -347,7 +347,7 @@ public:
     void propagateAndDeletePIBased(mnist&);
     void cutAIG();
     void setANDsProbabilities(mnist&);
-    void propagateAndDeleteAll(mnist&);
+    void propagateAndDeleteAll(mnist&,int option,float min_th);
     
     
     void assignBits(mnist&);

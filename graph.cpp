@@ -1833,9 +1833,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
-        if(probs_it->second<= threshold)
+        if(probs_it->second<= new_ths[and_ptr->getDepth()])
+//        if(probs_it->second<= threshold)
         {
-#if DEBUG >=2
+#if DEBUG >=0
             dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif
 //            all_ANDS.find(probs_it->first)->second.setSignal(0);
@@ -1856,12 +1857,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
             }
 #endif
            zero_count++;
-        }
-        
-        
-        if(probs_it->second>= 1-threshold)
+        }        
+        if(probs_it->second<= 1- new_ths[and_ptr->getDepth()])
+//        if(probs_it->second>= 1-threshold)
         {
-#if DEBUG >=2
+#if DEBUG >=0
             dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif
 //            all_ANDS.find(probs_it->first)->second.setSignal(1);

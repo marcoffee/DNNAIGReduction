@@ -1833,10 +1833,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
-        if(probs_it->second<= new_ths[and_ptr->getDepth()])
+        if(probs_it->second<= 1- new_ths[and_ptr->getDepth()])
 //        if(probs_it->second<= threshold)
         {
-#if DEBUG >=0
+#if DEBUG >=2
             dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif
 //            all_ANDS.find(probs_it->first)->second.setSignal(0);
@@ -1858,10 +1858,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
 #endif
            zero_count++;
         }        
-        if(probs_it->second<= 1- new_ths[and_ptr->getDepth()])
+        if(probs_it->second<= new_ths[and_ptr->getDepth()])
 //        if(probs_it->second>= 1-threshold)
         {
-#if DEBUG >=0
+#if DEBUG >=2
             dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif
 //            all_ANDS.find(probs_it->first)->second.setSignal(1);
@@ -2170,10 +2170,23 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     else
         cout<<"mnist size unknown"<<endl;
     
+    string th_value=0;
+    if(option==0)
+    {
+        this->name+="1_";
+        th_value=to_string(1-threshold);
+    }
+    else if(option>0)
+    {
+        this->name+="_variable_th";
+        th_value=to_string(min_th);
+    }
+
+    
     ofstream csv_final;
     csv_final.open("todos_scores.csv",ios::app);
-    simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
-    csv_final<<this->name<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
+    simpl_info<<endl<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
+    csv_final<<this->name<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
 
 #if DEBUG >= debug_value
     dump3<<"ANDs removed:"<<ands_removed<<endl;

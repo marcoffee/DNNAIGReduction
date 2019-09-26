@@ -1808,8 +1808,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         probs_it->second=stof(line);
     }
 #endif
-    vector<double> new_ths(graph_depth,0);
-    double new_th=0;
+    vector<float> new_ths(graph_depth,0);
     if(option>0)
     {
         if(option==1)

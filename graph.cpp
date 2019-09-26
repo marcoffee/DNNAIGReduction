@@ -1819,8 +1819,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         }
     }
 //    dump1<<probs_it->first<<":"<<all_depths[probs_it->first/2]<<", new_th:"<<new_th<<endl;
-//    for(int k=0;k<new_ths.size();k++)
-//        dump1<<k<<":"<<new_ths[k]<<endl;
+    for(int k=0;k<new_ths.size();k++);
+        dump1<<k<<":"<<new_ths[k]<<endl;
     int one_count=0,zero_count=0;
     struct rusage buf; 
     int start,stop;
@@ -1836,7 +1836,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(probs_it->second<= 1- new_ths[this->all_depths[probs_it->first/2]])
 //        if(probs_it->second<= threshold)
         {
-#if DEBUG >=2
+#if DEBUG >=0
             dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif
 //            all_ANDS.find(probs_it->first)->second.setSignal(0);
@@ -1861,7 +1861,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(probs_it->second<= new_ths[this->all_depths[probs_it->first/2]])
 //        if(probs_it->second>= 1-threshold)
         {
-#if DEBUG >=2
+#if DEBUG >=0
             dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif
 //            all_ANDS.find(probs_it->first)->second.setSignal(1);

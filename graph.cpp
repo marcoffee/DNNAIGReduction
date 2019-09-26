@@ -1819,8 +1819,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         }
     }
 //    dump1<<probs_it->first<<":"<<all_depths[probs_it->first/2]<<", new_th:"<<new_th<<endl;
-    for(int k=0;k<new_ths.size();k++)
-        dump1<<k<<":"<<new_ths[k]<<endl;
+//    for(int k=0;k<new_ths.size();k++)
+//        dump1<<k<<":"<<new_ths[k]<<endl;
     int one_count=0,zero_count=0;
     struct rusage buf; 
     int start,stop;
@@ -1893,6 +1893,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
   cout<<"# of ANDs to be constant 0:"<<zero_count<<endl;
   simpl_info<<"# of ANDs to be constant 1:"<<one_count<<endl;
   simpl_info<<"# of ANDs to be constant 0:"<<zero_count<<endl;
+  for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+      dump1<<it_and->second.getId()<<":"<<it_and->second.getSignal()<<endl;
   
     stack<node*>stackzin;
     vector<node*> AUX;
@@ -2083,29 +2085,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
             simpl_info<<"WARNING: output "<<it_out->second.getId()<<" has signal after constant propagation:"<<it_out->second.getSignal()<<endl;
         }
     }
-    cout<<"Signal propagation done."<<endl;
-    
-    
-    
-    
-#if DEBUG >=1
-    dump2<<"Inputs signals:";
-    for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
-        dump2<<it_in->second.getId()<<":"<<it_in->second.getSignal()<<"|";
-    
-    dump2<<endl<<endl<<"Outputs Signals:";
-    for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
-    {
-        dump2<<it_out->second.getId()<<":"<<(it_out->second.getSignal());
-        if(it_out->second.getInputPolarity())
-            dump2<<"!";
-        dump2<<"|";
-    }
-    
-    dump2<<endl<<endl<<"ANDs Signals:";
-    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
-        dump2<<it_and->second.getId()<<":"<<it_and->second.getSignal()<<"|";
-#endif 
+    cout<<"Signal propagation done."<<endl; 
     
 #if LEAVE_DANGLE == 0
     //making sure outputs wont be deleted, by adding themselfs to their fanout list
@@ -2114,7 +2094,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(it_out->second.getId()>1)
             it_out->second.getInput()->pushOutput(it_out->second.getInput());
     }
-    
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+    {
+        if(it_and->second.getSignal()==-1)
+            it_and->second.clearOutputs();
+    }
     //Removing ANDs with 0 fanouts
     int ands_removed=0,PIs_removed=0,id=0;
     cout<<"graph depth:"<<this->graph_depth<<endl;
@@ -2317,7 +2301,7 @@ void graph::setDepthsInToOut(){
     }
     this->graph_depth=greater;
     
-#if DEBUG >= 0
+#if DEBUG >= 2
     write.open("Depths.txt",ios::app);
     write<<this->name<<","<<greater<<endl;
     write.close();

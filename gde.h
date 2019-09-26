@@ -104,6 +104,7 @@ public:
     virtual int computeDepthInToOut(){}
     virtual unsigned int enumerateDFS(unsigned int index){} //TODO: this is not used anymore
     virtual unsigned long long int runDFS(){}
+    //swap_index is the index from the input that will be replaced.
     virtual void replaceInput(int swap_index,node* new_node,bool polarity){}
 //    virtual void removeOutput(node*){}
     virtual void removeOutput(unsigned int){}
@@ -301,7 +302,7 @@ protected:
     vector<unsigned int> POs_order,all_depths;
     float threshold;
     int graph_depth;
-//    node constant1,constant0;
+    node constant1,constant0;
     
     ofstream log;
     

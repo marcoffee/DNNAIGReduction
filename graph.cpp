@@ -16,12 +16,12 @@
 #include "gde.h"
 
 graph::graph(){
-//    this->constant1.setId(1);
-//    this->constant1.setSignal(1);
-//    this->constant1.setBitVector(UINT_MAX);
-//    this->constant0.setId(0);
-//    this->constant0.setSignal(0);
-//    this->constant0.setBitVector(0);
+    this->constant1.setId(1);
+    this->constant1.setSignal(1);
+    this->constant1.setBitVector(UINT_MAX);
+    this->constant0.setId(0);
+    this->constant0.setSignal(0);
+    this->constant0.setBitVector(0);
 }
     
 //graph::graph(float th){
@@ -1723,6 +1723,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     map<unsigned int,float>::iterator probs_it;
     vector<int> visits;
     visits.push_back(2);
+    constant1.setSignal(1);
+    constant1.setId(1);
+    constant0.setSignal(0);
+    constant0.setId(0);
     
     this->setDepthsInToOut();
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
@@ -1804,7 +1808,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         probs_it->second=stof(line);
     }
 #endif
-    vector<float> new_ths(graph_depth,0);
+    vector<double> new_ths(graph_depth,0);
     double new_th=0;
     if(option>0)
     {
@@ -1820,6 +1824,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     int one_count=0,zero_count=0;
     struct rusage buf; 
     int start,stop;
+    AND* and_ptr; 
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -1827,48 +1832,59 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
   //ANDs with probability of being 0 or 1 higher than threshold are set to constant    
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
-        
-//        if(probs_it->second<= threshold)
-//        {
-//#if DEBUG >=2
-//            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
-//#endif
+        and_ptr=&all_ANDS.find(probs_it->first)->second;
+        if(probs_it->second<= threshold)
+        {
+#if DEBUG >=2
+            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
+#endif
 //            all_ANDS.find(probs_it->first)->second.setSignal(0);
 //            all_ANDS.find(probs_it->first)->second.clearOutputs();
-//#if LEAVE_DANGLE == 0
-//            if(all_outputs.find(probs_it->first)==all_outputs.end())
-//            {
+#if LEAVE_DANGLE == 0
+            if(all_outputs.find(probs_it->first)==all_outputs.end())
+            {
+                for(int j=0;j<and_ptr->getOutputs().size();j++)
+                {
+                    and_ptr->getOutputs()[j];
+                    if(and_ptr->getOutputs()[j]->getInputs()[0]->getId()==and_ptr->getId())
+                       and_ptr->getOutputs()[j]->replaceInput(0,&constant0,and_ptr->getOutputs()[j]->getInputPolarities()[0]); 
+                    else if (and_ptr->getOutputs()[j]->getInputs()[1]->getId()==and_ptr->getId())
+                        and_ptr->getOutputs()[j]->replaceInput(1,&constant0,and_ptr->getOutputs()[j]->getInputPolarities()[1]); 
+                }
 //                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
 //                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
-//            }
-//#endif
-//            
-////            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
-////            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
-//            zero_count++;
-//        }
-//        
-//        
-//        if(probs_it->second>= 1-threshold)
-//        {
-//#if DEBUG >=2
-//            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
-//#endif
+            }
+#endif
+           zero_count++;
+        }
+        
+        
+        if(probs_it->second>= 1-threshold)
+        {
+#if DEBUG >=2
+            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
+#endif
 //            all_ANDS.find(probs_it->first)->second.setSignal(1);
 //            all_ANDS.find(probs_it->first)->second.clearOutputs();
-//#if LEAVE_DANGLE == 0
-//            if(all_outputs.find(probs_it->first)==all_outputs.end())
-//            {
+#if LEAVE_DANGLE == 0
+            if(all_outputs.find(probs_it->first)==all_outputs.end())
+            {
+                for(int j=0;j<and_ptr->getOutputs().size();j++)
+                {
+                    and_ptr->getOutputs()[j];
+                    if(and_ptr->getOutputs()[j]->getInputs()[0]->getId()==and_ptr->getId())
+                       and_ptr->getOutputs()[j]->replaceInput(0,&constant1,and_ptr->getOutputs()[j]->getInputPolarities()[0]); 
+                    else if (and_ptr->getOutputs()[j]->getInputs()[1]->getId()==and_ptr->getId())
+                        and_ptr->getOutputs()[j]->replaceInput(1,&constant1,and_ptr->getOutputs()[j]->getInputPolarities()[1]); 
+                }
 //                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
 //                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
-//            }
-//#endif
-////            all_ANDS.find(probs_it->first)->second.getInputs()[0]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);;
-////            all_ANDS.find(probs_it->first)->second.getInputs()[1]->recursiveRemoveOutput(probs_it->first);//removeOutput(probs_it->first);
-//            one_count++;
-//        }
+            }
+#endif
+        one_count++;
+        }
     }
-    return ;
+//    return ;
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
     stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;

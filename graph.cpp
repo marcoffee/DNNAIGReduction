@@ -1833,7 +1833,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
-        if(probs_it->second<= 1- new_ths[and_ptr->getDepth()])
+        if(probs_it->second<= 1- new_ths[this->all_depths[probs_it->first/2]])
 //        if(probs_it->second<= threshold)
         {
 #if DEBUG >=2
@@ -1858,7 +1858,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
 #endif
            zero_count++;
         }        
-        if(probs_it->second<= new_ths[and_ptr->getDepth()])
+        if(probs_it->second<= new_ths[this->all_depths[probs_it->first/2]])
 //        if(probs_it->second>= 1-threshold)
         {
 #if DEBUG >=2

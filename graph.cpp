@@ -2097,7 +2097,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
     {
         if(it_and->second.getSignal()==-1)
+        {
             it_and->second.clearOutputs();
+            it_and->second.getInputs()[0]->removeOutput(it_and->second.getId());
+            it_and->second.getInputs()[1]->removeOutput(it_and->second.getId());
+        }
     }
     //Removing ANDs with 0 fanouts
     int ands_removed=0,PIs_removed=0,id=0;
@@ -2152,9 +2156,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         write5<<","<<removed_nodes_counter_by_depth[a];
     write5<<endl;
     write5.close();
-//    for(int a=0;a<visits.size();a++)
-//        cout<<visits[a]<<",";
-//    cout<<endl;
     
     cout<<"ANDs removed:"<<ands_removed<<endl;
     cout<<"Inputs removed:"<<PIs_removed<<endl;

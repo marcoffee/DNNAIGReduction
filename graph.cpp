@@ -1719,7 +1719,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     else if(option>0)
     {
         th_value="min_";
-        th_value=to_string(min_th);
+        th_value+=to_string(min_th);
     }
     int PI_constant=0,posX=0,posY=0;
     map<unsigned int, input>::iterator it_in;
@@ -2186,12 +2186,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         this->name+="_test";
     else
         cout<<"mnist size unknown"<<endl;
-
-    if(option==0)
-        this->name+="_fixed_th";
-    else if(option>0)
-        this->name+="_variable_th";
-
     
     ofstream csv_final;
     csv_final.open("todos_scores.csv",ios::app);
@@ -2201,9 +2195,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
 #if DEBUG >= debug_value
     dump3<<"ANDs removed:"<<ands_removed<<endl;
     dump3<<"Inputs removed:"<<PIs_removed<<endl;
- 
-  
-    //Renumbering PIs
    dump3<<endl<<endl<<"Renunmbering Inputs:"<<endl;
 #endif
 #if RENUMBER == 1
@@ -2331,9 +2322,11 @@ void graph::setDepthsInToOut(){
     }
     this->graph_depth=greater;
     
-#if DEBUG >= 2
-    write.open("Depths.txt",ios::app);
+#if DEBUG >= 0
+    write.open("Depths.txt");
     write<<this->name<<","<<greater<<endl;
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        write<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<endl;
     write.close();
 #endif
 }

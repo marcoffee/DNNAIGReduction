@@ -1845,7 +1845,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
 //        if(probs_it->second<= threshold)
         {
-#if DEBUG >=0
+#if DEBUG >=1
             dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",probs_it->first:"<<probs_it->first/2<<endl;
 //            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1872,7 +1872,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(probs_it->second >= new_ths[this->all_depths[probs_it->first/2]])
 //        if(probs_it->second>= 1-threshold)
         {
-#if DEBUG >=0
+#if DEBUG >=1
             dump2<<"1->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(new_ths[this->all_depths[probs_it->first/2]]):"<<(new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",probs_it->first:"<<probs_it->first/2<<endl;
 //            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;

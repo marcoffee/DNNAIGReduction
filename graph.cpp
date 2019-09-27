@@ -1824,8 +1824,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(option==1)
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=(((1-min_th)*k)/graph_depth)+min_th;
+                new_ths[k]=(((1-min_th)*k)/(graph_depth-1))+min_th;
         }
+    }
+    else
+    {
+        for(int k=0;k<new_ths.size();k++)
+            new_ths[k]=threshold;
     }
 //    dump1<<probs_it->first<<":"<<all_depths[probs_it->first/2]<<", new_th:"<<new_th<<endl;
     for(int k=0;k<new_ths.size();k++)

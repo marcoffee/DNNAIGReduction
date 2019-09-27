@@ -1739,6 +1739,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     constant0.setId(0);
     
     this->setDepthsInToOut();
+    this->all_depths.push_back(0);
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
         this->all_depths.push_back(0);
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)

@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     graph graph_obj;
     int option=1;
     
-    float th=0,min_th=0.9;
+    float th=0,min_th=0.9999;
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(th);
 

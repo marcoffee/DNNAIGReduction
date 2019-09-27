@@ -1952,9 +1952,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
                     //treating if constant=0 node is a PO.
                     if(all_outputs.find(current->getId())!=all_outputs.end())
                     {
-#if DEBUG >= debug_value                       
-                        dump_PO<<"PO is a constant 0:"<<current->getId()<<endl;//<<" with:"<<new_node->getId()<<endl;
+#if DEBUG >= 0                      
+                        dump_PO<<"PO is a constant 0:";
+                        current->writeNode(dump_PO);
 #endif
+//                        simpl_info<<"PO is a constant 0:"<<current->getId()<<endl;
                         all_outputs.find(current->getId())->second.clearInput();
                         all_outputs.find(current->getId())->second.setId(0);
 
@@ -1973,9 +1975,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
                     //treating if constant=1 node is a PO.
                     if(all_outputs.find(current->getId())!=all_outputs.end())
                     {
-#if DEBUG >= debug_value                       
-                        dump_PO<<"PO is a constant 1:"<<current->getId()<<endl;//<<" with:"<<new_node->getId()<<endl;
+#if DEBUG >= 0                       
+                        dump_PO<<"PO is a constant 1:";
+                        current->writeNode(dump_PO);
 #endif
+//                        simpl_info<<"PO is a constant 1:"<<current->getId()<<endl;;
                         all_outputs.find(current->getId())->second.clearInput();
                         all_outputs.find(current->getId())->second.setId(1);
 

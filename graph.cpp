@@ -1807,7 +1807,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         ands_probs_name+="A4.txt";
     else
         cout<<"ERROR, graph name has no A1-4"<<endl;
-    dump1<<"circuit name:"<<this->name<<". Pros file name:"<<ands_probs_name<<endl;
+    dump1<<"circuit name:"<<this->name<<". Probs file name:"<<ands_probs_name<<endl;
     ifstream in_file (ands_probs_name);
     
     it_and=all_ANDS.begin();
@@ -1835,6 +1835,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
 //    dump1<<probs_it->first<<":"<<all_depths[probs_it->first/2]<<", new_th:"<<new_th<<endl;
     for(int k=0;k<new_ths.size();k++)
         dump1<<k<<":"<<new_ths[k]<<endl;
+    
     int one_count=0,zero_count=0;
     struct rusage buf; 
     int start,stop;
@@ -1850,7 +1851,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
 //        if(probs_it->second<= threshold)
         {
-#if DEBUG >=1
+#if DEBUG >=0
             dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",probs_it->first:"<<probs_it->first/2<<endl;
 //            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1877,7 +1878,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(probs_it->second >= new_ths[this->all_depths[probs_it->first/2]])
 //        if(probs_it->second>= 1-threshold)
         {
-#if DEBUG >=1
+#if DEBUG >=0
             dump2<<"1->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(new_ths[this->all_depths[probs_it->first/2]]):"<<(new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",probs_it->first:"<<probs_it->first/2<<endl;
 //            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1911,8 +1912,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
   cout<<"# of ANDs to be constant 0:"<<zero_count<<endl;
   simpl_info<<"# of ANDs to be constant 1:"<<one_count<<endl;
   simpl_info<<"# of ANDs to be constant 0:"<<zero_count<<endl;
-  for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
-      dump1<<it_and->second.getId()<<":"<<it_and->second.getSignal()<<endl;
+//  for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+//      dump1<<it_and->second.getId()<<":"<<it_and->second.getSignal()<<endl;
   
     stack<node*>stackzin;
     vector<node*> AUX;
@@ -2330,7 +2331,7 @@ void graph::setDepthsInToOut(){
     }
     this->graph_depth=greater;
     
-#if DEBUG >= 0
+#if DEBUG >= 3
     write.open("Depths.txt");
     write<<this->name<<","<<greater<<endl;
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)

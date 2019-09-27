@@ -1756,6 +1756,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         write<<o<<":"<<all_depths[o]<<endl;
     write.close();
 #endif
+    this->all_ANDS.find(89842092)->second.printNode();
+    cout<<"depth:"<<all_depths[89842092/2]<<endl;
+    this->all_ANDS.find(89842090)->second.printNode();
+    cout<<"depth:"<<all_depths[89842090/2]<<endl;
+    cout<<"all_depths.size():"<<all_depths.size()<<endl;
     //Initializing nodes
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {

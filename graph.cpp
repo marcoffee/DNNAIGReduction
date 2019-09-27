@@ -2173,7 +2173,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     else
         cout<<"mnist size unknown"<<endl;
     
-    string th_value=0;
+    string th_value;
     if(option==0)
     {
         this->name+="1_";
@@ -2250,8 +2250,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
 //   for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
 //       it_in->second.printNode();
    
-    this->name+="_ANDs_removed_";
-   this->name+=to_string(1-threshold);
+//    this->name+="_ANDs_removed_";
+//   this->name+=to_string(1-threshold);
 //    cout<<"Writing output file (AIG):"<<this->name<<endl;
 //    this->writeAIG();
 //    cout<<"Writing output file (AAG):"<<this->name<<endl;

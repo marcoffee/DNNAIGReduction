@@ -1955,22 +1955,23 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
 #endif
                 if(first==0 || second==0)
                 {
-                    current->setSignal(0);
-                    current->clearOutputs();
-                    current->getInputs()[0]->removeOutput(current->getId());
-                    current->getInputs()[1]->removeOutput(current->getId());
-                    //treating if constant=0 node is a PO.
+                     //treating if constant=0 node is a PO.
                     if(all_outputs.find(current->getId())!=all_outputs.end())
                     {
 #if DEBUG >= 0                      
                         dump_PO<<"PO is a constant 0:";
                         current->writeNode(dump_PO);
+                        dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
 #endif
 //                        simpl_info<<"PO is a constant 0:"<<current->getId()<<endl;
                         all_outputs.find(current->getId())->second.clearInput();
                         all_outputs.find(current->getId())->second.setId(0);
-
                     }
+                    current->setSignal(0);
+                    current->clearOutputs();
+                    current->getInputs()[0]->removeOutput(current->getId());
+                    current->getInputs()[1]->removeOutput(current->getId());
+
 #if DEBUG >= debug_value
                     dump1<<"0 || 0:";
                     current->writeNode(dump1);
@@ -1978,22 +1979,24 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
                 }
                 else if(first==1 && second==1)
                 {
-                    current->setSignal(1);
-                    current->clearOutputs();
-                    current->getInputs()[0]->removeOutput(current->getId());
-                    current->getInputs()[1]->removeOutput(current->getId());
-                    //treating if constant=1 node is a PO.
                     if(all_outputs.find(current->getId())!=all_outputs.end())
                     {
 #if DEBUG >= 0                       
                         dump_PO<<"PO is a constant 1:";
                         current->writeNode(dump_PO);
+                        dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
 #endif
 //                        simpl_info<<"PO is a constant 1:"<<current->getId()<<endl;;
                         all_outputs.find(current->getId())->second.clearInput();
                         all_outputs.find(current->getId())->second.setId(1);
 
                     }
+                    current->setSignal(1);
+                    current->clearOutputs();
+                    current->getInputs()[0]->removeOutput(current->getId());
+                    current->getInputs()[1]->removeOutput(current->getId());
+                    //treating if constant=1 node is a PO.
+
 #if DEBUG >= debug_value
                     dump1<<"1 & 1:";
                     current->writeNode(dump1);

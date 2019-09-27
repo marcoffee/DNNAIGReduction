@@ -1748,6 +1748,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         simpl_info<<greatest_depths_ids[a]<<",";
     simpl_info<<endl;
     
+#if DEBUG >= 0
+    ofstream write;
+    write.open("all_depths.txt");
+    write<<this->name<<","<<greater<<endl;
+    for(int o=0;o<all_depths.size();o++)
+        write<<o<<":"<<all_depths[o]<<endl;
+    write.close();
+#endif
     //Initializing nodes
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
@@ -2331,7 +2339,7 @@ void graph::setDepthsInToOut(){
     }
     this->graph_depth=greater;
     
-#if DEBUG >= 3
+#if DEBUG >= 0
     write.open("Depths.txt");
     write<<this->name<<","<<greater<<endl;
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)

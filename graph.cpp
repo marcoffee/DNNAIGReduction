@@ -1710,14 +1710,24 @@ void graph::setANDsProbabilities(mnist& mnist_obj){
 }
 
 void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
+    string th_value,info_file_name;
+    if(option==0)
+    {
+        th_value="fixed_";
+        th_value+=to_string(1-threshold);
+    }
+    else if(option>0)
+    {
+        th_value="min_";
+        th_value=to_string(min_th);
+    }
     int PI_constant=0,posX=0,posY=0;
     map<unsigned int, input>::iterator it_in;
     map<unsigned int, output>::iterator it_out;
     map<unsigned int, AND>::iterator it_and;
-    string info_file_name;
     info_file_name=this->name;
     info_file_name+="_";
-    info_file_name+=to_string(1-threshold);
+    info_file_name+=th_value;
     info_file_name+="_simplif_info.txt";
     ofstream simpl_info(info_file_name),dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt"),dump_PO("dump_PO.txt");
     map<unsigned int,float>::iterator probs_it;
@@ -1732,11 +1742,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
         this->all_depths.push_back(0);
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
-    {
-//        dump2<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<"|";
         this->all_depths.push_back(it_and->second.getDepth());
-    }
-//    dump2<<endl;
+    simpl_info<<"AIG depth:"<<this->graph_depth<<", nodes with such depth:";
+    for(int a=0;a<this->greatest_depths_ids.size();a++)
+        simpl_info<<greatest_depths_ids[a]<<",";
+    simpl_info<<endl;
     
     //Initializing nodes
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
@@ -1771,7 +1781,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         }
     }
   cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
-  simpl_info<<"Threshold:"<<to_string(1-threshold)<<endl;
+  simpl_info<<"Threshold:"<<th_value<<endl;
   simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
 #if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
@@ -2158,7 +2168,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     file_name+=".csv";
     ofstream write5(file_name,ios::app);
     dump1<<file_name<<":"<<sum<<","<<ands_removed<<endl;
-    write5<<to_string(1-threshold);
+    write5<<th_value;
     for(int a=0;a<removed_nodes_counter_by_depth.size();a++)
         write5<<","<<removed_nodes_counter_by_depth[a];
     write5<<endl;
@@ -2171,23 +2181,16 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     simpl_info<<"all_ands.size():"<<all_ANDS.size()<<endl;
     
     if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
-        this->name+="_train_new";
+        this->name+="_train";
     else if (mnist_obj.getAllBits().size()==10000 && this->name.find("test")==string::npos)
-        this->name+="_test_new";
+        this->name+="_test";
     else
         cout<<"mnist size unknown"<<endl;
-    
-    string th_value;
+
     if(option==0)
-    {
-        this->name+="1_";
-        th_value=to_string(1-threshold);
-    }
+        this->name+="_fixed_th";
     else if(option>0)
-    {
         this->name+="_variable_th";
-        th_value=to_string(min_th);
-    }
 
     
     ofstream csv_final;
@@ -2318,7 +2321,13 @@ void graph::setDepthsInToOut(){
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
         if(it_out->second.getDepth()>greater)
+        {
             greater=it_out->second.getDepth();
+            greatest_depths_ids.clear();
+            greatest_depths_ids.push_back(it_out->second.getId());
+        }
+        else if (it_out->second.getDepth()==greater)
+            greatest_depths_ids.push_back(it_out->second.getId());
     }
     this->graph_depth=greater;
     

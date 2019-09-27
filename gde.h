@@ -302,6 +302,7 @@ protected:
     vector<unsigned int> POs_order,all_depths;
     float threshold;
     int graph_depth;
+    vector<unsigned int> greatest_depths_ids;
     node constant1,constant0;
     
     ofstream log;

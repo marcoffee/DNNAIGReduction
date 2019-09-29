@@ -1709,16 +1709,22 @@ void graph::setANDsProbabilities(mnist& mnist_obj){
     
 }
 
-void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
+void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int alpha) {
     string th_value,info_file_name;
     if(option==0)
     {
-        th_value="fixed_";
+        th_value="_fixed_";
         th_value+=to_string(1-threshold);
     }
     else if(option>0)
     {
-        th_value="min_";
+        if(option==1)
+          th_value="_linear";
+        else if (option==2)
+            th_value="_sqrt";
+        else if (option==3)
+            th_value="_exp";
+        th_value+="_min_";
         th_value+=to_string(min_th);
     }
     int PI_constant=0,posX=0,posY=0;
@@ -1749,18 +1755,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         simpl_info<<greatest_depths_ids[a]<<",";
     simpl_info<<endl;
     
-#if DEBUG >= 0
+#if DEBUG >= 1
     ofstream all_depths_out;
     all_depths_out.open("all_depths.txt");
     for(int o=0;o<all_depths.size();o++)
         all_depths_out<<o<<":"<<all_depths[o]<<endl;
     all_depths_out.close();
 #endif
-    this->all_ANDS.find(89842092)->second.printNode();
-    cout<<"depth:"<<all_depths[89842092/2]<<endl;
-    this->all_ANDS.find(89842090)->second.printNode();
-    cout<<"depth:"<<all_depths[89842090/2]<<endl;
-    cout<<"all_depths.size():"<<all_depths.size()<<endl;
     //Initializing nodes
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
@@ -1839,6 +1840,16 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=(((1-min_th)*k)/(graph_depth-1))+min_th;
         }
+        else if (option==2) //sqrt
+        {
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=((1-min_th)*(pow(k,1/alpha))/(graph_depth-1))+min_th;
+        }
+        else if (option==3) //exp
+        {
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=((1-min_th)*(pow(k,alpha))/(graph_depth-1))+min_th;
+        }
     }
     else
     {
@@ -1864,7 +1875,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
 //        if(probs_it->second<= threshold)
         {
-#if DEBUG >=0
+#if DEBUG >=2
             dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1891,7 +1902,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
         if(probs_it->second >= new_ths[this->all_depths[probs_it->first/2]])
 //        if(probs_it->second>= 1-threshold)
         {
-#if DEBUG >=0
+#if DEBUG >=2
             dump2<<"1->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(new_ths[this->all_depths[probs_it->first/2]]):"<<(new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -2196,11 +2207,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     write5<<endl;
     write5.close();
     
+    this->setDepthsInToOut();
     cout<<"ANDs removed:"<<ands_removed<<endl;
     cout<<"Inputs removed:"<<PIs_removed<<endl;
     simpl_info<<"ANDs removed:"<<ands_removed<<endl;
-    simpl_info<<"Inputs removed:"<<PIs_removed<<endl<<endl;
+    simpl_info<<"Inputs removed:"<<PIs_removed<<endl;
     simpl_info<<"all_ands.size():"<<all_ANDS.size()<<endl;
+    simpl_info<<"new depth:"<<this->graph_depth<<endl;
     
     if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
         this->name+="_train";
@@ -2211,8 +2224,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th) {
     
     ofstream csv_final;
     csv_final.open("todos_scores.csv",ios::app);
-    simpl_info<<endl<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
-    csv_final<<this->name<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<endl;
+    simpl_info<<endl<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<",,,,,,"<<graph_depth<<endl;
+    csv_final<<this->name<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<",,,,,,"<<graph_depth<<endl;
 
 #if DEBUG >= debug_value
     dump3<<"ANDs removed:"<<ands_removed<<endl;
@@ -2344,7 +2357,7 @@ void graph::setDepthsInToOut(){
     }
     this->graph_depth=greater;
     
-#if DEBUG >= 0
+#if DEBUG >= 3
     write.open("Depths.txt");
     write<<this->name<<","<<greater<<endl;
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)

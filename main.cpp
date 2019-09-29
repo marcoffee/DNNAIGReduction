@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     
     mnist mnist_obj;
     graph graph_obj;
-    int option=1,alpha=2;
+    int option=3,alpha=2;
     
     float th=0,min_th=0.99;
     graph_obj.clearCircuit();

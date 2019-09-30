@@ -22,7 +22,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
     string file_name;
-    file_name="../A1.aig";
+    file_name="../A2.aig";
 //    file_name="A1_ANDs_removed_1.aig";
 //    file_name="andre.aig";
 //    file_name="andre_ANDs_removed_1.aig";
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     
     mnist mnist_obj;
     graph graph_obj;
-    int option=2,alpha=2;
+    int option=1,alpha=2;
     
     float th=0,min_th=0.99;
 //    graph_obj.clearCircuit();

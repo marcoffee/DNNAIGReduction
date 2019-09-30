@@ -1843,12 +1843,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         else if (option==2) //sqrt
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*(pow(k,1/alpha))/(graph_depth-1))+min_th;
+                new_ths[k]=((1-min_th)*(pow(k/(graph_depth-1),1/alpha)))+min_th;
         }
         else if (option==3) //exp
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*(pow(k,alpha))/(graph_depth-1))+min_th;
+                new_ths[k]=((1-min_th)*(pow(k/(graph_depth-1),alpha)))+min_th;
         }
     }
     else

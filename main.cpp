@@ -34,32 +34,32 @@ int main(int argc, char** argv) {
     int option=3,alpha=2;
     
     float th=0,min_th=0.99;
-    graph_obj.clearCircuit();
-    graph_obj.setThrehsold(th);
-
-    mnist_obj.clearMnist();
-    read_mnist.close();
-    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
-    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
-    mnist_obj.setBitsProbabilities(read_mnist);
-
-    graph_obj.readAIG(read,file_name);
-//    graph_obj.writeProbsHistogram();
-    
-    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
-//    graph_obj.propagateAndDeletePIBased(mnist_obj);
-//    graph_obj.setDepthsInToOut();
-//        graph_obj.setANDsProbabilities(mnist_obj);
-
-    graph_obj.applyMnistRecursive(mnist_obj);
-
-
-    mnist_obj.clearMnist();
-    read_mnist.close();
-    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
-    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
-    mnist_obj.setBitsProbabilities(read_mnist);
-    graph_obj.applyMnistRecursive(mnist_obj);
+//    graph_obj.clearCircuit();
+//    graph_obj.setThrehsold(th);
+//
+//    mnist_obj.clearMnist();
+//    read_mnist.close();
+//    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+//    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+//    mnist_obj.setBitsProbabilities(read_mnist);
+//
+//    graph_obj.readAIG(read,file_name);
+////    graph_obj.writeProbsHistogram();
+//    
+//    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+////    graph_obj.propagateAndDeletePIBased(mnist_obj);
+////    graph_obj.setDepthsInToOut();
+////        graph_obj.setANDsProbabilities(mnist_obj);
+//
+//    graph_obj.applyMnistRecursive(mnist_obj);
+//
+//
+//    mnist_obj.clearMnist();
+//    read_mnist.close();
+//    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+//    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+//    mnist_obj.setBitsProbabilities(read_mnist);
+//    graph_obj.applyMnistRecursive(mnist_obj);
     
 #if option ==1
     for(float th=0.0001;th<=0.001;th=th+0.0001)

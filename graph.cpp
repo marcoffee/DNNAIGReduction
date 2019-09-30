@@ -1726,6 +1726,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             th_value="_exp";
         th_value+="_min_";
         th_value+=to_string(min_th);
+        th_value+="_alpha_";
+        th_value+=to_string(alpha);
     }
     int PI_constant=0,posX=0,posY=0;
     map<unsigned int, input>::iterator it_in;

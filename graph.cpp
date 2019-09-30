@@ -1718,6 +1718,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     }
     else if(option>0)
     {
+        this->setThrehsold(1-min_th);
         if(option==1)
           th_value="_linear";
         else if (option==2)
@@ -2161,7 +2162,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     //Removing ANDs with 0 fanouts
     int ands_removed=0,PIs_removed=0,id=0;
     cout<<"graph depth:"<<this->graph_depth<<endl;
-    vector<int> removed_nodes_counter_by_depth(this->graph_depth,0);
+    vector<int> removed_nodes_counter_by_depth(graph_depth,0);
 //    dump1<<"graph depth:"<<this->graph_depth<<endl;
 //    dump1<<"removed_nodes_counter_by_depth size:"<<removed_nodes_counter_by_depth.size()<<endl;
     ofstream write2("removed_ANDs.txt");  

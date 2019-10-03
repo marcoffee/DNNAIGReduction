@@ -1725,6 +1725,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             th_value="_sqrt";
         else if (option==3)
             th_value="_exp";
+        else if (option==4)
+            th_value="_sigmoidal";
         th_value+="_min_";
         th_value+=to_string(min_th);
         if(option>1)
@@ -1855,6 +1857,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         {
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),alpha)))+min_th;
+        }
+        else if (option==4)
+        {
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=(1+erff(6*k/5000 -3))/2 + 0.00001104525;
         }
     }
     else

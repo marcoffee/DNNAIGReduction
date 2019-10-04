@@ -70,10 +70,10 @@ int main(int argc, char** argv) {
 //    graph_obj.applyMnistRecursive(mnist_obj);
     
 #if option ==1
-    for(float th=0.0001;th<=0.001;th=th+0.0001)
+    for(float th=0.0001;th<=0.001;th=th+0.0002)
     {
 #else
-    for(min_th=0.9999;min_th>=0.999;min_th-=0.0001)
+    for(min_th=0.9999;min_th>=0.999;min_th-=0.0002)
     {
 #endif
       
@@ -105,10 +105,10 @@ int main(int argc, char** argv) {
     }
 
 #if option ==1
-    for(float th=0.0001;th<=0.001;th=th+0.0001)
+    for(float th=0.0001;th<=0.001;th=th+0.0002)
     {
 #else
-    for(min_th=0.999;min_th>=0.99;min_th-=0.001)
+    for(min_th=0.999;min_th>=0.99;min_th-=0.002)
     {
 #endif
         graph_obj.clearCircuit();

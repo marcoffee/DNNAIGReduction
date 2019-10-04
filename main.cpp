@@ -29,11 +29,19 @@ int main(int argc, char** argv) {
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);
     
+    float th=0,min_th=0.99;
+    vector<float> new_ths(5479,0);
+    ofstream dump("dump.txt");
+    for(int k=0;k<new_ths.size();k++)
+        new_ths[k]=((1-min_th)*((1+erf((6*k/(5479-1)) -3))/2))+min_th;
+    for(int k=0;k<new_ths.size();k++)
+        dump<<k<<":"<<new_ths[k]<<endl;
+    
     mnist mnist_obj;
     graph graph_obj;
-    int option=4,alpha=100;
+    int option=4,alpha=2;
     
-    float th=0,min_th=0.99;
+    
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(th);
 
@@ -49,7 +57,7 @@ int main(int argc, char** argv) {
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);
 //    graph_obj.setDepthsInToOut();
-//        graph_obj.setANDsProbabilities(mnist_obj);
+//        graph_obj.setANDsProbabilities(mnist_boj);
 //
 //    graph_obj.applyMnistRecursive(mnist_obj);
 //
@@ -100,7 +108,7 @@ int main(int argc, char** argv) {
 //    for(float th=0.0001;th<=0.001;th=th+0.0001)
 //    {
 //#else
-//    for(min_th=0.998;min_th>=0.99;min_th-=0.001)
+//    for(min_th=0.999;min_th>=0.99;min_th-=0.001)
 //    {
 //#endif
 //        graph_obj.clearCircuit();

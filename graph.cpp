@@ -1860,11 +1860,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         }
         else if (option==4)
         {
-            for(int k=0;k<new_ths.size()/2;k++)
-                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),alpha)))+min_th;
-            
-            for(int k=new_ths.size()/2;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),(float)1/alpha)))+min_th;
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth-1)) -3))/2))+min_th;
+//            for(int k=0;k<new_ths.size()/2;k++)
+//                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),alpha)))+min_th;
+//            for(int k=new_ths.size()/2;k<new_ths.size();k++)
+//                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),(float)1/alpha)))+min_th;
         }
     }
     else

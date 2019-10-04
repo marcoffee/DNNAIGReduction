@@ -149,26 +149,12 @@ void AND::printNode(){
 }
 
 unsigned long long int AND::runDFS(){
-//    bitset<BITS_PACKAGE_SIZE> bits;
     unsigned long long int sig_rhs0,sig_rhs1;
-//     ofstream dump("dumpDFS.txt",ios::app);
-//    if(this->signal==-1)
     switch (this->signal){
         case -1:
         sig_rhs0=this->inputs[0]->fixLSB()->runDFS();
         sig_rhs1=this->inputs[1]->fixLSB()->runDFS();
-//        for(int u=0;u<1;u++)
-//        {
-//            mask=mask<<u;
-//            bit1=mask & sig_rhs0;
-//            bit2=mask & sig_rhs1;
-//            
-//            result=((bit1)^(getInputPolarities()[0])) && ((bit2)^(getInputPolarities()[1]));
-//           
-//            bits.set(u,(bool)result);
-//        }
-//        this->signal=((sig_rhs0)^(this->getInputPolarities()[0])) && ((sig_rhs1)^(this->getInputPolarities()[1]));
-#if DEBUG >= 2
+#if DEBUG >= 3
         ofstream dump("dumpDFS.txt",ios::app);
         dump<<this->id<<endl;    
         dump<<"bit1:"<<(sig_rhs0 & 1)<<endl;
@@ -191,7 +177,6 @@ unsigned long long int AND::runDFS(){
         bitset<64> x(bit_vector);
         dump<<"whole vector:"<<bit_vector<<","<<x<<endl<<endl;
 #endif
-//        this->bit_vector=(unsigned long long int)bits.to_ulong();
         this->signal=1;
     }
     return this->bit_vector;

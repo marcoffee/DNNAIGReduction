@@ -298,8 +298,12 @@ protected:
     map<unsigned int,output> all_outputs;
     map<unsigned int,AND> all_ANDS;
     string name;
+    //Vector to store the probability of all ANDs
     map <unsigned int,float> ANDs_probabilities;
-    vector<unsigned int> POs_order,all_depths;
+    //Original order of Primary Outputs
+    vector<unsigned int> POs_order;
+    //all_depths' index is the node ID/2 and the all_depths[ID/2] is the depth for this node.
+     vector<unsigned int> all_depths;
     float threshold;
     int graph_depth;
     vector<unsigned int> greatest_depths_ids;

@@ -2218,7 +2218,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     file_name+=".csv";
     ofstream write5(file_name,ios::app);
     dump1<<file_name<<":"<<sum<<","<<ands_removed<<endl;
-    write5<<th_value;
+    write5<<this->name<<th_value;
     for(int a=0;a<removed_nodes_counter_by_depth.size();a++)
         write5<<","<<removed_nodes_counter_by_depth[a];
     write5<<endl;

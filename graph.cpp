@@ -796,10 +796,20 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
        }
         cout<<endl<<"pixel_count:"<<pixel_count<<endl;
 #else 
-       all_inputs.find(2)->second.setSignal(1);
-       all_inputs.find(4)->second.setSignal(0);
-       all_inputs.find(6)->second.setSignal(0);
-       all_inputs.find(8)->second.setSignal(1);
+        cout<<"RJAEIRJEOI"<<endl;
+        bitset<BITS_PACKAGE_SIZE> bits;
+        for(int u=offset;u<offset+BITS_PACKAGE_SIZE;u++)
+            bits.set(u-offset,true);
+        cout<<"RJAEIRJEOI"<<endl;
+        all_inputs.find(2)->second.setBitVector(bits.to_ullong());
+        all_inputs.find(4)->second.setBitVector(bits.to_ullong());
+        all_inputs.find(6)->second.setBitVector(bits.to_ullong());
+        all_inputs.find(4)->second.setBitVector(bits.to_ullong());
+        cout<<"RJAEIRJEOI"<<endl;
+//       all_inputs.find(2)->second.setSignal(1);
+//       all_inputs.find(4)->second.setSignal(1);
+//       all_inputs.find(6)->second.setSignal(1);
+//       all_inputs.find(8)->second.setSignal(1);
 #endif
 
 //#else

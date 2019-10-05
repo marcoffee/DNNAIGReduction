@@ -721,7 +721,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
 #if TEST == 0
     for(int counter=0;counter<num_imgs;counter=counter+BITS_PACKAGE_SIZE)
 #else
-    for(int counter=0;counter<num_imgs;counter=counter+BITS_PACKAGE_SIZE)
+    for(int counter=0;counter<65;counter=counter+BITS_PACKAGE_SIZE)
 #endif
         {
         cout<<"Applying images from "<<offset<<" to "<<offset+BITS_PACKAGE_SIZE<<endl;

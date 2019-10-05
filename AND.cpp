@@ -165,6 +165,7 @@ unsigned long long int AND::runDFS(){
 //        if(getInputPolarities()[1]==1)
 //            sig_rhs1=~sig_rhs1;
 //        this->bit_vector= sig_rhs0 & sig_rhs1;
+        
         bit_vector=((inputs[0]->fixLSB()->runDFS())^((unsigned long long int)getInputPolarities()[0])) & ((inputs[1]->fixLSB()->runDFS())^((unsigned long long int)getInputPolarities()[1]));
 
 #if DEBUG >= 2

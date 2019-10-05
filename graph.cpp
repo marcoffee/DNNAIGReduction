@@ -721,7 +721,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
 #if TEST == 0
     for(int counter=0;counter<num_imgs;counter=counter+BITS_PACKAGE_SIZE)
 #else
-    for(int counter=9984;counter<num_imgs;counter=counter+BITS_PACKAGE_SIZE)
+    for(int counter=0;counter<num_imgs;counter=counter+BITS_PACKAGE_SIZE)
 #endif
         {
         cout<<"Applying images from "<<offset<<" to "<<offset+BITS_PACKAGE_SIZE<<endl;
@@ -797,8 +797,8 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         cout<<endl<<"pixel_count:"<<pixel_count<<endl;
 #else 
        all_inputs.find(2)->second.setSignal(1);
-       all_inputs.find(4)->second.setSignal(1);
-       all_inputs.find(6)->second.setSignal(1);
+       all_inputs.find(4)->second.setSignal(0);
+       all_inputs.find(6)->second.setSignal(0);
        all_inputs.find(8)->second.setSignal(1);
 #endif
 

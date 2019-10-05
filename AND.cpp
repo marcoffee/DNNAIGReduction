@@ -149,22 +149,23 @@ void AND::printNode(){
 }
 
 unsigned long long int AND::runDFS(){
-    unsigned long long int sig_rhs0,sig_rhs1;
+//    unsigned long long int sig_rhs0,sig_rhs1;
     switch (this->signal){
         case -1:
-        sig_rhs0=this->inputs[0]->fixLSB()->runDFS();
-        sig_rhs1=this->inputs[1]->fixLSB()->runDFS();
+//        sig_rhs0=inputs[0]->fixLSB()->runDFS();
+//        sig_rhs1=inputs[1]->fixLSB()->runDFS();
 #if DEBUG >= 3
         ofstream dump("dumpDFS.txt",ios::app);
         dump<<this->id<<endl;    
         dump<<"bit1:"<<(sig_rhs0 & 1)<<endl;
         dump<<"bit2:"<<(sig_rhs1 & 1)<<endl;
 #endif
-        if(getInputPolarities()[0]==1)
-            sig_rhs0=~sig_rhs0;
-        if(getInputPolarities()[1]==1)
-            sig_rhs1=~sig_rhs1;
-        this->bit_vector= sig_rhs0 & sig_rhs1;
+//        if(getInputPolarities()[0]==1)
+//            sig_rhs0=~sig_rhs0;
+//        if(getInputPolarities()[1]==1)
+//            sig_rhs1=~sig_rhs1;
+//        this->bit_vector= sig_rhs0 & sig_rhs1;
+        bit_vector=((inputs[0]->fixLSB()->runDFS())^((unsigned long long int)getInputPolarities()[0])) & ((inputs[1]->fixLSB()->runDFS())^((unsigned long long int)getInputPolarities()[1]));
 
 #if DEBUG >= 2
 //        dump<<"rhs0:"<<sig_rhs0<<endl;

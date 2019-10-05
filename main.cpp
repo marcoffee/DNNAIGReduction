@@ -30,12 +30,12 @@ int main(int argc, char** argv) {
     read.open(file_name.c_str(),ifstream::binary);
     
     float th=0,min_th=0.99;
-    vector<float> new_ths(5479,0);
-    ofstream dump("dump.txt");
-    for(int k=0;k<new_ths.size();k++)
-        new_ths[k]=((1-min_th)*((1+erf((6*k/(5479-1)) -3))/2))+min_th;
-    for(int k=0;k<new_ths.size();k++)
-        dump<<k<<":"<<new_ths[k]<<endl;
+//    vector<float> new_ths(5479,0);
+//    ofstream dump("dump.txt");
+//    for(int k=0;k<new_ths.size();k++)
+//        new_ths[k]=((1-min_th)*((1+erf((6*k/(5479-1)) -3))/2))+min_th;
+//    for(int k=0;k<new_ths.size();k++)
+//        dump<<k<<":"<<new_ths[k]<<endl;
     
     mnist mnist_obj;
     graph graph_obj;
@@ -45,13 +45,13 @@ int main(int argc, char** argv) {
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(th);
 
-//    mnist_obj.clearMnist();
-//    read_mnist.close();
-//    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
-//    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
-//    mnist_obj.setBitsProbabilities(read_mnist);
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
 //
-//    graph_obj.readAIG(read,file_name);
+    graph_obj.readAIG(read,file_name);
 //    graph_obj.writeProbsHistogram();
     
 //    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 //    graph_obj.setDepthsInToOut();
 //        graph_obj.setANDsProbabilities(mnist_boj);
 //
-//    graph_obj.applyMnistRecursive(mnist_obj);
+    graph_obj.applyMnistRecursive(mnist_obj);
 //
 //
 //    mnist_obj.clearMnist();

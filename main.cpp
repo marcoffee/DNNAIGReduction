@@ -20,7 +20,11 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-
+    struct rusage buf;
+    int start,stop;
+    if(getrusage(RUSAGE_SELF,&buf)==-1)
+        cout<<"GETRUSAGE FAILURE!"<<endl;
+    start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name;
     file_name="../A1.aig";
 //    file_name="A1_ANDs_removed_1.aig";
@@ -135,6 +139,11 @@ int main(int argc, char** argv) {
 //        mnist_obj.setBitsProbabilities(read_mnist);
 //        graph_obj.applyMnistRecursive(mnist_obj);
 //    }
+    
+    if(getrusage(RUSAGE_SELF,&buf)==-1)
+        cout<<"GETRUSAGE FAILURE!"<<endl;
+    stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    cout<<"Time for whole process:"<<stop-start<<endl;
     return 0;
 }
 

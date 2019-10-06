@@ -154,11 +154,11 @@ void AND::printNode(){
 }
 
 unsigned long long int AND::runDFS(){
-//    unsigned long long int sig_rhs0,sig_rhs1;
+    unsigned long long int sig_rhs0,sig_rhs1;
     switch (this->signal){
         case -1:
-//        sig_rhs0=inputs[0]->fixLSB()->runDFS();
-//        sig_rhs1=inputs[1]->fixLSB()->runDFS();
+        sig_rhs0=inputs[0]->fixLSB()->runDFS();
+        sig_rhs1=inputs[1]->fixLSB()->runDFS();
 #if DEBUG >= 3
         ofstream dump("dumpDFS.csv",ios::app);
         dump<<this->id<<"-->";    
@@ -167,17 +167,15 @@ unsigned long long int AND::runDFS(){
         dump<<", XOR0:"<<(sig_rhs0^(getInputPolarities()[0]*ULLONG_MAX))<<", XOR1:"<<(sig_rhs1^(getInputPolarities()[1]*ULLONG_MAX));
         dump<<",my:"<<((sig_rhs0^(this->getInputPolarities()[0]*ULLONG_MAX))&(sig_rhs1^(this->getInputPolarities()[1]*ULLONG_MAX)))<<endl;
 #endif
-//        if(getInputPolarities()[0]==1)
-//            sig_rhs0=~sig_rhs0;
-//        if(getInputPolarities()[1]==1)
-//            sig_rhs1=~sig_rhs1;
-//        dump<<",sig0:"<<sig_rhs0<<",sig1:"<<sig_rhs1<<", real:"<<(sig_rhs0 & sig_rhs1)<<endl;
-//        this->bit_vector= sig_rhs0 & sig_rhs1;
+        if(getInputPolarities()[0])
+            sig_rhs0=~sig_rhs0;
+        if(getInputPolarities()[1])
+            sig_rhs1=~sig_rhs1;
         
-//        bit_vector=(sig_rhs0^(getInputPolarities()[0]) & sig_rhs1^(getInputPolarities()[1]));
-//        bit_vector=((sig_rhs0^(this->getInputPolarities()[0]*ULLONG_MAX))&(sig_rhs1^(this->getInputPolarities()[1]*ULLONG_MAX)));
-        bit_vector=(((inputs[0]->fixLSB()->runDFS())^(this->getInputPolarities()[0]*ULLONG_MAX))&((inputs[1]->fixLSB()->runDFS())^(this->getInputPolarities()[1]*ULLONG_MAX)));
-//        cout<<this->id<<":"<<bit_vector<<endl;
+        this->bit_vector= sig_rhs0 & sig_rhs1;
+
+//        bit_vector=(((inputs[0]->fixLSB()->runDFS())^(this->getInputPolarities()[0]*ULLONG_MAX))&((inputs[1]->fixLSB()->runDFS())^(this->getInputPolarities()[1]*ULLONG_MAX)));
+
 #if DEBUG >= 2
 //        dump<<"rhs0:"<<sig_rhs0<<endl;
 //        dump<<"rhs1:"<<sig_rhs1<<endl;

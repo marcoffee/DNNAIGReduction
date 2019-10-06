@@ -154,18 +154,18 @@ void AND::printNode(){
 }
 
 unsigned long long int AND::runDFS(){
-    unsigned long long int sig_rhs0,sig_rhs1;
+//    unsigned long long int sig_rhs0,sig_rhs1;
     switch (this->signal){
         case -1:
-        sig_rhs0=inputs[0]->fixLSB()->runDFS();
-        sig_rhs1=inputs[1]->fixLSB()->runDFS();
+//        sig_rhs0=inputs[0]->fixLSB()->runDFS();
+//        sig_rhs1=inputs[1]->fixLSB()->runDFS();
 #if DEBUG >= 3
         ofstream dump("dumpDFS.csv",ios::app);
-        dump<<this->id;    
-        dump<<": bit0:"<<(sig_rhs0 & 1)<<", LLint:"<<sig_rhs0;
-        dump<<",\t bit1:"<<(sig_rhs1 & 1)<<", LLint:"<<sig_rhs1<<",pol0:"<<(getInputPolarities()[0])<<",pol0*U:"<<(getInputPolarities()[0]*ULLONG_MAX)<<",pol1:"<<(getInputPolarities()[1])<<",pol1*U:"<<(getInputPolarities()[1]*ULLONG_MAX);
+        dump<<this->id<<"-->";    
+        dump<<getInputs()[0]->getId()<<":"<<sig_rhs0<<",pol0:"<<(getInputPolarities()[0])<<","<<getInputs()[1]->getId()<<":"<<sig_rhs1<<",pol1:"<<(getInputPolarities()[1]);
+        dump<<",pol0*U:"<<(getInputPolarities()[0]*ULLONG_MAX)<<",pol1*U:"<<(getInputPolarities()[1]*ULLONG_MAX);
         dump<<", XOR0:"<<(sig_rhs0^(getInputPolarities()[0]*ULLONG_MAX))<<", XOR1:"<<(sig_rhs1^(getInputPolarities()[1]*ULLONG_MAX));
-        dump<<",my:"<<((sig_rhs0^(getInputPolarities()[0]*ULLONG_MAX))&(sig_rhs1^(getInputPolarities()[1]*ULLONG_MAX)));
+        dump<<",my:"<<((sig_rhs0^(this->getInputPolarities()[0]*ULLONG_MAX))&(sig_rhs1^(this->getInputPolarities()[1]*ULLONG_MAX)))<<endl;
 #endif
 //        if(getInputPolarities()[0]==1)
 //            sig_rhs0=~sig_rhs0;
@@ -175,9 +175,9 @@ unsigned long long int AND::runDFS(){
 //        this->bit_vector= sig_rhs0 & sig_rhs1;
         
 //        bit_vector=(sig_rhs0^(getInputPolarities()[0]) & sig_rhs1^(getInputPolarities()[1]));
-        bit_vector=((sig_rhs0^(getInputPolarities()[0]*ULLONG_MAX))&(sig_rhs1^(getInputPolarities()[1]*ULLONG_MAX)));
-//        cout<<this->id<<":"<<bit_vector<<endl;;
-//        bit_vector=sig_rhs0 & sig_rhs1;
+//        bit_vector=((sig_rhs0^(this->getInputPolarities()[0]*ULLONG_MAX))&(sig_rhs1^(this->getInputPolarities()[1]*ULLONG_MAX)));
+        bit_vector=(((inputs[0]->fixLSB()->runDFS())^(this->getInputPolarities()[0]*ULLONG_MAX))&((inputs[1]->fixLSB()->runDFS())^(this->getInputPolarities()[1]*ULLONG_MAX)));
+//        cout<<this->id<<":"<<bit_vector<<endl;
 #if DEBUG >= 2
 //        dump<<"rhs0:"<<sig_rhs0<<endl;
 //        dump<<"rhs1:"<<sig_rhs1<<endl;

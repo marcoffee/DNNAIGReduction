@@ -22,9 +22,9 @@ using namespace std;
 int main(int argc, char** argv) {
 
     string file_name;
-//    file_name="../A1.aig";
+    file_name="../A1.aig";
 //    file_name="A1_ANDs_removed_1.aig";
-    file_name="andre.aig";
+//    file_name="andre.aig";
 //    file_name="andre_ANDs_removed_1.aig";
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);

@@ -714,7 +714,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         vamo.open(program_output_name);
         dump_app.open("dump_app.txt");
         check_bits.open("input_bits.txt");
-        fix.open("dumpDFS.txt");
+        fix.open("dumpDFS.csv");
 //    }
         int num_imgs;
     num_imgs=mnist_obj.getAllBits().size();
@@ -800,11 +800,16 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         bitset<BITS_PACKAGE_SIZE> bits;
         for(int u=offset;u<offset+BITS_PACKAGE_SIZE;u++)
             bits.set(u-offset,true);
-        cout<<"RJAEIRJEOI"<<endl;
+//        bits.reset();
+        cout<<bits<<endl;
         all_inputs.find(2)->second.setBitVector(bits.to_ullong());
+        cout<<all_inputs.find(2)->second.getBitVector()<<endl;
         all_inputs.find(4)->second.setBitVector(bits.to_ullong());
+        cout<<all_inputs.find(4)->second.getBitVector()<<endl;
         all_inputs.find(6)->second.setBitVector(bits.to_ullong());
-        all_inputs.find(4)->second.setBitVector(bits.to_ullong());
+        cout<<all_inputs.find(6)->second.getBitVector()<<endl;
+        all_inputs.find(8)->second.setBitVector(bits.to_ullong());
+         cout<<all_inputs.find(8)->second.getBitVector()<<endl;
         cout<<"RJAEIRJEOI"<<endl;
 //       all_inputs.find(2)->second.setSignal(1);
 //       all_inputs.find(4)->second.setSignal(1);

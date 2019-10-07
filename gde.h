@@ -21,7 +21,7 @@
 #define DEBUG 0
 #define debug_value 2
 #define SIMPLIFIEDAIG 1
-#define TEST 1
+#define TEST 0
 #define IGNORE_OUTPUTS 0
 #define PROBS_FROM_FILE 1
 #define RENUMBER 1

@@ -1932,8 +1932,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         one_count++;
         }
     }
-    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
-        it_and->second.printNode();
     
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
@@ -2246,7 +2244,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     it_and=all_ANDS.begin();
     while(it_and!=all_ANDS.end())
     {
-        it_and->second.printNode();
         if(it_and->second.getOutputs().size()==0) //&& all_outputs.find(it_and->first)==all_outputs.end())
         {
 #if DEBUG >= 2
@@ -2364,8 +2361,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         it_and->second.invertInputs();
 
-//   for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
-//       it_in->second.printNode();
    this->printCircuit();
     this->name+="_ANDs_removed_";
     if(LEAVE_CONSTANTS==1)

@@ -1977,7 +1977,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             {
                 if(current->getSignal()==-1)
                 {
-#if LEAVE_CONSTANTS ==0
+#if FIX_DOUBLED_NODES ==1
                     //current's inputs are the same node
                     if(current->getInputs()[0]->getId()==current->getInputs()[1]->getId())
                     {

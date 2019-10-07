@@ -26,6 +26,7 @@
 #define PROBS_FROM_FILE 1
 #define RENUMBER 1
 #define LEAVE_CONSTANTS 1
+#define FIX_DOUBLED_NODES 0
 
 
 

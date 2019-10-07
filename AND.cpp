@@ -141,7 +141,7 @@ vector<int> AND::getInputPolarities(){
 
 
 void AND::printNode(){
-    cout<<"AND:"<<this->id<<". Inputs:";
+    cout<<"AND:"<<this->id<<". Signal:"<<this->signal<<". Inputs:";
     for(int a=0;a<this->inputs.size();a++)
         cout<<inputs[a]->fixLSB()->getId()+(int)getThisPtrPolarity(inputs[a])<<",";
 #if IGNORE_OUTPUTS ==0

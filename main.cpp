@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);
     
-    float th=0,min_th=0.99;
+    float th=1,min_th=0.99;
 //    vector<float> new_ths(5479,0);
 //    ofstream dump("dump.txt");
 //    for(int k=0;k<new_ths.size();k++)
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
     
     mnist mnist_obj;
     graph graph_obj;
-    int option=4,alpha=2;
+    int option=0,alpha=2;
     
     
     graph_obj.clearCircuit();
@@ -56,14 +56,15 @@ int main(int argc, char** argv) {
     mnist_obj.setBitsProbabilities(read_mnist);
 //
     graph_obj.readAIG(read,file_name);
+//    graph_obj.readAAG(read,file_name);
 //    graph_obj.writeProbsHistogram();
     
-//    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);
 //    graph_obj.setDepthsInToOut();
 //        graph_obj.setANDsProbabilities(mnist_boj);
 //
-    graph_obj.applyMnistRecursive(mnist_obj);
+//    graph_obj.applyMnistRecursive(mnist_obj);
 //
 //
 //    mnist_obj.clearMnist();

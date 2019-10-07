@@ -115,7 +115,6 @@ void graph::readAAG(ifstream& file, string name){
     O=stoi(wordSelector(line,5));
     A=stoi(wordSelector(line,6));
     bool polarity0,polarity1,lhs_polarity;
-    
     //////////////////////INPUTS///////////////////
     for(i=0;i<I;i++){
         getline(file,line);
@@ -125,7 +124,6 @@ void graph::readAAG(ifstream& file, string name){
         cout<<"pushing input "<<stoi(line)<<endl;
 #endif  
     }
-    
     
   //////////////////LATCHS//////////////////////
     map<unsigned int, aux_struct>  record;
@@ -174,10 +172,7 @@ void graph::readAAG(ifstream& file, string name){
         //the latch output will become a circuit input
         this->pushPI(lhs,latch_obj);
     }
-    
-
-    
-    //////////////////OUTPUTS///////////////////
+   //////////////////OUTPUTS///////////////////
     
     for(i=0;i<O;i++){
         getline(file,line);
@@ -199,8 +194,6 @@ void graph::readAAG(ifstream& file, string name){
         cout<<"pushing output "<<stoi(line)<<endl;
 #endif  
     }
-   
-   
    ///////////////////ANDS////////////////
     for(i=0;i<A;i++){
         getline(file,line);
@@ -246,7 +239,6 @@ void graph::readAAG(ifstream& file, string name){
                 //cout<<"adding "<<lhs<<" to "<<record.find(lhs)->second[a]->getId()<<" inputs."<<endl;
             }
         }
-        
         //solving the AND's inputs
         //rhs0
         if(this->findAny(rhs0)!=nullptr) //if input already exists
@@ -273,8 +265,6 @@ void graph::readAAG(ifstream& file, string name){
                 
             }
         }
-        
-        
         //the same for the second input
         //rhs1
         if(this->findAny(rhs1)!=nullptr) //if input already exists
@@ -305,24 +295,6 @@ void graph::readAAG(ifstream& file, string name){
 #endif
 
     }
-   
-   
-//   #if DEBUG >= 3
-//   cout<<"record size:"<<record.size()<<endl;
-//   cout<<"RECORD LIST --------->>"<<endl;
-//    for(iter=record.begin();iter!=record.end();iter++)
-//    {
-//        cout<<"node: "<<iter->first<<". Outputs:";
-//        for(int k=0;k<iter->second.size();k++)
-//            cout<<iter->second[k]->getId()<<",";
-//        cout<<endl;
-//    }
-//   cout<<endl;
-//#endif
-   
-   
-   
-   
     file.close();
     
     map<unsigned int, output>::iterator it_out;
@@ -379,8 +351,6 @@ void graph::clearCircuit(){
     this->name.clear();
     this->POs_order.clear();
     this->ANDs_probabilities.clear();
-//    this->threshold=0;
-  //  this->papi_obj.clear();
     this->log.close();
 }
 
@@ -425,26 +395,29 @@ void graph::writeAAG(){
     int M;
     M=all_inputs.size()+all_latches.size()+all_ANDS.size();
     write.open((name+".aag").c_str(),ios::out|ios::trunc);
-//    write.open("OUT.aag",ios::out|ios::trunc);
-
     write<<"aag "<<M<<" "<<all_inputs.size()<<" "<<all_latches.size()<<" "<<all_outputs.size()<<" "<<all_ANDS.size()<<endl;
     
     //write the circuit inputs
     for(map<unsigned int,input>::iterator it1=all_inputs.begin();it1!=all_inputs.end();it1++)
         write<<it1->second.getId()<<endl;
-    
-    //TODO: LATCHES GO HERE
-    
+
     //write outputs
     for(map<unsigned int,output>::iterator it2=all_outputs.begin();it2!=all_outputs.end();it2++)
         write<<it2->second.getId()+((int)it2->second.getInputPolarity())<<endl;
     
     //write ANDs
     for(map<unsigned int,AND>::iterator it3=all_ANDS.begin();it3!=all_ANDS.end();it3++)
-        write<<it3->second.getId()<<" "<<it3->second.getInputs()[0]->getId()+((int)it3->second.getInputPolarities()[0])<<" "<<it3->second.getInputs()[1]->getId()+((int)it3->second.getInputPolarities()[1])<<endl;
-    
-    
-    
+    {
+        write<<it3->second.getId();
+        if(it3->second.getInputs()[0]->getId()>1)
+            write<<" "<<it3->second.getInputs()[0]->getId()+((int)it3->second.getInputPolarities()[0]);
+        else
+            write<<" "<<((it3->second.getInputs()[0]->getId())^((int)it3->second.getInputPolarities()[0]));
+        if(it3->second.getInputs()[1]->getId()>1)
+            write<<" "<<it3->second.getInputs()[1]->getId()+((int)it3->second.getInputPolarities()[1])<<endl;
+        else
+            write<<" "<<((it3->second.getInputs()[1]->getId())^((int)it3->second.getInputPolarities()[1]))<<endl;
+    }
     write.close();
 }
 
@@ -454,22 +427,29 @@ void graph::writeAIG(){
     int M=all_inputs.size()+all_latches.size()+all_ANDS.size();
     write.open((name+".aig").c_str(),ios::binary|ios::out|ios::trunc);
     write<<"aig "<<M<<" "<<all_inputs.size()<<" "<<all_latches.size()<<" "<<all_outputs.size()<<" "<<all_ANDS.size()<<endl;
-//    for(map<unsigned int,input>::iterator it1=all_inputs.begin();it1!=all_inputs.end();it1++)
-//        encodeToFile(write,it1->second.getId()/2);
 
-    
     for(map<unsigned int,output>::iterator it2=all_outputs.begin();it2!=all_outputs.end();it2++)
         write<<it2->second.getId()+((int)it2->second.getInputPolarity())<<endl;
-        
-    
-    //ANDS GO HERE
-    
-    
+
     //deltas
     for(map<unsigned int,AND>::iterator it3=all_ANDS.begin();it3!=all_ANDS.end();it3++)
     {
-        encodeToFile(write,(it3->second.getId())-(it3->second.getInputs()[0]->getId()+(it3->second.getInputPolarities()[0])));
-        encodeToFile(write,(it3->second.getInputs()[0]->getId()+(it3->second.getInputPolarities()[0]))-(it3->second.getInputs()[1]->getId()+((int)it3->second.getInputPolarities()[1])));
+        unsigned int first;
+        if(it3->second.getInputs()[0]->getId()>1)
+        {
+            encodeToFile(write,(it3->second.getId())-(it3->second.getInputs()[0]->getId()+(it3->second.getInputPolarities()[0])));
+            first=(it3->second.getInputs()[0]->getId()+(it3->second.getInputPolarities()[0]));
+        }
+        else
+        {
+            encodeToFile(write,(it3->second.getId())-((it3->second.getInputs()[0]->getId())^(it3->second.getInputPolarities()[0])));
+            first=((it3->second.getInputs()[0]->getId())^(it3->second.getInputPolarities()[0]));
+        }
+//        encodeToFile(write,(it3->second.getInputs()[0]->getId()+(it3->second.getInputPolarities()[0]))-(it3->second.getInputs()[1]->getId()+((int)it3->second.getInputPolarities()[1])));
+        if(it3->second.getInputs()[1]->getId()>1)
+            encodeToFile(write,(first)-(it3->second.getInputs()[1]->getId()+((int)it3->second.getInputPolarities()[1])));
+        else
+            encodeToFile(write,(first)-((it3->second.getInputs()[1]->getId())^((int)it3->second.getInputPolarities()[1])));
     }
 }
 
@@ -1843,10 +1823,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     else if(this->name.find("A4")!=string::npos)
         ands_probs_name+="A4.txt";
     else
+    {
         cout<<"ERROR, graph name has no A1-4"<<endl;
+        ands_probs_name="ands_probs.txt";
+        cout<<"Using:"<<ands_probs_name<<endl;
+    }
     dump1<<"circuit name:"<<this->name<<". Probs file name:"<<ands_probs_name<<endl;
     ifstream in_file (ands_probs_name);
-    
+
     it_and=all_ANDS.begin();
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
@@ -1855,27 +1839,27 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         probs_it->second=stof(line);
     }
 #endif
-    vector<float> new_ths(graph_depth,0);
+    vector<float> new_ths(graph_depth+1,0);
     if(option>0)
     {
         if(option==1)
         {
-            for(int k=0;k<new_ths.size();k++)
+            for(int k=1;k<new_ths.size();k++)
                 new_ths[k]=(((1-min_th)*k)/(graph_depth-1))+min_th;
         }
         else if (option==2) //sqrt
         {
-            for(int k=0;k<new_ths.size();k++)
+            for(int k=1;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),(float)1/alpha)))+min_th;
         }
         else if (option==3) //exp
         {
-            for(int k=0;k<new_ths.size();k++)
+            for(int k=1;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),alpha)))+min_th;
         }
         else if (option==4)
         {
-            for(int k=0;k<new_ths.size();k++)
+            for(int k=1;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth-1)) -3))/2))+min_th;
 //            for(int k=0;k<new_ths.size()/2;k++)
 //                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),alpha)))+min_th;
@@ -1905,16 +1889,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
         if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
-//        if(probs_it->second<= threshold)
         {
-#if DEBUG >=2
+#if DEBUG >=3
             dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif
-//            all_ANDS.find(probs_it->first)->second.setSignal(0);
-//            all_ANDS.find(probs_it->first)->second.clearOutputs();
-#if LEAVE_DANGLE == 0
             if(all_outputs.find(probs_it->first)==all_outputs.end())
             {
                 for(int j=0;j<and_ptr->getOutputs().size();j++)
@@ -1923,25 +1903,20 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                     if(and_ptr->getOutputs()[j]->getInputs()[0]->getId()==and_ptr->getId())
                        and_ptr->getOutputs()[j]->replaceInput(0,&constant0,and_ptr->getOutputs()[j]->getInputPolarities()[0]); 
                     else if (and_ptr->getOutputs()[j]->getInputs()[1]->getId()==and_ptr->getId())
-                        and_ptr->getOutputs()[j]->replaceInput(1,&constant0,and_ptr->getOutputs()[j]->getInputPolarities()[1]); 
+                        and_ptr->getOutputs()[j]->replaceInput(1,&constant0,and_ptr->getOutputs()[j]->getInputPolarities()[1]);
                 }
-//                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
-//                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
+                all_ANDS.find(probs_it->first)->second.clearOutputs();
             }
-#endif
            zero_count++;
         }        
         if(probs_it->second >= new_ths[this->all_depths[probs_it->first/2]])
-//        if(probs_it->second>= 1-threshold)
         {
-#if DEBUG >=2
+#if DEBUG >=3
             dump2<<"1->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(new_ths[this->all_depths[probs_it->first/2]]):"<<(new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif
-//            all_ANDS.find(probs_it->first)->second.setSignal(1);
-//            all_ANDS.find(probs_it->first)->second.clearOutputs();
-#if LEAVE_DANGLE == 0
+            
             if(all_outputs.find(probs_it->first)==all_outputs.end())
             {
                 for(int j=0;j<and_ptr->getOutputs().size();j++)
@@ -1952,14 +1927,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                     else if (and_ptr->getOutputs()[j]->getInputs()[1]->getId()==and_ptr->getId())
                         and_ptr->getOutputs()[j]->replaceInput(1,&constant1,and_ptr->getOutputs()[j]->getInputPolarities()[1]); 
                 }
-//                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[0]);
-//                this->recursiveRemoveOutput(probs_it->first,all_ANDS.find(probs_it->first)->second.getInputs()[1]);
+                all_ANDS.find(probs_it->first)->second.clearOutputs();
             }
-#endif
         one_count++;
         }
     }
-//    return ;
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        it_and->second.printNode();
+    
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
     stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -1977,6 +1952,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     cout<<"POs size:"<<all_outputs.size()<<endl<<endl;
     bool polarity,pol_new_node;
     node* new_node;
+
+
     //DFS to propagate constants
     for(it_out=this->all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
@@ -2002,160 +1979,230 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             {
                 if(current->getSignal()==-1)
                 {
-                int first=0,second=0;
-                if(current->getInputs()[0]->getSignal()==2)
-                    first=2;
-                else
-                    first=(current->getInputs()[0]->getSignal())^(current->getInputPolarities()[0]);
-                
-                if(current->getInputs()[1]->getSignal()==2)
-                    second=2;
-                else
-                    second=(current->getInputs()[1]->getSignal())^(current->getInputPolarities()[1]);
+#if LEAVE_CONSTANTS ==0
+                    //current's inputs are the same node
+                    if(current->getInputs()[0]->getId()==current->getInputs()[1]->getId())
+                    {
+                        //if they have the same polarity, means A*A=A, !(0^0)=1
+                        if(!(current->getInputPolarities()[0])^(current->getInputPolarities()[1]))
+                        {
+                            if(all_outputs.find(current->getId())!=all_outputs.end())
+                            {
+                                dump_PO<<"Replacing PO. Node: "<<current->getId()<<" has the same input:"<<current->getInputs()[0]->getId()<<endl;
+                                all_outputs.find(current->getId())->second.pushInput(current->getInputs()[0],(bool)all_outputs.find(current->getId())->second.getInputPolarity());
+                            }
+                            else
+                            {
+                                new_node=current->getInputs()[0];
+                                pol_new_node=current;
+                                AUX=current->getOutputs();
+                                for(int l=0;l<AUX.size();l++)
+                                {
+                                    if(AUX[l]->getInputs()[0]->getId()==current->getId())
+                                    {
+                                        polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]);
+                                        AUX[l]->replaceInput(0,new_node,polarity);
+                                    }
+                                    else if (AUX[l]->getInputs()[1]->getId()==current->getId())
+                                    {
+                                        polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[1]);
+                                        AUX[l]->replaceInput(1,new_node,polarity);
+                                    }
+                                    else
+                                        cout<<"ERROR, this else statement should never be reached. (propagateAndDelete)"<<endl;
+                                    new_node->pushOutput(AUX[l]);
+                                }
+                            }
+                        }
+                        //if polarities are different means A*!A=0, !(1^0)=0
+                        else
+                        {
+                            if(all_outputs.find(current->getId())!=all_outputs.end())
+                            {
+                                dump_PO<<"PO is a constant 0:";
+                                current->writeNode(dump_PO);
+                                dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
+                                all_outputs.find(current->getId())->second.clearInput();
+                                all_outputs.find(current->getId())->second.setId(0);
+                            }
+                            current->setSignal(0);
+                            recursiveRemoveOutput(current->getId(),current->getInputs()[0]);
+                            recursiveRemoveOutput(current->getId(),current->getInputs()[1]);
+                        }
+                        current->clearOutputs();
+                        current->getInputs()[0]->removeOutput(current->getId());
+                        current->getInputs()[1]->removeOutput(current->getId());
+                    }
+                    else
+#endif
+                    {
+                        int first=0,second=0;
+                        if(current->getInputs()[0]->getSignal()==2)
+                            first=2;
+                        else
+                            first=(current->getInputs()[0]->getSignal())^(current->getInputPolarities()[0]);
+
+                        if(current->getInputs()[1]->getSignal()==2)
+                            second=2;
+                        else
+                            second=(current->getInputs()[1]->getSignal())^(current->getInputPolarities()[1]);
 #if DEBUG >= debug_value
                 dump1<<endl<<"current before setsignal:"<<current->getId()<<", inputs:"<<current->getInputs()[0]->getId()<<"->"<<first<<". "<<current->getInputs()[1]->getId()<<"->"<<second<<endl;
 #endif
-                if(first==0 || second==0)
-                {
-                     //treating if constant=0 node is a PO.
-                    if(all_outputs.find(current->getId())!=all_outputs.end())
-                    {
-#if DEBUG >= 0                      
-                        dump_PO<<"PO is a constant 0:";
-                        current->writeNode(dump_PO);
-                        dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
-#endif
-//                        simpl_info<<"PO is a constant 0:"<<current->getId()<<endl;
-                        all_outputs.find(current->getId())->second.clearInput();
-                        all_outputs.find(current->getId())->second.setId(0);
-                    }
-                    current->setSignal(0);
-                    current->clearOutputs();
-                    current->getInputs()[0]->removeOutput(current->getId());
-                    current->getInputs()[1]->removeOutput(current->getId());
-
-#if DEBUG >= debug_value
-                    dump1<<"0 || 0:";
-                    current->writeNode(dump1);
-#endif
-                }
-                else if(first==1 && second==1)
-                {
-                    if(all_outputs.find(current->getId())!=all_outputs.end())
-                    {
-#if DEBUG >= 0                       
-                        dump_PO<<"PO is a constant 1:";
-                        current->writeNode(dump_PO);
-                        dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
-#endif
-//                        simpl_info<<"PO is a constant 1:"<<current->getId()<<endl;;
-                        all_outputs.find(current->getId())->second.clearInput();
-                        all_outputs.find(current->getId())->second.setId(1);
-
-                    }
-                    current->setSignal(1);
-                    current->clearOutputs();
-                    current->getInputs()[0]->removeOutput(current->getId());
-                    current->getInputs()[1]->removeOutput(current->getId());
-                    //treating if constant=1 node is a PO.
-
-#if DEBUG >= debug_value
-                    dump1<<"1 & 1:";
-                    current->writeNode(dump1);
-#endif
-                }
-                else if(first==2 && second==2)
-                {
-                    current->setSignal(2);
-#if DEBUG >= debug_value
-                    dump1<<"2 & 2:";
-                    current->writeNode(dump1);
-#endif
-                }
-                //reconnecting
-                else if(first==2 || second==2)
-                {
-#if DEBUG >= debug_value
-                    dump1<<"Removing:";
-                    current->writeNode(dump1);
-#endif
-                    current->setSignal(2);
-                    if(first!=2)
-                    {
-#if DEBUG >= debug_value
-                        dump1<<current->getInputs()[0]->getId()<<":1 and "<<current->getInputs()[1]->getId()<<":2"<<endl;
-#endif
-                        new_node=current->getInputs()[1];
-                        pol_new_node=current->getInputPolarities()[1];
-                    }
-                    else if (second!=2)
-                    {
-#if DEBUG >= debug_value
-                        dump1<<current->getInputs()[0]->getId()<<":2 and "<<current->getInputs()[1]->getId()<<":1"<<endl;
-#endif
-                        new_node=current->getInputs()[0];
-                        pol_new_node=current->getInputPolarities()[0];
-                    }
-                    else
-                            cout<<"ERROR, this if statement should not be reached1."<<endl;
-
-                    AUX=current->getOutputs();
-                    for(int l=0;l<AUX.size();l++)
-                    {
-#if DEBUG >= debug_value
-                        dump1<<"current's output before:";
-                        AUX[l]->writeNode(dump1);
-#endif
-                        if(AUX[l]->getInputs()[0]->getId()==current->getId())
+                        if(first==0 || second==0)
                         {
-#if DEBUG >= debug_value
-                            dump1<<"(int)pol_new_node:"<<(int)pol_new_node<<". AUX[l]->getInputPolarities()[0]:"<<AUX[l]->getInputPolarities()[0]<<endl;
-                            dump1<<"(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]):"<<((bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]))<<endl;
+                             //treating if constant=0 node is a PO.
+                            if(all_outputs.find(current->getId())!=all_outputs.end())
+                            {
+                    
+                                dump_PO<<"PO is a constant 0:";
+                                current->writeNode(dump_PO);
+                                dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
+                                all_outputs.find(current->getId())->second.clearInput();
+                                all_outputs.find(current->getId())->second.setId(0);
+                            }
+#if LEAVE_CONSTANTS==0
+                            current->setSignal(0);
+                            current->clearOutputs();
+                            current->getInputs()[0]->removeOutput(current->getId());
+                            current->getInputs()[1]->removeOutput(current->getId());
+#else
+                            current->setSignal(0);
 #endif
-                            polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]);
-                            AUX[l]->replaceInput(0,new_node,polarity);
-                            
+
+#if DEBUG >= debug_value
+                            dump1<<"0 || 0:";
+                            current->writeNode(dump1);
+#endif
                         }
-                        else if (AUX[l]->getInputs()[1]->getId()==current->getId())
+                        else if(first==1 && second==1)
+                        {
+                            if(all_outputs.find(current->getId())!=all_outputs.end())
+                            {
+#if DEBUG >= 0                       
+                                dump_PO<<"PO is a constant 1:";
+                                current->writeNode(dump_PO);
+                                dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
+#endif
+        //                        simpl_info<<"PO is a constant 1:"<<current->getId()<<endl;;
+                                all_outputs.find(current->getId())->second.clearInput();
+                                all_outputs.find(current->getId())->second.setId(1);
+
+                            }
+#if LEAVE_CONSTANTS==0
+                            current->setSignal(1);
+                            current->clearOutputs();
+                            current->getInputs()[0]->removeOutput(current->getId());
+                            current->getInputs()[1]->removeOutput(current->getId());
+#else
+                            current->setSignal(0);
+#endif
+                            //treating if constant=1 node is a PO.
+
+#if DEBUG >= debug_value
+                            dump1<<"1 & 1:";
+                            current->writeNode(dump1);
+#endif
+                        }
+                        else if(first==2 && second==2)
+                        {
+                            current->setSignal(2);
+#if DEBUG >= debug_value
+                            dump1<<"2 & 2:";
+                            current->writeNode(dump1);
+#endif
+                        }
+                        //reconnecting
+                        else if(first==2 || second==2)
                         {
 #if DEBUG >= debug_value
-                            dump1<<"(int)pol_new_node:"<<(int)pol_new_node<<". AUX[l]->getInputPolarities()[1]:"<<AUX[l]->getInputPolarities()[1]<<endl;
-                            dump1<<"(bool)((int)pol_new_nodepolarity)^(AUX[l]->getInputPolarities()[1]):"<<((bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[1]))<<endl;
+                            dump1<<"Removing:";
+                            current->writeNode(dump1);
 #endif
-                            polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[1]);
-                            AUX[l]->replaceInput(1,new_node,polarity);
-                            
+                            current->setSignal(2);
+                            if(first!=2)
+                            {
+#if DEBUG >= debug_value
+                                dump1<<current->getInputs()[0]->getId()<<":1 and "<<current->getInputs()[1]->getId()<<":2"<<endl;
+#endif
+                                new_node=current->getInputs()[1];
+                                pol_new_node=current->getInputPolarities()[1];
+                            }
+                            else if (second!=2)
+                            {
+#if DEBUG >= debug_value
+                                dump1<<current->getInputs()[0]->getId()<<":2 and "<<current->getInputs()[1]->getId()<<":1"<<endl;
+#endif
+                                new_node=current->getInputs()[0];
+                                pol_new_node=current->getInputPolarities()[0];
+                            }
+                            else
+                                    cout<<"ERROR, this if statement should not be reached1."<<endl;
+
+                            AUX=current->getOutputs();
+                            for(int l=0;l<AUX.size();l++)
+                            {
+#if DEBUG >= debug_value
+                                dump1<<"current's output before:";
+                                AUX[l]->writeNode(dump1);
+#endif
+                                if(AUX[l]->getInputs()[0]->getId()==current->getId())
+                                {
+#if DEBUG >= debug_value
+                                    dump1<<"(int)pol_new_node:"<<(int)pol_new_node<<". AUX[l]->getInputPolarities()[0]:"<<AUX[l]->getInputPolarities()[0]<<endl;
+                                    dump1<<"(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]):"<<((bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]))<<endl;
+#endif
+                                    polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]);
+#if LEAVE_CONSTANTS==0
+                                    AUX[l]->replaceInput(0,new_node,polarity);
+#endif
+
+                                }
+                                else if (AUX[l]->getInputs()[1]->getId()==current->getId())
+                                {
+#if DEBUG >= debug_value
+                                    dump1<<"(int)pol_new_node:"<<(int)pol_new_node<<". AUX[l]->getInputPolarities()[1]:"<<AUX[l]->getInputPolarities()[1]<<endl;
+                                    dump1<<"(bool)((int)pol_new_nodepolarity)^(AUX[l]->getInputPolarities()[1]):"<<((bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[1]))<<endl;
+#endif
+                                    polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[1]);
+#if LEAVE_CONSTANTS==0
+                                    AUX[l]->replaceInput(1,new_node,polarity);
+#endif
+                                }
+                                else
+                                    cout<<"ERROR, this else statement should never be reached. (propagateAndDelete)"<<endl;
+                                new_node->pushOutput(AUX[l]);
+#if DEBUG >= debug_value
+                                dump1<<AUX[l]->getId()<<" reciving new node:"<<new_node->getId()<<endl;
+                                dump1<<"current's output after:";
+                                AUX[l]->writeNode(dump1);
+#endif
+                            }
+#if LEAVE_CONSTANTS==0
+                            current->clearOutputs();
+                            current->getInputs()[0]->removeOutput(current->getId());
+                            current->getInputs()[1]->removeOutput(current->getId());
+
+
+                            //treating if current to be removed is a PO
+                            if(all_outputs.find(current->getId())!=all_outputs.end())
+                            {
+#if DEBUG >= debug_value                       
+                                dump_PO<<"Renumbering output:"<<current->getId()<<" with:"<<new_node->getId()<<endl;
+#endif
+                                all_outputs.find(current->getId())->second.setId(new_node->getId());
+                                polarity=((int)pol_new_node)^all_outputs.find(current->getId())->second.getInputPolarity();
+                                all_outputs.find(current->getId())->second.pushInput(new_node,polarity);
+
+                            }
+#endif
                         }
                         else
-                            cout<<"ERROR, this else statement should never be reached. (propagateAndDelete)"<<endl;
-                        new_node->pushOutput(AUX[l]);
-#if DEBUG >= debug_value
-                        dump1<<AUX[l]->getId()<<" reciving new node:"<<new_node->getId()<<endl;
-                        dump1<<"current's output after:";
-                        AUX[l]->writeNode(dump1);
-#endif
-                    }
-                    current->clearOutputs();
-                    current->getInputs()[0]->removeOutput(current->getId());
-                    current->getInputs()[1]->removeOutput(current->getId());
-                    
-                    //treating if current to be removed is a PO
-                    if(all_outputs.find(current->getId())!=all_outputs.end())
-                    {
-#if DEBUG >= debug_value                       
-                        dump_PO<<"Renumbering output:"<<current->getId()<<" with:"<<new_node->getId()<<endl;
-#endif
-                        all_outputs.find(current->getId())->second.setId(new_node->getId());
-                        polarity=((int)pol_new_node)^all_outputs.find(current->getId())->second.getInputPolarity();
-                        all_outputs.find(current->getId())->second.pushInput(new_node,polarity);
-
-                    }
+                            cout<<"ERROR, this if statement should not be reached2."<<endl;
+                        }
+                        visits[stackzin.top()->getId()/2]=1;
+                        stackzin.pop();//pop_back();
                 }
-                else
-                    cout<<"ERROR, this if statement should not be reached2."<<endl;
-                }
-                visits[stackzin.top()->getId()/2]=1;
-                stackzin.pop();//pop_back();
             }
         }
         if(it_out->second.getId()>1)
@@ -2167,15 +2214,18 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             simpl_info<<"WARNING: output "<<it_out->second.getId()<<" has signal after constant propagation:"<<it_out->second.getSignal()<<endl;
         }
     }
-    cout<<"Signal propagation done."<<endl; 
+    cout<<"Signal propagation doneeeeeeeeeeeeeeee."<<endl; 
     
-#if LEAVE_DANGLE == 0
+
     //making sure outputs wont be deleted, by adding themselfs to their fanout list
     for(it_out=this->all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
         if(it_out->second.getId()>1)
             it_out->second.getInput()->pushOutput(it_out->second.getInput());
     }
+    
+
+    //Setting ANDs that wasn't reached in the DFS to be removed.
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
     {
         if(it_and->second.getSignal()==-1)
@@ -2185,6 +2235,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             it_and->second.getInputs()[1]->removeOutput(it_and->second.getId());
         }
     }
+
     //Removing ANDs with 0 fanouts
     int ands_removed=0,PIs_removed=0,id=0;
     cout<<"graph depth:"<<this->graph_depth<<endl;
@@ -2195,6 +2246,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     it_and=all_ANDS.begin();
     while(it_and!=all_ANDS.end())
     {
+        it_and->second.printNode();
         if(it_and->second.getOutputs().size()==0) //&& all_outputs.find(it_and->first)==all_outputs.end())
         {
 #if DEBUG >= 2
@@ -2306,7 +2358,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
    }
    cout<<"Constant POs:"<<constant_POs<<endl;
 #endif
-#endif
+
    
     //Reordering AND's inputs (bigger first)
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
@@ -2314,11 +2366,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 
 //   for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
 //       it_in->second.printNode();
-   
-//    this->name+="_ANDs_removed_";
+   this->printCircuit();
+    this->name+="_ANDs_removed_";
+    if(LEAVE_CONSTANTS==1)
+        this->name+="WITH_CONSTANTS_";
 //   this->name+=to_string(1-threshold);
-//    cout<<"Writing output file (AIG):"<<this->name<<endl;
-//    this->writeAIG();
+    cout<<"Writing output file (AIG):"<<this->name<<endl;
+    this->writeAIG();
 //    cout<<"Writing output file (AAG):"<<this->name<<endl;
 //    this->writeAAG();
 }

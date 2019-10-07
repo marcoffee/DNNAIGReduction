@@ -2065,7 +2065,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                             current->getInputs()[0]->removeOutput(current->getId());
                             current->getInputs()[1]->removeOutput(current->getId());
 #else
-                            current->setSignal(0);
+                            current->setSignal(2);
 #endif
 
 #if DEBUG >= debug_value
@@ -2093,7 +2093,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                             current->getInputs()[0]->removeOutput(current->getId());
                             current->getInputs()[1]->removeOutput(current->getId());
 #else
-                            current->setSignal(0);
+                            current->setSignal(2);
 #endif
                             //treating if constant=1 node is a PO.
 

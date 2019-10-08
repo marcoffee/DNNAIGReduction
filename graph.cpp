@@ -352,6 +352,8 @@ void graph::clearCircuit(){
     this->POs_order.clear();
     this->ANDs_probabilities.clear();
     this->log.close();
+    this->all_depths.clear();
+    this->greatest_depths_ids.clear();
 }
 
 map<unsigned int,input>* graph::getInputs(){
@@ -1782,9 +1784,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     //Inputs with probability of being 0 less than threshold are set to zero
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
-        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1- threshold)
+        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-threshold)
         {
-            cout<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" th:"<<1-threshold<<endl;
+//            cout<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" th:"<<1-threshold<<endl;
             it_in->second.setSignal(0);
             PI_constant++;
         }   
@@ -1858,14 +1860,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             for(int k=1;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),alpha)))+min_th;
         }
-        else if (option==4)
+        else if (option==4) //sigmoidal
         {
             for(int k=1;k<new_ths.size();k++)
+            {
                 new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth-1)) -3))/2))+min_th;
-//            for(int k=0;k<new_ths.size()/2;k++)
-//                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),alpha)))+min_th;
-//            for(int k=new_ths.size()/2;k<new_ths.size();k++)
-//                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),(float)1/alpha)))+min_th;
+                if(k>= 0.99*(5479-1))
+                    new_ths[k]=1;
+            }
         }
     }
     else

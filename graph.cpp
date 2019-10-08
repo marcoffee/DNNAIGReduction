@@ -1709,7 +1709,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     if(option==0)
     {
         th_value="_fixed_";
-        th_value+=to_string(1-threshold);
+        th_value+=to_string(threshold);
     }
     else if(option>0)
     {
@@ -1805,7 +1805,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
   all_inputs.find(4)->second.setSignal(2);
   all_inputs.find(6)->second.setSignal(2);
   all_inputs.find(8)->second.setSignal(2);
-  all_inputs.find(10)->second.setSignal(2);
+  all_inputs.find(10)->second.setSignal(1);
 #endif
 #if PROBS_FROM_FILE ==1
     ANDs_probabilities.clear();
@@ -1890,7 +1890,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         and_ptr=&all_ANDS.find(probs_it->first)->second;
         if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
         {
-#if DEBUG >=3
+#if DEBUG >=0
             dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1905,13 +1905,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                     else if (and_ptr->getOutputs()[j]->getInputs()[1]->getId()==and_ptr->getId())
                         and_ptr->getOutputs()[j]->replaceInput(1,&constant0,and_ptr->getOutputs()[j]->getInputPolarities()[1]);
                 }
-                all_ANDS.find(probs_it->first)->second.clearOutputs();
             }
            zero_count++;
         }        
         if(probs_it->second >= new_ths[this->all_depths[probs_it->first/2]])
         {
-#if DEBUG >=3
+#if DEBUG >=0
             dump2<<"1->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(new_ths[this->all_depths[probs_it->first/2]]):"<<(new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1927,7 +1926,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                     else if (and_ptr->getOutputs()[j]->getInputs()[1]->getId()==and_ptr->getId())
                         and_ptr->getOutputs()[j]->replaceInput(1,&constant1,and_ptr->getOutputs()[j]->getInputPolarities()[1]); 
                 }
-                all_ANDS.find(probs_it->first)->second.clearOutputs();
             }
         one_count++;
         }
@@ -2360,15 +2358,15 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         it_and->second.invertInputs();
 
-   this->printCircuit();
+
     this->name+="_ANDs_removed_";
     if(LEAVE_CONSTANTS==1)
         this->name+="WITH_CONSTANTS_";
 //   this->name+=to_string(1-threshold);
     cout<<"Writing output file (AIG):"<<this->name<<endl;
     this->writeAIG();
-//    cout<<"Writing output file (AAG):"<<this->name<<endl;
-//    this->writeAAG();
+    cout<<"Writing output file (AAG):"<<this->name<<endl;
+    this->writeAAG();
 }
 
 

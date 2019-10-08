@@ -176,7 +176,7 @@ unsigned long long int AND::runDFS(){
 
 //        bit_vector=(((inputs[0]->fixLSB()->runDFS())^(this->getInputPolarities()[0]*ULLONG_MAX))&((inputs[1]->fixLSB()->runDFS())^(this->getInputPolarities()[1]*ULLONG_MAX)));
 
-#if DEBUG >= 2
+#if DEBUG >= 3
 //        dump<<"rhs0:"<<sig_rhs0<<endl;
 //        dump<<"rhs1:"<<sig_rhs1<<endl;
         dump<<"this->getInputPolarities()[0]:"<<this->getInputPolarities()[0]<<endl;

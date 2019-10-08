@@ -2095,7 +2095,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 #else
                             current->setSignal(2);
 #endif
-                            //treating if constant=1 node is a PO.
 
 #if DEBUG >= debug_value
                             dump1<<"1 & 1:";
@@ -2151,9 +2150,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                     dump1<<"(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]):"<<((bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]))<<endl;
 #endif
                                     polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]);
-#if LEAVE_CONSTANTS==0
+//#if LEAVE_CONSTANTS==0
                                     AUX[l]->replaceInput(0,new_node,polarity);
-#endif
+//#endif
 
                                 }
                                 else if (AUX[l]->getInputs()[1]->getId()==current->getId())
@@ -2163,9 +2162,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                     dump1<<"(bool)((int)pol_new_nodepolarity)^(AUX[l]->getInputPolarities()[1]):"<<((bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[1]))<<endl;
 #endif
                                     polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[1]);
-#if LEAVE_CONSTANTS==0
+//#if LEAVE_CONSTANTS==0
                                     AUX[l]->replaceInput(1,new_node,polarity);
-#endif
+//#endif
                                 }
                                 else
                                     cout<<"ERROR, this else statement should never be reached. (propagateAndDelete)"<<endl;
@@ -2176,11 +2175,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                 AUX[l]->writeNode(dump1);
 #endif
                             }
-#if LEAVE_CONSTANTS==0
+//#if LEAVE_CONSTANTS==0
                             current->clearOutputs();
                             current->getInputs()[0]->removeOutput(current->getId());
                             current->getInputs()[1]->removeOutput(current->getId());
-
+//#endif
 
                             //treating if current to be removed is a PO
                             if(all_outputs.find(current->getId())!=all_outputs.end())
@@ -2193,13 +2192,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                 all_outputs.find(current->getId())->second.pushInput(new_node,polarity);
 
                             }
-#endif
+//#endif
                         }
                         else
                             cout<<"ERROR, this if statement should not be reached2."<<endl;
                         }
                         visits[stackzin.top()->getId()/2]=1;
-                        stackzin.pop();//pop_back();
+                        stackzin.pop();
                 }
             }
         }

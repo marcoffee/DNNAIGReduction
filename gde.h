@@ -18,8 +18,8 @@
 #define DBGVAR( os, var ) \
   (os) << "DBG: " << __FILE__ << "(" << __LINE__ << ") "\
        << #var << " = [" << (var) << "]" << std::endl
-#define DEBUG 2
-#define debug_value 0
+#define DEBUG 0
+#define debug_value 2
 #define SIMPLIFIEDAIG 1
 #define TEST 0
 #define IGNORE_OUTPUTS 0

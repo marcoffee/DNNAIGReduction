@@ -1779,12 +1779,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setSignal(-1); 
     
-    
     //Inputs with probability of being 0 less than threshold are set to zero
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
-        if(mnist_obj.getPIsProbabilities()[posY][posX]<= threshold)
+        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1- threshold)
         {
+            cout<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" th:"<<1-threshold<<endl;
             it_in->second.setSignal(0);
             PI_constant++;
         }   
@@ -1807,6 +1807,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
   all_inputs.find(8)->second.setSignal(2);
   all_inputs.find(10)->second.setSignal(1);
 #endif
+  
 #if PROBS_FROM_FILE ==1
     ANDs_probabilities.clear();
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)

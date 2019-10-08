@@ -1802,12 +1802,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
   cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
   simpl_info<<"Threshold:"<<th_value<<endl;
   simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
+  
 #if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
   all_inputs.find(4)->second.setSignal(2);
   all_inputs.find(6)->second.setSignal(2);
   all_inputs.find(8)->second.setSignal(2);
-  all_inputs.find(10)->second.setSignal(1);
+  all_inputs.find(10)->second.setSignal(2);
 #endif
   
 #if PROBS_FROM_FILE ==1
@@ -1845,27 +1846,27 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     vector<float> new_ths(graph_depth+1,0);
     if(option>0)
     {
-        if(option==1)
+        if(option==1) //linear
         {
-            for(int k=1;k<new_ths.size();k++)
-                new_ths[k]=(((1-min_th)*k)/(graph_depth-1))+min_th;
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=(((1-min_th)*k)/(graph_depth))+min_th;
         }
         else if (option==2) //sqrt
         {
-            for(int k=1;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),(float)1/alpha)))+min_th;
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth),(float)1/alpha)))+min_th;
         }
         else if (option==3) //exp
         {
-            for(int k=1;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth-1),alpha)))+min_th;
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth),alpha)))+min_th;
         }
         else if (option==4) //sigmoidal
         {
-            for(int k=1;k<new_ths.size();k++)
+            for(int k=0;k<new_ths.size();k++)
             {
-                new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth-1)) -3))/2))+min_th;
-                if(k>= 0.99*(5479-1))
+                new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth)) -3))/2))+min_th;
+                if(k>= 0.99*(graph_depth))
                     new_ths[k]=1;
             }
         }
@@ -1893,7 +1894,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         and_ptr=&all_ANDS.find(probs_it->first)->second;
         if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
         {
-#if DEBUG >=0
+#if DEBUG >=3
             dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1913,7 +1914,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         }        
         if(probs_it->second >= new_ths[this->all_depths[probs_it->first/2]])
         {
-#if DEBUG >=0
+#if DEBUG >=3
             dump2<<"1->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(new_ths[this->all_depths[probs_it->first/2]]):"<<(new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1952,7 +1953,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     bool polarity,pol_new_node;
     node* new_node;
 
-
+#if LEAVE_CONSTANTS == 0
     //DFS to propagate constants
     for(it_out=this->all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
@@ -1978,62 +1979,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             {
                 if(current->getSignal()==-1)
                 {
-#if FIX_DOUBLED_NODES ==1
-                    //current's inputs are the same node
-                    if(current->getInputs()[0]->getId()==current->getInputs()[1]->getId())
-                    {
-                        //if they have the same polarity, means A*A=A, !(0^0)=1
-                        if(!(current->getInputPolarities()[0])^(current->getInputPolarities()[1]))
-                        {
-                            if(all_outputs.find(current->getId())!=all_outputs.end())
-                            {
-                                dump_PO<<"Replacing PO. Node: "<<current->getId()<<" has the same input:"<<current->getInputs()[0]->getId()<<endl;
-                                all_outputs.find(current->getId())->second.pushInput(current->getInputs()[0],(bool)all_outputs.find(current->getId())->second.getInputPolarity());
-                            }
-                            else
-                            {
-                                new_node=current->getInputs()[0];
-                                pol_new_node=current;
-                                AUX=current->getOutputs();
-                                for(int l=0;l<AUX.size();l++)
-                                {
-                                    if(AUX[l]->getInputs()[0]->getId()==current->getId())
-                                    {
-                                        polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[0]);
-                                        AUX[l]->replaceInput(0,new_node,polarity);
-                                    }
-                                    else if (AUX[l]->getInputs()[1]->getId()==current->getId())
-                                    {
-                                        polarity=(bool)((int)pol_new_node)^(AUX[l]->getInputPolarities()[1]);
-                                        AUX[l]->replaceInput(1,new_node,polarity);
-                                    }
-                                    else
-                                        cout<<"ERROR, this else statement should never be reached. (propagateAndDelete)"<<endl;
-                                    new_node->pushOutput(AUX[l]);
-                                }
-                            }
-                        }
-                        //if polarities are different means A*!A=0, !(1^0)=0
-                        else
-                        {
-                            if(all_outputs.find(current->getId())!=all_outputs.end())
-                            {
-                                dump_PO<<"PO is a constant 0:";
-                                current->writeNode(dump_PO);
-                                dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
-                                all_outputs.find(current->getId())->second.clearInput();
-                                all_outputs.find(current->getId())->second.setId(0);
-                            }
-                            current->setSignal(0);
-                            recursiveRemoveOutput(current->getId(),current->getInputs()[0]);
-                            recursiveRemoveOutput(current->getId(),current->getInputs()[1]);
-                        }
-                        current->clearOutputs();
-                        current->getInputs()[0]->removeOutput(current->getId());
-                        current->getInputs()[1]->removeOutput(current->getId());
-                    }
-                    else
-#endif
                     {
                         int first=0,second=0;
                         if(current->getInputs()[0]->getSignal()==2)
@@ -2060,14 +2005,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                 all_outputs.find(current->getId())->second.clearInput();
                                 all_outputs.find(current->getId())->second.setId(0);
                             }
-#if LEAVE_CONSTANTS==0
+//#if LEAVE_CONSTANTS==0
                             current->setSignal(0);
                             current->clearOutputs();
                             current->getInputs()[0]->removeOutput(current->getId());
                             current->getInputs()[1]->removeOutput(current->getId());
-#else
-                            current->setSignal(2);
-#endif
+//#else
+//                            current->setSignal(2);
+//#endif
 
 #if DEBUG >= debug_value
                             dump1<<"0 || 0:";
@@ -2088,14 +2033,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                 all_outputs.find(current->getId())->second.setId(1);
 
                             }
-#if LEAVE_CONSTANTS==0
+//#if LEAVE_CONSTANTS==0
                             current->setSignal(1);
                             current->clearOutputs();
                             current->getInputs()[0]->removeOutput(current->getId());
                             current->getInputs()[1]->removeOutput(current->getId());
-#else
-                            current->setSignal(2);
-#endif
+//#else
+//                            current->setSignal(2);
+//#endif
 
 #if DEBUG >= debug_value
                             dump1<<"1 & 1:";
@@ -2237,7 +2182,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     //Removing ANDs with 0 fanouts
     int ands_removed=0,PIs_removed=0,id=0;
     cout<<"graph depth:"<<this->graph_depth<<endl;
-    vector<int> removed_nodes_counter_by_depth(graph_depth,0);
+    vector<int> removed_nodes_counter_by_depth(graph_depth+1,0);
 //    dump1<<"graph depth:"<<this->graph_depth<<endl;
 //    dump1<<"removed_nodes_counter_by_depth size:"<<removed_nodes_counter_by_depth.size()<<endl;
     ofstream write2("removed_ANDs.txt");  
@@ -2360,7 +2305,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     //Reordering AND's inputs (bigger first)
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         it_and->second.invertInputs();
-
+#endif
 
     this->name+="_ANDs_removed_";
     if(LEAVE_CONSTANTS==1)

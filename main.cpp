@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     mnist mnist_obj;
     graph graph_obj;
     int option=0,alpha=2;
-    float min_th=1;
+    float min_th=0.9999;
 
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(min_th);
@@ -59,8 +59,7 @@ int main(int argc, char** argv) {
     mnist_obj.setBitsProbabilities(read_mnist);
     
     graph_obj.readAIG(read,file_name);
-//    graph_obj.writeProbsHistogram();
-    
+  
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);
 //    graph_obj.setDepthsInToOut();

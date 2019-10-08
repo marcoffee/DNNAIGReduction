@@ -13,19 +13,18 @@
 
 #ifndef GDE_H
 #define GDE_H
-//#define THRESHOLD 0
 
 #define DBGVAR( os, var ) \
   (os) << "DBG: " << __FILE__ << "(" << __LINE__ << ") "\
        << #var << " = [" << (var) << "]" << std::endl
 #define DEBUG 0
-#define debug_value 2
+#define debug_value 3
 #define SIMPLIFIEDAIG 1
 #define TEST 0
 #define IGNORE_OUTPUTS 0
 #define PROBS_FROM_FILE 1
 #define RENUMBER 1
-#define LEAVE_CONSTANTS 0
+#define LEAVE_CONSTANTS 1
 #define FIX_DOUBLED_NODES 0
 
 

@@ -120,7 +120,7 @@ void graph::readAAG(ifstream& file, string name){
         getline(file,line);
         input input_obj(stoi(line));
         this->pushPI(stoi(line),input_obj);
-#if DEBUG >= 2 
+#if DEBUG >= 4
         cout<<"pushing input "<<stoi(line)<<endl;
 #endif  
     }
@@ -137,7 +137,7 @@ void graph::readAAG(ifstream& file, string name){
         lhs=stoi(wordSelector(line,1));
         input latch_obj(lhs);
         this->pushPI(lhs,latch_obj);
-#if DEBUG >= 2
+#if DEBUG >= 4
         cout<<"pushing latch (as input) "<<stoi(line)<<endl;
 #endif  
         
@@ -190,7 +190,7 @@ void graph::readAAG(ifstream& file, string name){
         
         output output_obj(lhs);
         this->pushPO(lhs,output_obj);
-#if DEBUG >= 2
+#if DEBUG >= 4
         cout<<"pushing output "<<stoi(line)<<endl;
 #endif  
     }
@@ -201,7 +201,7 @@ void graph::readAAG(ifstream& file, string name){
         AND AND_obj(lhs);
         this->pushAnd(lhs,AND_obj);
 
-#if DEBUG >= 2
+#if DEBUG >= 4
         cout<<"pushing AND "<<this->findAnd(lhs)->getId()<<endl;
 #endif  
         
@@ -530,7 +530,7 @@ void graph::readAIG(ifstream& file, string param_name){
     {
         input input_obj(i*2);
         this->pushPI(i*2,input_obj);
-#if DEBUG >= 2
+#if DEBUG >= 4
         cout<<"pushing input "<<i*2<<endl;
 #endif
     }
@@ -651,7 +651,7 @@ void graph::readAIG(ifstream& file, string param_name){
 //        else
 //            cout<<"ERROR, this if statement should not be reached, (readAIG)"<<endl;
         this->pushPO(lhs,output_obj);
-#if DEBUG >= 2
+#if DEBUG >= 4
         cout<<"pushing output "<<lhs<<" Polarity:"<<polarity0<<endl;
 #endif  
     }

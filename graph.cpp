@@ -2221,6 +2221,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     }
     
     ofstream write("removed_inputs.txt");        
+    
+#if REMOVE_PI ==1
     it_in=all_inputs.begin();
     //Removing inputs with 0 fanouts
     while(it_in!=all_inputs.end())
@@ -2234,6 +2236,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         else
             it_in++;
     }
+#endif
     
     int sum=0;
     for(int t=0;t<removed_nodes_counter_by_depth.size();t++)

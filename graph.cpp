@@ -1717,16 +1717,18 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     {
         this->setThrehsold(1-min_th);
         if(option==1)
-          th_value="_linear";
+          th_value="_level_linear";
         else if (option==2)
-            th_value="_sqrt";
+            th_value="_level_sqrt";
         else if (option==3)
-            th_value="_exp";
+            th_value="_level_exp";
         else if (option==4)
-            th_value="_sigmoidal";
+            th_value="_level_sigmoidal";
+        else if (option==5)
+            th_value="_#of_nodes_on_lvl_linear";
         th_value+="_min_";
         th_value+=to_string(min_th);
-        if(option>1)
+        if(option>1 && option<=3)
         {
             th_value+="_alpha_";
             th_value+=to_string(alpha);
@@ -1868,7 +1870,18 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                 new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth)) -3))/2))+min_th;
                 if(k>= 0.99*(graph_depth))
                     new_ths[k]=1;
+                if(k<= 0.01*(graph_depth))
+                    new_ths[k]=min_th;
+                
             }
+        }
+        else if (option==5) //number of nodes per level, linear
+        {
+            vector<int> depth_counter (this->graph_depth+1,0);
+            for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+                depth_counter[all_depths[it_and->second.getId()/2]]++;
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=(((1-min_th)*depth_counter[k])/(all_ANDS.size()))+min_th;
         }
     }
     else

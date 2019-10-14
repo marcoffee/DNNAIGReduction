@@ -1718,7 +1718,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     }
     else if(option>0)
     {
-        this->setThrehsold(1-min_th);
         if(option==1)
           th_value="_level_linear";
         else if (option==2)

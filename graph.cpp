@@ -1792,7 +1792,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         
         if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-threshold)
         {
-            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" >= th:"<<threshold<<endl;
+            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<1-threshold<<endl;
             it_in->second.setSignal(0);
             PI_constant++;
         }   

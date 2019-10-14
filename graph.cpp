@@ -1410,7 +1410,9 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
             it_and++;
     }
     
-    ofstream write("removed_inputs.txt");        
+    ofstream write("removed_inputs.txt");
+    
+#if KEEP_REMOVED_PI_ON_FILE ==0
     it_in=all_inputs.begin();
     //Removing inputs with 0 fanouts
     while(it_in!=all_inputs.end())
@@ -1424,6 +1426,7 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
         else
             it_in++;
     }
+#endif
     cout<<"ANDs removed:"<<ands_removed<<endl;
     cout<<"Inputs removed:"<<PIs_removed<<endl;
     simpl_info<<"ANDs removed:"<<ands_removed<<endl;

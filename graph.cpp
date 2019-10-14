@@ -1412,7 +1412,7 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
     
     ofstream write("removed_inputs.txt");
     
-#if KEEP_REMOVED_PI_ON_FILE ==0
+#if REMOVE_PI ==1
     it_in=all_inputs.begin();
     //Removing inputs with 0 fanouts
     while(it_in!=all_inputs.end())
@@ -1790,9 +1790,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
         
-        if(mnist_obj.getPIsProbabilities()[posY][posX]>= threshold)
+        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-threshold)
         {
-//            cout<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" th:"<<1-threshold<<endl;
+            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" >= th:"<<threshold<<endl;
             it_in->second.setSignal(0);
             PI_constant++;
         }   

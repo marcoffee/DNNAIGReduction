@@ -1493,10 +1493,15 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj) {
     csv_final.open("todos_scores.csv",ios::app);
     simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<ands_removed<<","<<all_ANDS.size()<<endl;
     csv_final<<this->name<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<ands_removed<<","<<all_ANDS.size()<<endl;
-//    cout<<"Writing output file (AIG):"<<this->name<<endl;
-//    this->writeAIG();
-//    cout<<"Writing output file (AAG):"<<this->name<<endl;
-//    this->writeAAG();
+    
+#if WRITE_AIG == 1
+    cout<<"Writing output file (AIG):"<<this->name<<endl;
+    this->writeAIG();
+#endif
+#if WRITE_AAG == 1
+    cout<<"Writing output file (AAG):"<<this->name<<endl;
+    this->writeAAG();
+#endif
 }
 
 void graph::cutAIG(){
@@ -2320,20 +2325,24 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
    cout<<"Constant POs:"<<constant_POs<<endl;
 #endif
 
-   
+#endif
     //Reordering AND's inputs (bigger first)
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         it_and->second.invertInputs();
-#endif
+
 
     this->name+="_ANDs_removed_";
     if(LEAVE_CONSTANTS==1)
         this->name+="WITH_CONSTANTS_";
 //   this->name+=to_string(1-threshold);
+#if WRITE_AIG == 1
     cout<<"Writing output file (AIG):"<<this->name<<endl;
     this->writeAIG();
+#endif
+#if WRITE_AAG == 1
     cout<<"Writing output file (AAG):"<<this->name<<endl;
     this->writeAAG();
+#endif
 }
 
 

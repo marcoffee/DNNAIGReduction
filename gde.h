@@ -17,16 +17,20 @@
 #define DBGVAR( os, var ) \
   (os) << "DBG: " << __FILE__ << "(" << __LINE__ << ") "\
        << #var << " = [" << (var) << "]" << std::endl
+
+#define PROBS_FROM_FILE 1
+#define IGNORE_OUTPUTS 0
+#define SIMPLIFIEDAIG 1
 #define DEBUG 0
 #define debug_value 3
-#define SIMPLIFIEDAIG 1
 #define TEST 0
-#define IGNORE_OUTPUTS 0
-#define PROBS_FROM_FILE 1
 #define RENUMBER 1
-#define REMOVE_PI 1
-#define LEAVE_CONSTANTS 0
+#define REMOVE_PI 0
+#define LEAVE_CONSTANTS 1
 #define FIX_DOUBLED_NODES 0
+#define EXECUTE_ONCE 1
+#define WRITE_AIG 1
+#define WRITE_AAG 1
 
 
 

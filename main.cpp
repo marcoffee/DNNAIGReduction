@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name;
-    file_name="../A1.aig";
-//    file_name="andre.aig";
+//    file_name="../A1.aig";
+    file_name="andreV3.aag";
     
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);
@@ -58,7 +58,9 @@ int main(int argc, char** argv) {
     mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
     mnist_obj.setBitsProbabilities(read_mnist);
     
-    graph_obj.readAIG(read,file_name);
+//    graph_obj.readAIG(read,file_name);
+//    graph_obj.printCircuit();
+    graph_obj.readAAG(read,file_name);
   
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);

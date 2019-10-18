@@ -27,13 +27,13 @@ int main(int argc, char** argv) {
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name;
     file_name="../A1.aig";
-//    file_name="andre.aig";
+//    file_name="andreV3.aag";
     
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=5,alpha=2;
+    int option=0,alpha=2;
     float min_th=0.9999;
    
 //    vector<float> new_ths(5479,0);

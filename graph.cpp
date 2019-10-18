@@ -2055,7 +2055,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                 dump_PO<<"PO is a constant 0, has the same input with inverted polarities:";
                                 current->writeNode(dump_PO);
                                 dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
-                                all_outputs.find(current->getId())->second.clearInput();
+//                                all_outputs.find(current->getId())->second.clearInput();
+                                all_outputs.find(current->getId())->second.pushInput(&constant0,(bool)all_outputs.find(current->getId())->second.getInputPolarity());
                                 all_outputs.find(current->getId())->second.setId(0);
                             }
                             current->setSignal(0);

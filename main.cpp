@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     
 
 
-#if EXECUTE_ONCE ==0
+#if EXECUTE_ONCE ==1
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(min_th);
 

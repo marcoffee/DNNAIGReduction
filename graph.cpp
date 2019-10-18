@@ -1889,14 +1889,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             depth_counter[0]=all_inputs.size();
             for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
                 depth_counter[all_depths[it_and->second.getId()/2]]++;
-            int biggest=0,smallest=INT_MAX,big_index=0,small_index=0;
+            int biggest=0;
             for(int x=0;x<depth_counter.size();x++)
                 cout<<depth_counter[x]<<","<<endl;
             biggest=*max_element(begin(depth_counter),end(depth_counter));
-            smallest=*min_element(begin(depth_counter),end(depth_counter));
-            cout<<biggest<<">>>>>>>>>>"<<smallest<<endl;
+//            smallest=*min_element(begin(depth_counter),end(depth_counter));
+//            cout<<biggest<<">>>>>>>>>>"<<smallest<<endl;
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=-(((1-min_th)*depth_counter[k])/biggest)+1;
+                new_ths[k]=(1-min_th)*((-depth_counter[k]/(biggest-1))+(biggest/(biggest-1)));
         }
     }
     else

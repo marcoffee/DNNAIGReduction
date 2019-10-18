@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=5,alpha=2;
+    int option=0,alpha=2;
     float min_th=0.9999;
    
 //    vector<float> new_ths(5479,0);

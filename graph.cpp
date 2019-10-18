@@ -2049,9 +2049,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                         //if polarities are different means A*!A=0, !(1^0)=0
                         else
                         {
-                            cout<<"DIFFERNT POLARITIES!!!!"<<endl;
+                            cout<<"DIFFERNT POLARITIES!!!! Current:";
+                            current->printNode();
                             if(all_outputs.find(current->getId())!=all_outputs.end())
                             {
+                                cout<<"current is a PO"<<endl;
                                 dump_PO<<"PO is a constant 0, has the same input with inverted polarities:";
                                 current->writeNode(dump_PO);
                                 dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;

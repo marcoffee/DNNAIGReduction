@@ -1897,7 +1897,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 //            smallest=*min_element(begin(depth_counter),end(depth_counter));
 //            cout<<biggest<<">>>>>>>>>>"<<smallest<<endl;
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*((-depth_counter[k]/(biggest-1))+(biggest/(biggest-1))))+min_th;
+                new_ths[k]=((1-min_th)*((((float)-depth_counter[k])/(biggest-1))+((float)biggest/(biggest-1))))+min_th;
         }
     }
     else

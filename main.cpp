@@ -33,15 +33,13 @@ int main(int argc, char** argv) {
     read.open(file_name.c_str(),ifstream::binary);
     
    
-//    vector<float> new_ths(5479,0);
-//    ofstream dump("dump.txt");
-//    for(int k=0;k<new_ths.size();k++){
-//        new_ths[k]=((1-min_th)*((1+erf((6*k/(5479-1)) -3))/2))+min_th;
-//        if(k>= 0.99*(5479-1))
-//            new_ths[k]=1;
-//    }
-//    for(int k=0;k<new_ths.size();k++)
-//        dump<<k<<":"<<new_ths[k]<<endl;
+    vector<float> new_ths(5479,0);
+    ofstream dump("dump.txt");
+    for(int k=0;k<3000;k++)
+        new_ths[k]=-(((0.1)*k)/3000)+1;
+    
+    for(int k=0;k<new_ths.size();k++)
+        dump<<k<<":"<<new_ths[k]<<endl;
     
     mnist mnist_obj;
     graph graph_obj;
@@ -60,9 +58,9 @@ int main(int argc, char** argv) {
     
 //    graph_obj.readAIG(read,file_name);
 //    graph_obj.printCircuit();
-    graph_obj.readAAG(read,file_name);
+//    graph_obj.readAAG(read,file_name);
   
-    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+//    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);
 //    graph_obj.setDepthsInToOut();
 //        graph_obj.setANDsProbabilities(mnist_boj);

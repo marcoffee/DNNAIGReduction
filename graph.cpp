@@ -2009,8 +2009,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                 if(current->getSignal()==-1)
                 {
 #if FIX_DOUBLED_NODES == 1
+                    if(current->getInputs()[0]->getId()>1)
+                    {
                     //current's inputs are the same node
-                    if(current->getInputs()[0]->getId()==current->getInputs()[1]->getId())
+                    if((current->getInputs()[0]->getId()==current->getInputs()[1]->getId()))
                     {
                         //if they have the same polarity, means A*A=A, !(0^0)=1
                         if(!(current->getInputPolarities()[0])^(current->getInputPolarities()[1]))
@@ -2022,7 +2024,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                 all_outputs.find(current->getId())->second.pushInput(current->getInputs()[0],(bool)all_outputs.find(current->getId())->second.getInputPolarity());
                                 all_outputs.find(current->getId())->second.setId(current->getInputs()[0]->getId());
                             }
-                            
                             else
                             {
                                 new_node=current->getInputs()[0];
@@ -2068,6 +2069,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                         current->clearOutputs();
                         current->getInputs()[0]->removeOutput(current->getId());
                         current->getInputs()[1]->removeOutput(current->getId());
+                    }
                     }
                     else
 #endif

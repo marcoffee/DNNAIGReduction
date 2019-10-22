@@ -27,14 +27,14 @@ int main(int argc, char** argv) {
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name;
     file_name="../A1.aig";
-//    file_name="andreV3.aag";
-    
+//    file_name="andre.aag";
+
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=0,alpha=2;
-    float min_th=0.9999;
+    int option=1,alpha=2;
+    float min_th=0.999;
    
 //    vector<float> new_ths(5479,0);
 //    ofstream dump("dump.txt");
@@ -63,9 +63,8 @@ int main(int argc, char** argv) {
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);
 //    graph_obj.setDepthsInToOut();
-//        graph_obj.setANDsProbabilities(mnist_boj);
 
-//    graph_obj.applyMnistRecursive(mnist_obj);
+    graph_obj.applyMnistRecursive(mnist_obj);
 
 
 //    mnist_obj.clearMnist();
@@ -74,6 +73,25 @@ int main(int argc, char** argv) {
 //    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
 //    mnist_obj.setBitsProbabilities(read_mnist);
 //    graph_obj.applyMnistRecursive(mnist_obj);
+    
+    graph_obj.clearCircuit();
+    graph_obj.readAIG(read,file_name);
+    option=2;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+    graph_obj.applyMnistRecursive(mnist_obj);
+    
+    graph_obj.clearCircuit();
+    graph_obj.readAIG(read,file_name);
+    option=3;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+    graph_obj.applyMnistRecursive(mnist_obj);
+    
+    graph_obj.clearCircuit();
+    graph_obj.readAIG(read,file_name);
+    option=4;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+    graph_obj.applyMnistRecursive(mnist_obj);
+    
 #else
 
     for(min_th=0.9999;min_th>=0.999;min_th-=0.0002)

@@ -1790,6 +1790,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setSignal(-1); 
     
+    dump3<<"threhsold:"<<threshold<<", 1-threshold:"<<1-threshold<<endl;
     //Inputs with probability of being 0 less than threshold are set to zero
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
@@ -2215,7 +2216,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                             }
                         }
                         else
-                            cout<<"ERROR, this if statement should not be reached2."<<endl;
+                            dump1<<"ERROR, this if statement should not be reached2."<<endl;
                         }
                         visits[stackzin.top()->getId()/2]=1;
                         stackzin.pop();

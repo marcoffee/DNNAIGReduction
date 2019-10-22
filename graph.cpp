@@ -1790,14 +1790,18 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setSignal(-1); 
     
-    dump3<<"threhsold:"<<threshold<<", 1-threshold:"<<1-threshold<<endl;
+    dump3<<"threhsold:"<<threshold<<", 1-threshold:"<<(float)1-threshold<<endl;
     //Inputs with probability of being 0 less than threshold are set to zero
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
-        
-        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-threshold)
+        float th_inverted=threshold;
+        th_inverted=th_inverted*10000;
+        th_inverted=10000-th_inverted;
+        th_inverted=th_inverted/10000;
+//        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-threshold)
+        if(mnist_obj.getPIsProbabilities()[posY][posX]<= th_inverted)
         {
-            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<1-threshold<<endl;
+            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<th_inverted<<endl;
             it_in->second.setSignal(0);
             PI_constant++;
         }   

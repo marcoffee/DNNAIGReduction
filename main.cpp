@@ -85,12 +85,7 @@ int main(int argc, char** argv) {
     option=3;
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
     graph_obj.applyMnistRecursive(mnist_obj);
-    
-    graph_obj.clearCircuit();
-    graph_obj.readAIG(read,file_name);
-    option=4;
-    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
-    graph_obj.applyMnistRecursive(mnist_obj);
+   
     
 #else
 

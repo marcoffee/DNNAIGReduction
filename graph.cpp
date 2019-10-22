@@ -1823,7 +1823,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
   all_inputs.find(4)->second.setSignal(2);
   all_inputs.find(6)->second.setSignal(2);
   all_inputs.find(8)->second.setSignal(2);
-//  all_inputs.find(10)->second.setSignal(2);
+  all_inputs.find(10)->second.setSignal(2);
 #endif
   
 #if PROBS_FROM_FILE ==1
@@ -2014,10 +2014,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                 if(current->getSignal()==-1)
                 {
 #if FIX_DOUBLED_NODES == 1
-                    if(current->getInputs()[0]->getId()>1)
-                    {
+//                    if(current->getInputs()[0]->getId()>1)
+//                    {
                     //current's inputs are the same node
-                    if((current->getInputs()[0]->getId()==current->getInputs()[1]->getId()))
+                    if((current->getInputs()[0]->getId()==current->getInputs()[1]->getId()) && (current->getInputs()[0]->getId()>1))
                     {
                         //if they have the same polarity, means A*A=A, !(0^0)=1
                         if(!(current->getInputPolarities()[0])^(current->getInputPolarities()[1]))
@@ -2075,7 +2075,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                         current->getInputs()[0]->removeOutput(current->getId());
                         current->getInputs()[1]->removeOutput(current->getId());
                     }
-                    }
+//                    }
                     else
 #endif
                     {

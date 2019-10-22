@@ -33,8 +33,8 @@ int main(int argc, char** argv) {
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=1,alpha=2;
-    float min_th=0.999;
+    int option=5,alpha=2;
+    float min_th=0.9999;
    
 //    vector<float> new_ths(5479,0);
 //    ofstream dump("dump.txt");
@@ -72,24 +72,12 @@ int main(int argc, char** argv) {
 //    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
 //    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
 //    mnist_obj.setBitsProbabilities(read_mnist);
-//    graph_obj.applyMnistRecursive(mnist_obj);
+//    graph_obj.applyMnistRecursive(mnist_obj);  
     
-    graph_obj.clearCircuit();
-    graph_obj.readAIG(read,file_name);
-    option=2;
-    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
-    graph_obj.applyMnistRecursive(mnist_obj);
-    
-    graph_obj.clearCircuit();
-    graph_obj.readAIG(read,file_name);
-    option=3;
-    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
-    graph_obj.applyMnistRecursive(mnist_obj);
-   
     
 #else
 
-    for(min_th=0.9999;min_th>=0.999;min_th-=0.0002)
+    for(min_th=0.9998;min_th>0.999;min_th-=0.0002)
     {
       
         graph_obj.clearCircuit();
@@ -118,7 +106,7 @@ int main(int argc, char** argv) {
     }
 
 
-    for(min_th=0.999;min_th>=0.99;min_th-=0.002)
+    for(min_th=0.998;min_th>0.99;min_th-=0.002)
     {
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);
@@ -145,7 +133,7 @@ int main(int argc, char** argv) {
         graph_obj.applyMnistRecursive(mnist_obj);
     }
     
-    for(min_th=0.99;min_th>=0.9;min_th-=0.02)
+    for(min_th=0.98;min_th>0.9;min_th-=0.02)
     {
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);

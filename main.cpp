@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     
 
 
-#if EXECUTE_ONCE ==1
+//#if EXECUTE_ONCE ==1
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(min_th);
 
@@ -64,15 +64,47 @@ int main(int argc, char** argv) {
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);
 //    graph_obj.setDepthsInToOut();
 
-    graph_obj.applyMnistRecursive(mnist_obj);
+//    graph_obj.applyMnistRecursive(mnist_obj);
 
 
-//    mnist_obj.clearMnist();
-//    read_mnist.close();
-//    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
-//    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
-//    mnist_obj.setBitsProbabilities(read_mnist);
-//    graph_obj.applyMnistRecursive(mnist_obj);  
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    graph_obj.applyMnistRecursive(mnist_obj);  
+    
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    graph_obj.clearCircuit();
+    graph_obj.readAIG(read,file_name);
+    option=2;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    graph_obj.applyMnistRecursive(mnist_obj); 
+    
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    graph_obj.clearCircuit();
+    graph_obj.readAIG(read,file_name);
+    option=3;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    graph_obj.applyMnistRecursive(mnist_obj); 
     
     
 #else

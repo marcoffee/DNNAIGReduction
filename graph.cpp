@@ -429,7 +429,11 @@ void graph::writeAIG(){
     int M=all_inputs.size()+all_latches.size()+all_ANDS.size();
     write.open((name+".aig").c_str(),ios::binary|ios::out|ios::trunc);
     write<<"aig "<<M<<" "<<all_inputs.size()<<" "<<all_latches.size()<<" "<<all_outputs.size()<<" "<<all_ANDS.size()<<endl;
-
+//#if LEAVE_CONSTANTS ==1
+//    for(map<unsigned int,input>::iterator it1=all_inputs.begin();it1!=all_inputs.end();it1++)
+//        write<<it1->second.getId()<<endl;
+//#endif
+    
     for(map<unsigned int,output>::iterator it2=all_outputs.begin();it2!=all_outputs.end();it2++)
         write<<it2->second.getId()+((int)it2->second.getInputPolarity())<<endl;
 
@@ -1799,10 +1803,22 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         th_inverted=10000-th_inverted;
         th_inverted=th_inverted/10000;
 //        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-threshold)
+//        mnist_obj.s
         if(mnist_obj.getPIsProbabilities()[posY][posX]<= th_inverted)
         {
             dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<th_inverted<<endl;
             it_in->second.setSignal(0);
+//#if LEAVE_CONSTANTS ==1
+#if TEST == 0
+            for(int g=0;g<it_in->second.getOutputs().size();g++)
+            {
+                if(it_in->second.getOutputs()[g]->getInputs()[0]->getId()==it_in->second.getId())
+                    it_in->second.getOutputs()[g]->replaceInput(0,&constant0,it_in->second.getOutputs()[g]->getInputPolarities()[0]);
+                else if(it_in->second.getOutputs()[g]->getInputs()[1]->getId()==it_in->second.getId())
+                    it_in->second.getOutputs()[g]->replaceInput(1,&constant0,it_in->second.getOutputs()[g]->getInputPolarities()[1]);
+            }
+#endif
+//#endif
             PI_constant++;
         }   
         posX++;
@@ -1814,13 +1830,21 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                 posY=0;
         }
     }
+    writeAAG();
   cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
   simpl_info<<"Threshold:"<<th_value<<endl;
   simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
   
 #if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
-  all_inputs.find(4)->second.setSignal(2);
+  all_inputs.find(4)->second.setSignal(0);
+        for(int g=0;g<all_inputs.find(4)->second.getOutputs().size();g++)
+        {
+            if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(4)->second.getId())
+                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[0]);
+            else if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(4)->second.getId())
+                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
+        }
   all_inputs.find(6)->second.setSignal(2);
   all_inputs.find(8)->second.setSignal(2);
   all_inputs.find(10)->second.setSignal(2);
@@ -1937,7 +1961,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             {
                 for(int j=0;j<and_ptr->getOutputs().size();j++)
                 {
-                    and_ptr->getOutputs()[j];
+//                    and_ptr->getOutputs()[j];
                     if(and_ptr->getOutputs()[j]->getInputs()[0]->getId()==and_ptr->getId())
                        and_ptr->getOutputs()[j]->replaceInput(0,&constant0,and_ptr->getOutputs()[j]->getInputPolarities()[0]); 
                     else if (and_ptr->getOutputs()[j]->getInputs()[1]->getId()==and_ptr->getId())

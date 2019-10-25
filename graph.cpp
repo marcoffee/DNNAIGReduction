@@ -1845,7 +1845,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             else if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(4)->second.getId())
                 all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
         }
-  all_inputs.find(6)->second.setSignal(2);
+  all_inputs.find(6)->second.setSignal(1);
+          for(int g=0;g<all_inputs.find(1)->second.getOutputs().size();g++)
+        {
+            if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(1)->second.getId())
+                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[0]);
+            else if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(1)->second.getId())
+                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[1]);
+        }
   all_inputs.find(8)->second.setSignal(2);
   all_inputs.find(10)->second.setSignal(2);
 #endif
@@ -1863,7 +1870,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         ands_probs_name+="A2.txt";
     else if(this->name.find("A3")!=string::npos)
         ands_probs_name+="A3.txt";
-    else if(this->name.find("A4")!=string::npos)
+    else if(this->name.find("A1")!=string::npos)
         ands_probs_name+="A4.txt";
     else
     {
@@ -2414,6 +2421,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     this->name+="_ANDs_removed_";
     if(LEAVE_CONSTANTS==1)
         this->name+="WITH_CONSTANTS_";
+    if(FIX_DOUBLED_NODES==1)
+        this->name+="WITH_FIX_";
 //   this->name+=to_string(1-threshold);
 #if WRITE_AIG == 1
     cout<<"Writing output file (AIG):"<<this->name<<endl;

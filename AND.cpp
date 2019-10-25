@@ -272,9 +272,12 @@ void AND::invertInputs() {
     }
 	else if (inputs[0]->fixLSB()->getId()==inputs[1]->fixLSB()->getId())
 	{
-////		cout<<"ERROR, AND:"<<id<<" HAS THE SAME INPUT:"<<inputs[0]->fixLSB()->getId()<<","<<inputs[1]->fixLSB()->getId()<<endl;
-////		this->printNode();
-//		cout<<endl;
+            if(this->getInputPolarities()[0]==0 && this->getInputPolarities()[1]==1)
+            {
+                    aux=inputs[0];
+                    inputs[0]=inputs[1];
+                    inputs[1]=aux;
+            }
 	}
 	
 }

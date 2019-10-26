@@ -2069,12 +2069,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                 {
                                     if(AUX[l]->getInputs()[0]->getId()==current->getId())
                                     {
-                                        polarity=(bool)(AUX[l]->getInputPolarities()[0]);
+                                        polarity=(bool)(AUX[l]->getInputPolarities()[0]^current->getInputPolarities()[0]);
                                         AUX[l]->replaceInput(0,new_node,polarity);
                                     }
                                     else if (AUX[l]->getInputs()[1]->getId()==current->getId())
                                     {
-                                        polarity=(bool)(AUX[l]->getInputPolarities()[1]);
+                                        polarity=(bool)(AUX[l]->getInputPolarities()[1]^current->getInputPolarities()[0]);
                                         AUX[l]->replaceInput(1,new_node,polarity);
                                     }
                                     else

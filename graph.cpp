@@ -1735,8 +1735,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             th_value="_level_exp";
         else if (option==4)
             th_value="_level_sigmoidal";
-        else if (option==5)
-            th_value="_#of_nodes_on_lvl_linear";
+        else if (option==51)
+            th_value="_#of_nodes_linear";
+        else if (option==52)
+            th_value="_#of_nodes_sqrt";
+        else if (option==53)
+            th_value="_#of_nodes_exp";
         th_value+="_min_";
         th_value+=to_string(min_th);
         if(option>1 && option<=3)
@@ -1889,6 +1893,16 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         probs_it->second=stof(line);
     }
 #endif
+    //couting the repetitions of nodes in each logic level
+    vector<int> depth_counter (this->graph_depth+1,0);
+    depth_counter[0]=all_inputs.size();
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        depth_counter[all_depths[it_and->second.getId()/2]]++;
+    int biggest=0;
+    for(int x=0;x<depth_counter.size();x++)
+        dump2<<x<<":"<<depth_counter[x]<<","<<endl;
+    biggest=*max_element(begin(depth_counter),end(depth_counter));
+    dump2<<"biggest:"<<biggest<<endl;
     vector<float> new_ths(graph_depth+1,0);
     if(option>0)
     {
@@ -1919,21 +1933,20 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                 
             }
         }
-        else if (option==5) //number of nodes per level, linear
+        else if (option==51) //number of nodes per level, linear
         {
-            vector<int> depth_counter (this->graph_depth+1,0);
-            depth_counter[0]=all_inputs.size();
-            for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
-                depth_counter[all_depths[it_and->second.getId()/2]]++;
-            int biggest=0;
-            for(int x=0;x<depth_counter.size();x++)
-                dump2<<x<<":"<<depth_counter[x]<<","<<endl;
-            biggest=*max_element(begin(depth_counter),end(depth_counter));
-            dump2<<"biggest:"<<biggest<<endl;
-//            smallest=*min_element(begin(depth_counter),end(depth_counter));
-//            cout<<biggest<<">>>>>>>>>>"<<smallest<<endl;
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*((((float)-depth_counter[k])/(biggest-1))+((float)biggest/(biggest-1))))+min_th;
+        }
+        else if (option==52 ) //number of nodes per level, sqrt
+        {
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=((1-min_th)*(pow((((float)-depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
+        }
+        else if (option==53 ) //number of nodes per level, sqrt
+        {
+            for(int k=0;k<new_ths.size();k++)
+                new_ths[k]=((1-min_th)*(pow((((float)-depth_counter[k])/(biggest-1)),1/alpha)+((float)biggest/(biggest-1))))+min_th;
         }
     }
     else

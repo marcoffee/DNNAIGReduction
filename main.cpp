@@ -33,8 +33,9 @@ int main(int argc, char** argv) {
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=0,alpha=2;
+    int option=52,alpha=2;
     float min_th=0.9999;
+    //1->linear, 2->sqrt, 3->exp, 4->sigmod, 51->#nodes_linear, 52->#nodes_sqrt,53->#nodes_exp
    
 //    vector<float> new_ths(5479,0);
 //    ofstream dump("dump.txt");
@@ -113,7 +114,7 @@ int main(int argc, char** argv) {
     
 #else
 
-    for(min_th=0.9998;min_th>0.999;min_th-=0.0002)
+    for(min_th=0.9999;min_th>0.999;min_th-=0.0001)
     {
       
         graph_obj.clearCircuit();
@@ -142,7 +143,7 @@ int main(int argc, char** argv) {
     }
 
 
-    for(min_th=0.998;min_th>0.99;min_th-=0.002)
+    for(min_th=0.999;min_th>0.99;min_th-=0.001)
     {
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);
@@ -169,7 +170,7 @@ int main(int argc, char** argv) {
         graph_obj.applyMnistRecursive(mnist_obj);
     }
     
-    for(min_th=0.98;min_th>0.9;min_th-=0.02)
+    for(min_th=0.99;min_th>0.9;min_th-=0.01)
     {
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);

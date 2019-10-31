@@ -1730,7 +1730,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         if(option==1)
           th_value="_level_linear";
         else if (option==2)
-            th_value="_level_sqrt";
+            th_value="_level_root";
         else if (option==3)
             th_value="_level_exp";
         else if (option==4)
@@ -1738,7 +1738,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         else if (option==51)
             th_value="_#of_nodes_linear";
         else if (option==52)
-            th_value="_#of_nodes_sqrt";
+            th_value="_#of_nodes_root";
         else if (option==53)
             th_value="_#of_nodes_exp";
         th_value+="_min_";
@@ -1911,7 +1911,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=(((1-min_th)*k)/(graph_depth))+min_th;
         }
-        else if (option==2) //sqrt
+        else if (option==2) //root
         {
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth),(float)1/alpha)))+min_th;
@@ -1938,12 +1938,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*((((float)-depth_counter[k])/(biggest-1))+((float)biggest/(biggest-1))))+min_th;
         }
-        else if (option==52 ) //number of nodes per level, sqrt
+        else if (option==52 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(pow((((float)-depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
         }
-        else if (option==53 ) //number of nodes per level, sqrt
+        else if (option==53 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(pow((((float)-depth_counter[k])/(biggest-1)),1/alpha)+((float)biggest/(biggest-1))))+min_th;

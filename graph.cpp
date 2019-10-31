@@ -1680,19 +1680,15 @@ void graph::setANDsProbabilities(mnist& mnist_obj){
         {
             repeat=0;
             num=it_and->second.getBitVector();
-//            cout<<num<<endl;
             if(offset>=num_imgs-(num_imgs%BITS_PACKAGE_SIZE))
                 num=num&auxiliar;
             
             bitset<BITS_PACKAGE_SIZE> x(num);
-//            cout<<it_and->second.getId()<<"->"<<x<<"->";;
             while(num)
             {
                 num=num&(num-1);
                 repeat++;
             }
-//            cout<<repeat<<endl;
-            
             it_probs=ANDs_probabilities.find(it_and->second.getId());
             it_probs->second=it_probs->second+repeat;
         }
@@ -1775,7 +1771,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     simpl_info<<"AIG depth:"<<this->graph_depth<<", nodes with such depth:";
     for(int a=0;a<this->greatest_depths_ids.size();a++)
         simpl_info<<greatest_depths_ids[a]<<",";
-    simpl_info<<endl;
+    simpl_info<<endl; 
     
 #if DEBUG >= 1
     ofstream all_depths_out;
@@ -1807,12 +1803,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         th_inverted=10000-th_inverted;
         th_inverted=th_inverted/10000;
 //        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-threshold)
-//        mnist_obj.s
         if(mnist_obj.getPIsProbabilities()[posY][posX]<= th_inverted)
         {
             dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<th_inverted<<endl;
             it_in->second.setSignal(0);
-//#if LEAVE_CONSTANTS ==1
 #if TEST == 0
             for(int g=0;g<it_in->second.getOutputs().size();g++)
             {
@@ -1822,7 +1816,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                     it_in->second.getOutputs()[g]->replaceInput(1,&constant0,it_in->second.getOutputs()[g]->getInputPolarities()[1]);
             }
 #endif
-//#endif
             PI_constant++;
         }   
         posX++;
@@ -1841,13 +1834,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
   
 #if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
-  all_inputs.find(4)->second.setSignal(0);
+  all_inputs.find(4)->second.setSignal(1);
         for(int g=0;g<all_inputs.find(4)->second.getOutputs().size();g++)
         {
             if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(4)->second.getId())
-                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[0]);
+                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(0,&constant1,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[0]);
             else if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(4)->second.getId())
-                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
+                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant1,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
         }
   all_inputs.find(6)->second.setSignal(2);
 //          for(int g=0;g<all_inputs.find(1)->second.getOutputs().size();g++)
@@ -1857,8 +1850,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 //            else if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(1)->second.getId())
 //                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[1]);
 //        }
-  all_inputs.find(8)->second.setSignal(2);
-  all_inputs.find(10)->second.setSignal(2);
+//  all_inputs.find(8)->second.setSignal(2);
+//  all_inputs.find(10)->second.setSignal(2);
 #endif
   
 #if PROBS_FROM_FILE ==1
@@ -1904,49 +1897,53 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     biggest=*max_element(begin(depth_counter),end(depth_counter));
     dump2<<"biggest:"<<biggest<<endl;
     vector<float> new_ths(graph_depth+1,0);
+    //1-float doesnt work properly in c++
+    float th_inverted=min_th;
+    th_inverted=th_inverted*10000;
+    th_inverted=10000-th_inverted;
+    th_inverted=th_inverted/10000;
     if(option>0)
     {
         if(option==1) //linear
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=(((1-min_th)*k)/(graph_depth))+min_th;
+                new_ths[k]=((th_inverted*k)/(graph_depth))+min_th;
         }
         else if (option==2) //root
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth),(float)1/alpha)))+min_th;
+                new_ths[k]=(th_inverted*(pow((float)k/((float)graph_depth),(float)1/alpha)))+min_th;
         }
         else if (option==3) //exp
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth),alpha)))+min_th;
+                new_ths[k]=(th_inverted*(pow((float)k/((float)graph_depth),alpha)))+min_th;
         }
         else if (option==4) //sigmoidal
         {
             for(int k=0;k<new_ths.size();k++)
             {
-                new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth)) -3))/2))+min_th;
+                new_ths[k]=(th_inverted*((1+erf((6*k/(graph_depth)) -3))/2))+min_th;
                 if(k>= 0.99*(graph_depth))
                     new_ths[k]=1;
                 if(k<= 0.01*(graph_depth))
                     new_ths[k]=min_th;
-                
             }
         }
         else if (option==51) //number of nodes per level, linear
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*((((float)-depth_counter[k])/(biggest-1))+((float)biggest/(biggest-1))))+min_th;
+                new_ths[k]=(th_inverted*((((float)-depth_counter[k])/(biggest-1))+((float)biggest/(biggest-1))))+min_th;
         }
         else if (option==52 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*(pow((((float)-depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
+                new_ths[k]=(th_inverted*(pow((((float)-depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
         }
         else if (option==53 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=((1-min_th)*(pow((((float)-depth_counter[k])/(biggest-1)),1/alpha)+((float)biggest/(biggest-1))))+min_th;
+                new_ths[k]=(th_inverted*(pow((((float)-depth_counter[k])/(biggest-1)),1/alpha)+((float)biggest/(biggest-1))))+min_th;
         }
     }
     else
@@ -1972,7 +1969,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         and_ptr=&all_ANDS.find(probs_it->first)->second;
         if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
         {
-#if DEBUG >=3
+#if DEBUG >=0
             dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
@@ -1992,7 +1989,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         }        
         if(probs_it->second >= new_ths[this->all_depths[probs_it->first/2]])
         {
-#if DEBUG >=3
+#if DEBUG >=0
             dump2<<"1->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(new_ths[this->all_depths[probs_it->first/2]]):"<<(new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;

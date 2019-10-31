@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name;
-//    file_name="../A1.aig";
-    file_name="andre.aig";
+    file_name="../A1.aig";
+//    file_name="andre.aig";
 
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);

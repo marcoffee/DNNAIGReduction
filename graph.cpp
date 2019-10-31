@@ -1849,14 +1849,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             else if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(4)->second.getId())
                 all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
         }
-  all_inputs.find(6)->second.setSignal(1);
-          for(int g=0;g<all_inputs.find(1)->second.getOutputs().size();g++)
-        {
-            if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(1)->second.getId())
-                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[0]);
-            else if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(1)->second.getId())
-                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[1]);
-        }
+  all_inputs.find(6)->second.setSignal(2);
+//          for(int g=0;g<all_inputs.find(1)->second.getOutputs().size();g++)
+//        {
+//            if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(1)->second.getId())
+//                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[0]);
+//            else if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(1)->second.getId())
+//                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[1]);
+//        }
   all_inputs.find(8)->second.setSignal(2);
   all_inputs.find(10)->second.setSignal(2);
 #endif
@@ -2082,12 +2082,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                                 {
                                     if(AUX[l]->getInputs()[0]->getId()==current->getId())
                                     {
-                                        polarity=(bool)(AUX[l]->getInputPolarities()[0]);
+                                        polarity=(bool)(AUX[l]->getInputPolarities()[0]^current->getInputPolarities()[0]);
                                         AUX[l]->replaceInput(0,new_node,polarity);
                                     }
                                     else if (AUX[l]->getInputs()[1]->getId()==current->getId())
                                     {
-                                        polarity=(bool)(AUX[l]->getInputPolarities()[1]);
+                                        polarity=(bool)(AUX[l]->getInputPolarities()[1]^current->getInputPolarities()[0]);
                                         AUX[l]->replaceInput(1,new_node,polarity);
                                     }
                                     else

@@ -1938,12 +1938,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         else if (option==52 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=(th_inverted*(pow((((float)-depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
+                new_ths[k]=(th_inverted*(-pow((((float)depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
         }
         else if (option==53 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=(th_inverted*(pow((((float)-depth_counter[k])/(biggest-1)),1/alpha)+((float)biggest/(biggest-1))))+min_th;
+                new_ths[k]=(th_inverted*(-pow((((float)depth_counter[k])/(biggest-1)),(float)1/alpha)+((float)biggest/(biggest-1))))+min_th;
         }
     }
     else

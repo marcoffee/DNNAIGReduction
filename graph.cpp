@@ -1753,7 +1753,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     info_file_name+="_";
     info_file_name+=th_value;
     info_file_name+="_simplif_info.txt";
-    ofstream simpl_info(info_file_name),dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt"),dump_PO("dump_PO.txt");
+    ofstream simpl_info(info_file_name),dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt"),dump_PO("dump_PO.txt"),dump_hash("dump_hash.txt");
     map<unsigned int,float>::iterator probs_it;
     vector<int> visits;
     visits.push_back(2);
@@ -1762,12 +1762,45 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     constant0.setSignal(0);
     constant0.setId(0);
     
+    //creating structural hash
+    cout<<"Creating hash table for structural hash."<<endl;
+    map <unsigned long long int,unsigned int> structural_hash;
+    unsigned long long int result;
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+    {
+        unsigned long long bits1,bits2;
+        if(it_and->second.getInputs()[0]->getId() < it_and->second.getInputs()[1]->getId())
+        {
+            bits1=(unsigned long long int)it_and->second.getInputs()[0]->getId();
+            bits2=(unsigned long long int)it_and->second.getInputs()[1]->getId();
+        }
+        else
+        {
+            bits2=(unsigned long long int)it_and->second.getInputs()[0]->getId();
+            bits1=(unsigned long long int)it_and->second.getInputs()[1]->getId();
+        }
+        
+        result=(bits1 << 32) | bits2;
+        dump_hash<<result<<endl;
+        bitset<64> w(result),x(bits1),y(bits2);
+        dump_hash<<x<<" + "<<y<<" = "<<w<<endl;
+        if(structural_hash.find(result)==structural_hash.end())
+            structural_hash.insert(pair<unsigned long long int,unsigned int> (result,it_and->second.getId()));
+        else
+        {
+            cout<<"ERROR: unexpected same node in structural hash:";
+            it_and->second.printNode();
+        }
+        
+    }
+    
+    
     this->setDepthsInToOut();
     this->all_depths.push_back(0);
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
-        this->all_depths.push_back(0);
+        all_depths.push_back(0);
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
-        this->all_depths.push_back(it_and->second.getDepth());
+        all_depths.push_back(it_and->second.getDepth());
     simpl_info<<"AIG depth:"<<this->graph_depth<<", nodes with such depth:";
     for(int a=0;a<this->greatest_depths_ids.size();a++)
         simpl_info<<greatest_depths_ids[a]<<",";

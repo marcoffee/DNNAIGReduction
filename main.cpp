@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=52,alpha=2;
+    int option=1,alpha=2;
     float min_th=0.9999;
     //1->linear, 2->sqrt, 3->exp, 4->sigmod, 51->#nodes_linear, 52->#nodes_sqrt,53->#nodes_exp
    
@@ -44,7 +44,19 @@ int main(int argc, char** argv) {
 //    
 //    for(int k=0;k<new_ths.size();k++)
 //        dump<<k<<":"<<new_ths[k]<<endl;
-    
+//    unsigned long long int bits1,bits2,result;
+//    unsigned int id1=UINT_MAX,id2=1024;
+//    
+//    bits2=(unsigned long long int)id2;
+//    bits1=(unsigned long long int)id1;
+//    bitset<64> x(bits1),y(bits2),z(id2);
+//    
+//    result=(bits1 << 32) | bits2;
+//    cout<<result<<endl;
+//    bitset<64> w(result);
+//    cout<<w<<endl;
+//     cout<<id1<<","<<(unsigned long long int)id1<<","<<bits1<<endl;
+//    cout<<x<<","<<y<<","<<z<<endl;
 
 
 #if EXECUTE_ONCE ==1

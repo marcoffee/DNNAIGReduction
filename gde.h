@@ -29,7 +29,7 @@
 #define REMOVE_PI 1
 #define LEAVE_CONSTANTS 0
 #define FIX_DOUBLED_NODES 0
-#define EXECUTE_ONCE 0
+#define EXECUTE_ONCE 1
 #define WRITE_AIG 0
 #define WRITE_AAG 0
 
@@ -49,6 +49,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <limits.h> //char_bit
 #include <algorithm> //max
 #include <stdint.h> //uintptr_t

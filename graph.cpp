@@ -1841,6 +1841,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         {
             dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<th_inverted<<endl;
             it_in->second.setSignal(0);
+            it_in->second.clearOutputs();
 #if TEST == 0
             for(int g=0;g<it_in->second.getOutputs().size();g++)
             {

@@ -1831,7 +1831,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     //Inputs with probability of being 0 less than threshold are set to zero
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
-        float th_inverted=threshold;
+//        float th_inverted=threshold;
+        float th_inverted=min_th;
         th_inverted=th_inverted*10000;
         th_inverted=10000-th_inverted;
         th_inverted=th_inverted/10000;
@@ -1977,6 +1978,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         {
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=(th_inverted*(-pow((((float)depth_counter[k])/(biggest-1)),(float)1/alpha)+((float)biggest/(biggest-1))))+min_th;
+        }
+        else if (option==6 ) //MEDIUM VALUE
+        {
+            
         }
     }
     else
@@ -2347,6 +2352,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 #endif
 //            dump1<<"AND:"<<it_and->second.getId()<<", depth:"<<this->all_depths[it_and->second.getId()/2]<<", depth counter:"<<removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]<<endl;
             removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]++;
+            it_and->second.getInputs()[0]->removeOutput(it_and->second.getId());
+            it_and->second.getInputs()[1]->removeOutput(it_and->second.getId());
             it_and=all_ANDS.erase(it_and);
             ands_removed++;
         }

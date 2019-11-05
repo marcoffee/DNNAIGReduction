@@ -2013,10 +2013,16 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
-        if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
+        float th_inverted=new_ths[this->all_depths[probs_it->first/2]];
+        th_inverted=th_inverted*10000;
+        th_inverted=10000-th_inverted;
+        th_inverted=th_inverted/10000;
+//        if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
+        if(probs_it->second<= th_inverted)
         {
 #if DEBUG >=0
-            dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
+//            dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
+            dump2<<"0->probes_it->first:"<<probs_it->first<<", probes_it->second"<<probs_it->second<<",th_inverted:"<<th_inverted;
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif
@@ -2360,8 +2366,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 #endif
 //            dump1<<"AND:"<<it_and->second.getId()<<", depth:"<<this->all_depths[it_and->second.getId()/2]<<", depth counter:"<<removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]<<endl;
             removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]++;
-            it_and->second.getInputs()[0]->removeOutput(it_and->second.getId());
-            it_and->second.getInputs()[1]->removeOutput(it_and->second.getId());
             it_and=all_ANDS.erase(it_and);
             ands_removed++;
         }

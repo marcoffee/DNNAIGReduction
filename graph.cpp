@@ -1793,8 +1793,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         {
             if(it_and->second.getId()<=1000)
             {
-                dump_hash<<"ERROR: unexpected same node in structural hash:";
+                dump_hash<<"ERROR: unexpected same node in structural hash: ";
     //            it_and->second.printNode();
+                all_ANDS.find(structural_hash.find(result)->second)->second.writeNode(dump_hash);
                 it_and->second.writeNode(dump_hash);
             }
        }

@@ -1781,16 +1781,23 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         }
         
         result=(bits1 << 32) | bits2;
-        dump_hash<<result<<endl;
-        bitset<64> w(result),x(bits1),y(bits2);
-        dump_hash<<x<<" + "<<y<<" = "<<w<<endl;
+        if(it_and->second.getId()<=1000)
+        {
+            dump_hash<<result<<endl;
+            bitset<64> w(result),x(bits1),y(bits2);
+            dump_hash<<x<<" + "<<y<<" = "<<w<<endl;
+        }
         if(structural_hash.find(result)==structural_hash.end())
             structural_hash.insert(pair<unsigned long long int,unsigned int> (result,it_and->second.getId()));
         else
         {
-            cout<<"ERROR: unexpected same node in structural hash:";
-            it_and->second.printNode();
-        }
+            if(it_and->second.getId()<=1000)
+            {
+                dump_hash<<"ERROR: unexpected same node in structural hash:";
+    //            it_and->second.printNode();
+                it_and->second.writeNode(dump_hash);
+            }
+       }
         
     }
     
@@ -1862,7 +1869,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                 posY=0;
         }
     }
-    writeAAG();
   cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
   simpl_info<<"Threshold:"<<th_value<<endl;
   simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;

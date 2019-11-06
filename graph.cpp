@@ -1840,10 +1840,15 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
 //        float th_inverted=threshold;
+        dump3<<"Calculating th_inverted:"<<endl;
         float th_inverted=min_th;
+        dump3<<"th_inverted=min_th:"<<th_inverted<<endl;
         th_inverted=th_inverted*10000;
+        dump3<<"th_inverted=th_inverted*10000:"<<th_inverted<<endl;
         th_inverted=10000-th_inverted;
+        dump3<<"th_inverted=10000-th_inverted:"<<th_inverted<<endl;
         th_inverted=th_inverted/10000;
+        dump3<<"th_inverted=th_inverted/10000:"<<th_inverted<<endl;
 //        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-threshold)
         if(mnist_obj.getPIsProbabilities()[posY][posX]<= th_inverted)
         {
@@ -1934,16 +1939,18 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         depth_counter[all_depths[it_and->second.getId()/2]]++;
     int biggest=0;
-    for(int x=0;x<depth_counter.size();x++)
-        dump2<<x<<":"<<depth_counter[x]<<","<<endl;
+//    for(int x=0;x<depth_counter.size();x++)
+//        dump2<<x<<":"<<depth_counter[x]<<","<<endl;
     biggest=*max_element(begin(depth_counter),end(depth_counter));
-    dump2<<"biggest:"<<biggest<<endl;
+//    dump2<<"biggest:"<<biggest<<endl;
     vector<float> new_ths(graph_depth+1,0);
     //1-float doesnt work properly in c++
     float th_inverted=min_th;
     th_inverted=th_inverted*10000;
     th_inverted=10000-th_inverted;
     th_inverted=th_inverted/10000;
+    dump3<<"min_th:"<<min_th<<endl;
+    dump3<<"th_inverted:"<<th_inverted<<endl;
     if(option>0)
     {
         if(option==1) //linear

@@ -33,10 +33,25 @@ int main(int argc, char** argv) {
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=1,alpha=2;
+    int option=53,alpha=2;
     float min_th=0.9999;
     //1->linear, 2->sqrt, 3->exp, 4->sigmod, 51->#nodes_linear, 52->#nodes_sqrt,53->#nodes_exp
    
+//    float th_inverted=min_th;
+//    th_inverted=th_inverted*10000;
+//    th_inverted=10000-th_inverted;
+//    th_inverted=th_inverted/10000;
+//    cout<<th_inverted<<endl;
+////        float th_inverted=min_th;
+//    th_inverted=th_inverted*10000;
+//    th_inverted=10000-th_inverted;
+//    th_inverted=th_inverted/10000;
+//    cout<<th_inverted<<endl;
+//        th_inverted=th_inverted*10000;
+//    th_inverted=10000-th_inverted;
+//    th_inverted=th_inverted/10000;
+//    cout<<th_inverted<<endl;
+//    
 //    vector<float> new_ths(5479,0);
 //    ofstream dump("dump.txt");
 //    for(int k=0;k<3000;k++)
@@ -57,6 +72,15 @@ int main(int argc, char** argv) {
 //    cout<<w<<endl;
 //     cout<<id1<<","<<(unsigned long long int)id1<<","<<bits1<<endl;
 //    cout<<x<<","<<y<<","<<z<<endl;
+    
+//    vector<int> depth_counter<0,5479>;
+//    
+//    int biggest=3000;
+//    
+//    {
+//        for(int k=0;k<new_ths.size();k++)
+//            new_ths[k]=(th_inverted*(-pow((((float)depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
+//    }
 
 
 #if EXECUTE_ONCE ==1
@@ -77,6 +101,26 @@ int main(int argc, char** argv) {
 //    graph_obj.writeAIG();;
     
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    graph_obj.clearCircuit();
+    graph_obj.setThrehsold(min_th);
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    
+    graph_obj.readAIG(read,file_name);;
+//    graph_obj.printCircuit();
+//    graph_obj.readAAG(read,file_name);
+    
+//    graph_obj.setName("andre_PI_Fix");
+//    graph_obj.writeAIG();;
+    
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);
 //    graph_obj.setDepthsInToOut();
 

@@ -120,6 +120,25 @@ int main(int argc, char** argv) {
 //    graph_obj.writeAIG();;
     
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);;
+    
+    min_th=0.9997;
+    graph_obj.clearCircuit();
+    graph_obj.setThrehsold(min_th);
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    
+    graph_obj.readAIG(read,file_name);;
+//    graph_obj.printCircuit();
+//    graph_obj.readAAG(read,file_name);
+    
+//    graph_obj.setName("andre_PI_Fix");
+//    graph_obj.writeAIG();;
+    
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);

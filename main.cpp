@@ -102,6 +102,7 @@ int main(int argc, char** argv) {
     
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    min_th=0.9998;
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(min_th);
 

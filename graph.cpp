@@ -1755,6 +1755,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     info_file_name+=th_value;
     info_file_name+="_simplif_info.txt";
     ofstream simpl_info(info_file_name),dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt"),dump_PO("dump_PO.txt"),dump_hash("dump_hash.txt");
+    ofstream dump_append("dump_append.txt",ios::app);
     map<unsigned int,float>::iterator probs_it;
     vector<int> visits;
     visits.push_back(2);
@@ -1837,23 +1838,25 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         it_out->second.setSignal(-1); 
     
     dump3<<"threhsold:"<<threshold<<", 1-threshold:"<<(float)1-threshold<<endl;
+    float th_inverted=min_th;
+    int aux;
+    dump3<<"th_inverted=min_th:"<<th_inverted<<endl;
+    aux=th_inverted*10000;
+    dump3<<"aux=th_inverted*10000:"<<aux<<endl;
+    aux=10000-aux;
+    dump3<<"aux=10000-aux:"<<aux<<endl;
+    th_inverted=(aux/(float)10000);
+    dump3<<"th_inverted=aux/10000:"<<th_inverted<<endl;
+    dump_append<<endl<<endl<<endl;
+    
     //Inputs with probability of being 0 less than threshold are set to zero
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
-//        float th_inverted=threshold;
-        dump3<<"Calculating th_inverted:"<<endl;
-        float th_inverted=min_th;
-        dump3<<"th_inverted=min_th:"<<th_inverted<<endl;
-        th_inverted=th_inverted*10000;
-        dump3<<"th_inverted=th_inverted*10000:"<<th_inverted<<endl;
-        th_inverted=10000-th_inverted;
-        dump3<<"th_inverted=10000-th_inverted:"<<th_inverted<<endl;
-        th_inverted=th_inverted/10000;
-        dump3<<"th_inverted=th_inverted/10000:"<<th_inverted<<endl;
-//        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-threshold)
         if(mnist_obj.getPIsProbabilities()[posY][posX]<= th_inverted)
         {
             dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<th_inverted<<endl;
+            if(it_in->second.getId()<=6)
+                dump_append<<"input:"<<it_in->second.getId()<<", probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<", min_th:"<<min_th<<", th_inverted (PI):"<<th_inverted<<endl;
             it_in->second.setSignal(0);
             it_in->second.clearOutputs();
 #if TEST == 0
@@ -1946,12 +1949,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 //    dump2<<"biggest:"<<biggest<<endl;
     vector<float> new_ths(graph_depth+1,0);
     //1-float doesnt work properly in c++
-    float th_inverted=min_th;
-    th_inverted=th_inverted*10000;
-    th_inverted=10000-th_inverted;
-    th_inverted=th_inverted/10000;
+    
+    th_inverted=min_th;
+    aux=th_inverted*10000;
+    aux=10000-aux;
+    th_inverted=(aux/(float)10000);
     dump3<<"min_th:"<<min_th<<endl;
     dump3<<"th_inverted:"<<th_inverted<<endl;
+    dump_append<<"min_th:"<<min_th<<", th_inverted (NEW_TH):"<<th_inverted<<endl;
     if(option>0)
     {
         if(option==1) //linear
@@ -2022,13 +2027,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
         float th_inverted=new_ths[this->all_depths[probs_it->first/2]];
-        th_inverted=th_inverted*10000;
-        th_inverted=10000-th_inverted;
-        th_inverted=th_inverted/10000;
+        aux=th_inverted*10000;
+        aux=10000-aux;
+        th_inverted=(aux/(float)10000);
 //        if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
         if(probs_it->second<= th_inverted)
         {
-#if DEBUG >=0
+#if DEBUG >=3
 //            dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
             dump2<<"0->probes_it->first:"<<probs_it->first<<", probes_it->second"<<probs_it->second<<",th_inverted:"<<th_inverted;
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
@@ -2049,7 +2054,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         }        
         if(probs_it->second >= new_ths[this->all_depths[probs_it->first/2]])
         {
-#if DEBUG >=0
+            if(probs_it->first<=12550)
+                dump_append<<"AND:"<<probs_it->first<<", probab:"<<probs_it->second<<", min_th:"<<min_th<<", th_inverted (AND):"<<th_inverted<<endl;
+#if DEBUG >=3
             dump2<<"1->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(new_ths[this->all_depths[probs_it->first/2]]):"<<(new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"1->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;

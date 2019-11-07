@@ -1838,6 +1838,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setSignal(-1); 
     dump_append<<endl<<endl<<endl;
+    dump_append<<"Calculating th_inverted for PIs"<<endl;
     dump3<<"threhsold:"<<threshold<<", 1-threshold:"<<(float)1-threshold<<endl;
     th_inverted=min_th;
     dump_append<<"th_inverted=min_th:"<<th_inverted<<endl;
@@ -1846,7 +1847,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     aux=10000-aux;
     dump_append<<"aux=10000-aux:"<<aux<<endl;
     th_inverted=(aux/(float)10000);
-    dump_append<<"th_inverted=aux/10000:"<<th_inverted<<endl;
+    dump_append<<"min_th: "<<min_th<<", th_inverted=aux/10000:"<<th_inverted<<endl;
     
     
     //Inputs with probability of being 0 less than threshold are set to zero
@@ -1951,11 +1952,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     //1-float doesnt work properly in c++
     
     th_inverted=min_th;
+    dump_append<<"Calculating new_ths"<<endl;
+    dump_append<<"th_inverted=min_th: "<<th_inverted<<endl;
     aux=th_inverted*10000;
+    dump_append<<"aux=th_inverted*10000:"<<aux<<endl;
     aux=10000-aux;
+    dump_append<<"aux=10000-aux:"<<aux<<endl;
     th_inverted=(aux/(float)10000);
-    dump_append<<"min_th:"<<min_th<<endl;
-    dump_append<<"th_inverted:"<<th_inverted<<endl;
     dump_append<<"min_th:"<<min_th<<", th_inverted (NEW_TH):"<<th_inverted<<endl;
     if(option>0)
     {
@@ -2027,9 +2030,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
         th_inverted=new_ths[this->all_depths[probs_it->first/2]];
+        dump_append<<"TH for ANDs"<<endl;
+        if(probs_it->first<=12800)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
         aux=th_inverted*10000;
+        if(probs_it->first<=12800)dump_append<<"aux=th_inverted*10000: "<<aux<<endl;
         aux=10000-aux;
+        if(probs_it->first<=12800)dump_append<<"aux=10000-aux: "<<aux<<endl;
         th_inverted=(aux/(float)10000);
+        if(probs_it->first<=12800)dump_append<<"min_th: "<<min_th<<", th_inverted=(aux/(float)10000): "<<th_inverted<<endl;
 //        if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
         if(probs_it->second<= th_inverted)
         {

@@ -105,17 +105,18 @@ int main(int argc, char** argv) {
 
 #if ONLY_REDUCE == 0
     graph_obj.applyMnistRecursive(mnist_obj);
+
+
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    graph_obj.applyMnistRecursive(mnist_obj);
 #endif
 
-
-//    mnist_obj.clearMnist();
-//    read_mnist.close();
-//    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
-//    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
-//    mnist_obj.setBitsProbabilities(read_mnist);
-//    graph_obj.applyMnistRecursive(mnist_obj);  
-
-//#else
+#else
 
     for(min_th=0.9999;min_th>0.999;min_th-=0.0001)
     {

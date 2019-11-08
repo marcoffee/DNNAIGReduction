@@ -2032,6 +2032,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
         th_inverted=new_ths[this->all_depths[probs_it->first/2]];
+        if(probs_it->first<=12700)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
         dump_append<<"TH for AND"<<endl;
         if(probs_it->first<=12700)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
         aux=th_inverted*1000000;

@@ -2451,6 +2451,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     csv_final.open("todos_scores.csv",ios::app);
     simpl_info<<endl<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<",,"<<graph_depth<<",,"<<endl;
     csv_final<<this->name<<","<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<",,"<<graph_depth<<",,,,";
+#if ONLY_REDUCE == 1
+    csv_final<<endl;
+#endif
 
 #if DEBUG >= debug_value
     dump3<<"ANDs removed:"<<ands_removed<<endl;

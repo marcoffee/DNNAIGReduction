@@ -1716,7 +1716,8 @@ void graph::setANDsProbabilities(mnist& mnist_obj){
 }
 
 void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int alpha) {
-    float th_inverted=0,aux=0;
+    float th_inverted=0;
+    int aux=0;
     string th_value,info_file_name;
     if(option==0)
     {
@@ -2025,19 +2026,20 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     
+    dump_append<<endl<<endl;
   //ANDs with probability of being 0 or 1 higher than threshold are set to constant    
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
         th_inverted=new_ths[this->all_depths[probs_it->first/2]];
-        dump_append<<"TH for ANDs"<<endl;
-        if(probs_it->first<=12800)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
-        aux=th_inverted*10000;
-        if(probs_it->first<=12800)dump_append<<"aux=th_inverted*10000: "<<aux<<endl;
-        aux=10000-aux;
-        if(probs_it->first<=12800)dump_append<<"aux=10000-aux: "<<aux<<endl;
-        th_inverted=(aux/(float)10000);
-        if(probs_it->first<=12800)dump_append<<"min_th: "<<min_th<<", th_inverted=(aux/(float)10000): "<<th_inverted<<endl;
+        dump_append<<"TH for AND"<<endl;
+        if(probs_it->first<=12700)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
+        aux=th_inverted*1000000;
+        if(probs_it->first<=12700)dump_append<<"aux=th_inverted*10000: "<<aux<<endl;
+        aux=1000000-aux;
+        if(probs_it->first<=12700)dump_append<<"aux=10000-aux: "<<aux<<endl;
+        th_inverted=(aux/(float)1000000);
+        if(probs_it->first<=12700)dump_append<<"min_th: "<<min_th<<", th_inverted=(aux/(float)10000): "<<th_inverted<<endl;
 //        if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
         if(probs_it->second<= th_inverted)
         {

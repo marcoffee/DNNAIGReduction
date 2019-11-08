@@ -29,7 +29,8 @@
 #define REMOVE_PI 1
 #define LEAVE_CONSTANTS 0
 #define FIX_DOUBLED_NODES 0
-#define EXECUTE_ONCE 1
+#define EXECUTE_ONCE 0
+#define ONLY_REDUCE 1
 #define WRITE_AIG 0
 #define WRITE_AAG 0
 

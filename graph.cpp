@@ -1838,7 +1838,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     }
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setSignal(-1); 
-    dump_append<<endl<<endl<<endl;
+    dump_append<<endl<<endl;
     dump_append<<"Calculating th_inverted for PIs"<<endl;
     dump3<<"threhsold:"<<threshold<<", 1-threshold:"<<(float)1-threshold<<endl;
     th_inverted=min_th;
@@ -2032,15 +2032,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
         th_inverted=new_ths[this->all_depths[probs_it->first/2]];
-        if(probs_it->first<=12700)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
-        dump_append<<"TH for AND"<<endl;
-        if(probs_it->first<=12700)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
+        if(probs_it->first<=12600)dump_append<<"TH for AND: ";
+        if(probs_it->first<=12600)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
         aux=th_inverted*1000000;
-        if(probs_it->first<=12700)dump_append<<"aux=th_inverted*10000: "<<aux<<endl;
+        if(probs_it->first<=12600)dump_append<<"aux=th_inverted*10000: "<<aux<<endl;
         aux=1000000-aux;
-        if(probs_it->first<=12700)dump_append<<"aux=10000-aux: "<<aux<<endl;
+        if(probs_it->first<=12600)dump_append<<"aux=10000-aux: "<<aux<<endl;
         th_inverted=(aux/(float)1000000);
-        if(probs_it->first<=12700)dump_append<<"min_th: "<<min_th<<", th_inverted=(aux/(float)10000): "<<th_inverted<<endl;
+        if(probs_it->first<=12600)dump_append<<"min_th: "<<min_th<<", th_inverted=(aux/(float)10000): "<<th_inverted<<endl;
 //        if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
         if(probs_it->second<= th_inverted)
         {

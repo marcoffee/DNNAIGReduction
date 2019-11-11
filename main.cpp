@@ -34,9 +34,9 @@ int main(int argc, char** argv) {
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=53,alpha=2;
+    int option=52,alpha=2;
     float min_th=0.9999;
-    //1->linear, 2->sqrt, 3->exp, 4->sigmod, 51->#nodes_linear, 52->#nodes_sqrt,53->#nodes_exp
+    //1->linear, 2->sqrt, 3->exp, 4->sigmod, 51->#nodes_linear, 52->#nodes_root,53->#nodes_exp
    
 //    cout<<"threhsold:"<<min_th<<", 1-threshold:"<<(float)1-min_th<<endl;
 //    cout<<"Calculating th_inverted:"<<endl;

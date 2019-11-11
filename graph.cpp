@@ -2016,7 +2016,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     }
 //    dump1<<probs_it->first<<":"<<all_depths[probs_it->first/2]<<", new_th:"<<new_th<<endl;
     for(int k=0;k<new_ths.size();k++)
-        dump1<<k<<":"<<new_ths[k]<<endl;
+    {
+        dump1<<k<<":"<<new_ths[k]<<",";
+        th_inverted=new_ths[k];
+        aux=th_inverted*10000;
+        aux=10000-aux;
+        th_inverted=(aux/(float)10000);
+        dump1<<th_inverted<<endl;
+    }
     
     int one_count=0,zero_count=0;
     struct rusage buf; 
@@ -2064,8 +2071,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         }        
         if(probs_it->second >= new_ths[this->all_depths[probs_it->first/2]])
         {
-            if(probs_it->first<=12800)
-                dump_append<<"AND:"<<probs_it->first<<", probab:"<<probs_it->second<<", new_th:"<<(new_ths[this->all_depths[probs_it->first/2]])<<", th_inverted (AND):"<<th_inverted<<endl;
+//            if(probs_it->first<=12800)
+//                dump_append<<"AND:"<<probs_it->first<<", probab:"<<probs_it->second<<", new_th:"<<(new_ths[this->all_depths[probs_it->first/2]])<<", th_inverted (AND):"<<th_inverted<<endl;
 #if DEBUG >=3
             dump2<<"1->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(new_ths[this->all_depths[probs_it->first/2]]):"<<(new_ths[this->all_depths[probs_it->first/2]]);
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;

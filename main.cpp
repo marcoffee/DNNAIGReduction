@@ -21,14 +21,15 @@ using namespace std;
  */
 int main(int argc, char** argv) {
     struct rusage buf;
-    int start,stop;
+    int start,stop,start_simplf,stop_simplf,start_app,stop_app;
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name;
     file_name="../A1.aig";
 //    file_name="andre.aig";
-    ofstream dump_append("dump_append.txt");
+    ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv");
+    exec_times<<"Min_th, Simplification Time, Train Images Time, Test Images Time"<<endl;
     dump_append.close();
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);
@@ -120,7 +121,6 @@ int main(int argc, char** argv) {
 
     for(min_th=0.9999;min_th>0.999;min_th-=0.0001)
     {
-      
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);
         
@@ -133,26 +133,34 @@ int main(int argc, char** argv) {
         graph_obj.readAIG(read,file_name);
 
 //        graph_obj.setANDsProbabilities(mnist_obj);
+        start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+        stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.propagateAndDeletePIBased(mnist_obj);
 //        graph_obj.setDepthsInToOut();
+        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
 #if ONLY_REDUCE == 0
+        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
-
+        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        exec_times<<(stop_app-start_app)<<",";
         
         mnist_obj.clearMnist();
         read_mnist.close();
         read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
         mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
         mnist_obj.setBitsProbabilities(read_mnist);
+        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
+        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        exec_times<<(stop_app-start_app)<<endl;
 #endif
     }
 
 
     for(min_th=0.999;min_th>0.99;min_th-=0.001)
     {
-        graph_obj.clearCircuit();
+                graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);
         
         mnist_obj.clearMnist();
@@ -162,27 +170,35 @@ int main(int argc, char** argv) {
         mnist_obj.setBitsProbabilities(read_mnist);
         
         graph_obj.readAIG(read,file_name);
-        
+
 //        graph_obj.setANDsProbabilities(mnist_obj);
+        start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+        stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.propagateAndDeletePIBased(mnist_obj);
 //        graph_obj.setDepthsInToOut();
+        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
 #if ONLY_REDUCE == 0
+        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
-
+        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        exec_times<<(stop_app-start_app)<<",";
         
         mnist_obj.clearMnist();
         read_mnist.close();
         read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
         mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
         mnist_obj.setBitsProbabilities(read_mnist);
+        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
+        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        exec_times<<(stop_app-start_app)<<endl;
 #endif
     }
     
     for(min_th=0.99;min_th>0.9;min_th-=0.01)
     {
-        graph_obj.clearCircuit();
+               graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);
         
         mnist_obj.clearMnist();
@@ -192,21 +208,29 @@ int main(int argc, char** argv) {
         mnist_obj.setBitsProbabilities(read_mnist);
         
         graph_obj.readAIG(read,file_name);
-        
+
 //        graph_obj.setANDsProbabilities(mnist_obj);
+        start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+        stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.propagateAndDeletePIBased(mnist_obj);
 //        graph_obj.setDepthsInToOut();
+        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
 #if ONLY_REDUCE == 0
+        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
-
+        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        exec_times<<(stop_app-start_app)<<",";
         
         mnist_obj.clearMnist();
         read_mnist.close();
         read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
         mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
         mnist_obj.setBitsProbabilities(read_mnist);
+        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
+        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        exec_times<<(stop_app-start_app)<<endl;
 #endif
     }
 #endif

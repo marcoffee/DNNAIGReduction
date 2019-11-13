@@ -1767,44 +1767,44 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     constant0.setId(0);
     
     //creating structural hash
-    cout<<"Creating hash table for structural hash."<<endl;
-    map <unsigned long long int,unsigned int> structural_hash;
-    unsigned long long int result;
-    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
-    {
-        unsigned long long bits1,bits2;
-        if(it_and->second.getInputs()[0]->getId() < it_and->second.getInputs()[1]->getId())
-        {
-            bits1=(unsigned long long int)it_and->second.getInputs()[0]->getId();
-            bits2=(unsigned long long int)it_and->second.getInputs()[1]->getId();
-        }
-        else
-        {
-            bits2=(unsigned long long int)it_and->second.getInputs()[0]->getId();
-            bits1=(unsigned long long int)it_and->second.getInputs()[1]->getId();
-        }
-        
-        result=(bits1 << 32) | bits2;
-        if(it_and->second.getId()<=10000)
-        {
-            dump_hash<<result<<endl;
-            bitset<64> w(result),x(bits1),y(bits2);
-            dump_hash<<x<<" + "<<y<<" = "<<w<<endl;
-        }
-        if(structural_hash.find(result)==structural_hash.end())
-            structural_hash.insert(pair<unsigned long long int,unsigned int> (result,it_and->second.getId()));
-        else
-        {
-            if(it_and->second.getId()<=10000)
-            {
-                dump_hash<<"ERROR: unexpected same node in structural hash: ";
-    //            it_and->second.printNode();
-                all_ANDS.find(structural_hash.find(result)->second)->second.writeNode(dump_hash);
-                it_and->second.writeNode(dump_hash);
-            }
-       }
-        
-    }
+//    cout<<"Creating hash table for structural hash."<<endl;
+//    map <unsigned long long int,unsigned int> structural_hash;
+//    unsigned long long int result;
+//    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+//    {
+//        unsigned long long bits1,bits2;
+//        if(it_and->second.getInputs()[0]->getId() < it_and->second.getInputs()[1]->getId())
+//        {
+//            bits1=(unsigned long long int)it_and->second.getInputs()[0]->getId();
+//            bits2=(unsigned long long int)it_and->second.getInputs()[1]->getId();
+//        }
+//        else
+//        {
+//            bits2=(unsigned long long int)it_and->second.getInputs()[0]->getId();
+//            bits1=(unsigned long long int)it_and->second.getInputs()[1]->getId();
+//        }
+//        
+//        result=(bits1 << 32) | bits2;
+//        if(it_and->second.getId()<=10000)
+//        {
+//            dump_hash<<result<<endl;
+//            bitset<64> w(result),x(bits1),y(bits2);
+//            dump_hash<<x<<" + "<<y<<" = "<<w<<endl;
+//        }
+//        if(structural_hash.find(result)==structural_hash.end())
+//            structural_hash.insert(pair<unsigned long long int,unsigned int> (result,it_and->second.getId()));
+//        else
+//        {
+//            if(it_and->second.getId()<=10000)
+//            {
+//                dump_hash<<"ERROR: unexpected same node in structural hash: ";
+//    //            it_and->second.printNode();
+//                all_ANDS.find(structural_hash.find(result)->second)->second.writeNode(dump_hash);
+//                it_and->second.writeNode(dump_hash);
+//            }
+//       }
+//        
+//    }
     
     
     this->setDepthsInToOut();
@@ -1838,27 +1838,31 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     }
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setSignal(-1); 
-    dump_append<<endl<<endl;
-    dump_append<<"Calculating th_inverted for PIs"<<endl;
-    dump3<<"threhsold:"<<threshold<<", 1-threshold:"<<(float)1-threshold<<endl;
-    th_inverted=min_th;
-    dump_append<<"th_inverted=min_th:"<<th_inverted<<endl;
-    aux=th_inverted*10000;
-    dump_append<<"aux=th_inverted*10000:"<<aux<<endl;
-    aux=10000-aux;
-    dump_append<<"aux=10000-aux:"<<aux<<endl;
-    th_inverted=(aux/(float)10000);
-    dump_append<<"min_th: "<<min_th<<", th_inverted=aux/10000:"<<th_inverted<<endl;
+    
+//    dump_append<<endl<<endl;
+//    dump_append<<"Calculating th_inverted for PIs"<<endl;
+//    dump3<<"threhsold:"<<threshold<<", 1-threshold:"<<(float)1-threshold<<endl;
+//    th_inverted=min_th;
+//    dump_append<<"th_inverted=min_th:"<<th_inverted<<endl;
+//    aux=th_inverted*10000;
+//    dump_append<<"aux=th_inverted*10000:"<<aux<<endl;
+//    aux=10000-aux;
+//    dump_append<<"aux=10000-aux:"<<aux<<endl;
+//    th_inverted=(aux/(float)10000);
+//    dump_append<<"min_th: "<<min_th<<", th_inverted=aux/10000:"<<th_inverted<<endl;
     
     
     //Inputs with probability of being 0 less than threshold are set to zero
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
     {
-        if(mnist_obj.getPIsProbabilities()[posY][posX]<= th_inverted)
+//        if(mnist_obj.getPIsProbabilities()[posY][posX]<= th_inverted)
+        if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-min_th)        
         {
-            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<th_inverted<<endl;
+//            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<th_inverted<<endl;
+            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<(1-min_th)<<endl;
             if(it_in->second.getId()<=6)
-                dump_append<<"input:"<<it_in->second.getId()<<", probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<", min_th:"<<min_th<<", th_inverted (PI):"<<th_inverted<<endl;
+//                dump_append<<"input:"<<it_in->second.getId()<<", probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<", min_th:"<<min_th<<", th_inverted (PI):"<<th_inverted<<endl;
+                dump_append<<"input:"<<it_in->second.getId()<<", probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<", min_th:"<<min_th<<", th_inverted (PI):"<<(1-min_th)<<endl;
             it_in->second.setSignal(0);
             it_in->second.clearOutputs();
 #if TEST == 0
@@ -1952,37 +1956,37 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     vector<float> new_ths(graph_depth+1,0);
     //1-float doesnt work properly in c++
     
-    th_inverted=min_th;
-    dump_append<<"Calculating new_ths"<<endl;
-    dump_append<<"th_inverted=min_th: "<<th_inverted<<endl;
-    aux=th_inverted*100000;
-    dump_append<<"aux=th_inverted*100000:"<<aux<<endl;
-    aux=100000-aux;
-    dump_append<<"aux=100000-aux:"<<aux<<endl;
-    th_inverted=(aux/(float)100000);
-    dump_append<<"min_th:"<<min_th<<", th_inverted (NEW_TH):"<<th_inverted<<endl;
+//    th_inverted=min_th;
+//    dump_append<<"Calculating new_ths"<<endl;
+//    dump_append<<"th_inverted=min_th: "<<th_inverted<<endl;
+//    aux=th_inverted*100000;
+//    dump_append<<"aux=th_inverted*100000:"<<aux<<endl;
+//    aux=100000-aux;
+//    dump_append<<"aux=100000-aux:"<<aux<<endl;
+//    th_inverted=(aux/(float)100000);
+//    dump_append<<"min_th:"<<min_th<<", th_inverted (NEW_TH):"<<th_inverted<<endl;
     if(option>0)
     {
         if(option==1) //linear
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=((th_inverted*k)/(graph_depth))+min_th;
+                new_ths[k]=(((1-min_th)*k)/(graph_depth))+min_th;
         }
         else if (option==2) //root
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=(th_inverted*(pow((float)k/((float)graph_depth),(float)1/alpha)))+min_th;
+                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth),(float)1/alpha)))+min_th;
         }
         else if (option==3) //exp
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=(th_inverted*(pow((float)k/((float)graph_depth),alpha)))+min_th;
+                new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth),alpha)))+min_th;
         }
         else if (option==4) //sigmoidal
         {
             for(int k=0;k<new_ths.size();k++)
             {
-                new_ths[k]=(th_inverted*((1+erf((6*k/(graph_depth)) -3))/2))+min_th;
+                new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth)) -3))/2))+min_th;
                 if(k>= 0.99*(graph_depth))
                     new_ths[k]=1;
                 if(k<= 0.01*(graph_depth))
@@ -1992,17 +1996,17 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         else if (option==51) //number of nodes per level, linear
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=(th_inverted*((((float)-depth_counter[k])/(biggest-1))+((float)biggest/(biggest-1))))+min_th;
+                new_ths[k]=((1-min_th)*((((float)-depth_counter[k])/(biggest-1))+((float)biggest/(biggest-1))))+min_th;
         }
         else if (option==52 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=(th_inverted*(-pow((((float)depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
+                new_ths[k]=((1-min_th)*(-pow((((float)depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
         }
         else if (option==53 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
-                new_ths[k]=(th_inverted*(-pow((((float)depth_counter[k])/(biggest-1)),(float)1/alpha)+((float)biggest/(biggest-1))))+min_th;
+                new_ths[k]=((1-min_th)*(-pow((((float)depth_counter[k])/(biggest-1)),(float)1/alpha)+((float)biggest/(biggest-1))))+min_th;
         }
         else if (option==6 ) //MEDIUM VALUE
         {
@@ -2018,11 +2022,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(int k=0;k<new_ths.size();k++)
     {
         dump1<<k<<":"<<new_ths[k]<<",";
-        th_inverted=new_ths[k];
-        aux=th_inverted*100000;
-        aux=100000-aux;
-        th_inverted=(aux/(float)100000);
-        dump1<<th_inverted<<endl;
+//        th_inverted=new_ths[k];
+//        aux=th_inverted*100000;
+//        aux=100000-aux;
+//        th_inverted=(aux/(float)100000);
+//        dump1<<th_inverted<<endl;
+        dump1<<(1-new_ths[k])<<endl;
     }
     
     int one_count=0,zero_count=0;
@@ -2038,21 +2043,21 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
         and_ptr=&all_ANDS.find(probs_it->first)->second;
-        th_inverted=new_ths[this->all_depths[probs_it->first/2]];
-        if(probs_it->first<=12600)dump_append<<"TH for AND: ";
-        if(probs_it->first<=12600)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
-        aux=th_inverted*100000;
-        if(probs_it->first<=12600)dump_append<<"aux=th_inverted*10000: "<<aux<<endl;
-        aux=100000-aux;
-        if(probs_it->first<=12600)dump_append<<"aux=10000-aux: "<<aux<<endl;
-        th_inverted=(aux/(float)100000);
-        if(probs_it->first<=12600)dump_append<<"new_ths[this->all_depths[probs_it->first/2]]: "<<new_ths[this->all_depths[probs_it->first/2]]<<", th_inverted=(aux/(float)10000): "<<th_inverted<<endl;
-//        if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
-        if(probs_it->second<= th_inverted)
+//        th_inverted=new_ths[this->all_depths[probs_it->first/2]];
+//        if(probs_it->first<=12600)dump_append<<"TH for AND: ";
+//        if(probs_it->first<=12600)dump_append<<"th_inverted=new_ths: "<<th_inverted<<endl;
+//        aux=th_inverted*100000;
+//        if(probs_it->first<=12600)dump_append<<"aux=th_inverted*10000: "<<aux<<endl;
+//        aux=100000-aux;
+//        if(probs_it->first<=12600)dump_append<<"aux=10000-aux: "<<aux<<endl;
+//        th_inverted=(aux/(float)100000);
+//        if(probs_it->first<=12600)dump_append<<"new_ths[this->all_depths[probs_it->first/2]]: "<<new_ths[this->all_depths[probs_it->first/2]]<<", th_inverted=(aux/(float)10000): "<<th_inverted<<endl;
+        if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
+//        if(probs_it->second<= th_inverted)
         {
-#if DEBUG >=3
-//            dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
-            dump2<<"0->probes_it->first:"<<probs_it->first<<", probes_it->second"<<probs_it->second<<",th_inverted:"<<th_inverted;
+#if DEBUG >=0
+            dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
+//            dump2<<"0->probes_it->first:"<<probs_it->first<<", probes_it->second"<<probs_it->second<<",th_inverted:"<<th_inverted;
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
 //            dump_probs<<"0->probes_it->first:"<<probs_it->first<<",probs_it->second:"<<probs_it->second<<endl;
 #endif

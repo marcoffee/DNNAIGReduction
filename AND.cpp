@@ -202,7 +202,7 @@ void AND::replaceInput(int swap_index,node* new_node,bool polarity) {
 //	}
     if(polarity)
         new_node=new_node->forceInvert();
-//    cout<<"Setting:"<<this->id<<". newnode:"<<new_node->fixLSB()->getId()<<". index:"<<swap_index<<". pol:"<<polarity<<endl;
+//    cout<<"Setting:"<<this->id<<". newnode:"<<new_node->fixLSB()->getId()<<". index:"<<swap_index<<"("<<(this->inputs[swap_index]->fixLSB()->getId())<<"). pol:"<<polarity<<endl;
     this->inputs[swap_index]=new_node;
 //	if(inputs[1]->fixLSB()->getId()==inputs[0]->fixLSB()->getId())
 //	{

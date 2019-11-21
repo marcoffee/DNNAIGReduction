@@ -616,10 +616,18 @@ void graph::readAIG(ifstream& file, string param_name){
 //        cout<<"delta:"<<delta1<<","<<delta2<<" and:"<<and_index*2<<","<<rhs0<<","<<rhs1<<"\t";
         
 #if IGNORE_OUTPUTS == 0
+//        cout<<"rhs1:"<<rhs1<<" ";
+//        this->findAny(rhs1)->printNode();
+//            cout<<"rhs0:"<<rhs0<<" ";
+//            this->findAny(rhs0)->printNode();
     if(rhs0>1)
        this->findAny(rhs0)->pushOutput(AND_ptr);
     if(rhs1>1)
        this->findAny(rhs1)->pushOutput(AND_ptr); 
+//        cout<<"rhs1:"<<rhs1<<" ";
+//        this->findAny(rhs1)->printNode();
+//            cout<<"rhs0:"<<rhs0<<" ";
+//            this->findAny(rhs0)->printNode();
 #endif
     }
 #if DEBUG >= 2
@@ -1867,9 +1875,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             if(it_in->second.getId()<=6)
 //                dump_append<<"input:"<<it_in->second.getId()<<", probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<", min_th:"<<min_th<<", th_inverted (PI):"<<th_inverted<<endl;
                 dump_append<<"input:"<<it_in->second.getId()<<", probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<", min_th:"<<min_th<<", th_inverted (PI):"<<(1-min_th)<<endl;
+
+#if TEST == 0
             it_in->second.setSignal(0);
             it_in->second.clearOutputs();
-#if TEST == 0
             for(int g=0;g<it_in->second.getOutputs().size();g++)
             {
                 if(it_in->second.getOutputs()[g]->getInputs()[0]->getId()==it_in->second.getId())
@@ -1893,27 +1902,28 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
   simpl_info<<"Threshold:"<<th_value<<endl;
   simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
   
-//#if TEST == 1
+#if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
-  all_inputs.find(4)->second.setSignal(1);
+  all_inputs.find(4)->second.setSignal(0);
         for(int g=0;g<all_inputs.find(4)->second.getOutputs().size();g++)
         {
             if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(4)->second.getId())
-                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(0,&constant1,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[0]);
+                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[0]);
             else if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(4)->second.getId())
-                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant1,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
+                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
         }
   all_inputs.find(6)->second.setSignal(2);
-//          for(int g=0;g<all_inputs.find(1)->second.getOutputs().size();g++)
+//          for(int g=0;g<all_inputs.find(6)->second.getOutputs().size();g++)
 //        {
-//            if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(1)->second.getId())
-//                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[0]);
-//            else if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(1)->second.getId())
-//                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[1]);
+//            if(all_inputs.find(6)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(1)->second.getId())
+//                all_inputs.find(6)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[0]);
+//            else if(all_inputs.find(6)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(1)->second.getId())
+//                all_inputs.find(6)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[1]);
 //        }
   all_inputs.find(8)->second.setSignal(2);;
   all_inputs.find(10)->second.setSignal(2);
 #endif
+
   
 #if PROBS_FROM_FILE ==1
     ANDs_probabilities.clear();
@@ -1958,17 +1968,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     biggest=*max_element(begin(depth_counter),end(depth_counter));
 //    dump2<<"biggest:"<<biggest<<endl;
     vector<float> new_ths(graph_depth+1,0);
-    //1-float doesnt work properly in c++
-    
-//    th_inverted=min_th;
-//    dump_append<<"Calculating new_ths"<<endl;
-//    dump_append<<"th_inverted=min_th: "<<th_inverted<<endl;
-//    aux=th_inverted*100000;
-//    dump_append<<"aux=th_inverted*100000:"<<aux<<endl;
-//    aux=100000-aux;
-//    dump_append<<"aux=100000-aux:"<<aux<<endl;
-//    th_inverted=(aux/(float)100000);
-//    dump_append<<"min_th:"<<min_th<<", th_inverted (NEW_TH):"<<th_inverted<<endl;
+
     if(option>0)
     {
         if(option==1) //linear
@@ -2059,7 +2059,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         if(probs_it->second<= (1- new_ths[this->all_depths[probs_it->first/2]]))
 //        if(probs_it->second<= th_inverted)
         {
-#if DEBUG >=0
+#if DEBUG >=3
             dump2<<"0->probes_it->first:"<<probs_it->first<<",probes_it->second"<<probs_it->second<<",(1- new_ths[this->all_depths[probs_it->first/2]]):"<<(1- new_ths[all_depths[probs_it->first/2]]);
 //            dump2<<"0->probes_it->first:"<<probs_it->first<<", probes_it->second"<<probs_it->second<<",th_inverted:"<<th_inverted;
             dump2<<",depth:"<<all_depths[probs_it->first/2]<<endl;
@@ -2587,7 +2587,7 @@ void graph::setDepthsInToOut(){
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
 #if DEBUG >= 3
-    write.open("log.txt",ios::app);
+    write.open("log2.txt",ios::app);
     write<<"OUTPUT BFS:"<<it_out->first<<endl;
 #endif
         depth=it_out->second.computeDepthInToOut();

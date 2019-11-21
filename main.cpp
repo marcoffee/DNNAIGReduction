@@ -25,11 +25,12 @@ int main(int argc, char** argv) {
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-    string file_name,new_name,command;
+    string file_name,new_name,abc_name;
     file_name="../A1.aig";
 //    file_name="andre.aig";
-    ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr");
+    ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr"),log("log.txt");
     exec_times<<"Min_th, Simplification Time, Train Images Time, Test Images Time"<<endl;
+    log.close();
     dump_append.close();
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);
@@ -97,13 +98,16 @@ int main(int argc, char** argv) {
     LEAVE_CONSTANTS=1;
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
     new_name=graph_obj.getName();
-    script<<"&r "<<new_name<<".aig"<<endl<<"&w "<<new_name<<"_ABC.aig"<<endl<<"quit";
-    system("./../abc -c 'source script.scr'");
-    new_name+="_ABC.aig";
+    abc_name=new_name+"_ABC.aig";
+    script<<"&r "<<new_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<new_name<<"_ABC.aig"<<endl<<"quit";
+    script.close();
+    system("./../abc -c 'source script.scr' >> log.txt");
+    
+
+#if ONLY_REDUCE == 0
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(min_th);
-    graph_obj.readAIG(read,new_name);
-#if ONLY_REDUCE == 0
+    graph_obj.readAIG(read,abc_name);
     graph_obj.applyMnistRecursive(mnist_obj);
 
     mnist_obj.clearMnist();
@@ -137,6 +141,13 @@ int main(int argc, char** argv) {
     mnist_obj.setBitsProbabilities(read_mnist);
     graph_obj.applyMnistRecursive(mnist_obj);
 #endif
+    //calling CEC
+    script.open("script.scr");
+    script<<"&cec "<<new_name<<".aig "<<abc_name<<endl<<"quit";
+    script.close();
+    log.open("log.txt",ios::app);
+    log<<"CEC on circuits: "<<new_name<<" VS: "<<abc_name<<endl<<"TH:"<<min_th<<", OPTION:"<<option<<endl;
+    system("./../abc -c 'source script.scr' >> log.txt");
 
 #elif EXECUTE_ONCE == 0
 

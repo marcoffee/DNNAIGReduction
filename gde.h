@@ -24,15 +24,15 @@
 #define DEBUG 0
 #define debug_value 3
 
-#define TEST 0
+#define TEST 1
 #define RENUMBER 1
 #define REMOVE_PI 1
 //#define LEAVE_CONSTANTS 0
 #define FIX_DOUBLED_NODES 1
 #define EXECUTE_ONCE 1
-#define ONLY_REDUCE 0
+#define ONLY_REDUCE 1
 #define WRITE_AIG 1
-#define WRITE_AAG 0
+#define WRITE_AAG 1
 
 
 

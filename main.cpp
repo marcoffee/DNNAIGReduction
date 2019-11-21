@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name,new_name,command;
-//    file_name="../A1.aig";
-    file_name="andre.aig";
+    file_name="../A1.aig";
+//    file_name="andre.aig";
     ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr");
     exec_times<<"Min_th, Simplification Time, Train Images Time, Test Images Time"<<endl;
     dump_append.close();
@@ -93,26 +93,42 @@ int main(int argc, char** argv) {
     mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
     mnist_obj.setBitsProbabilities(read_mnist);
     
-    graph_obj.readAIG(read,file_name);;
-//    graph_obj.printCircuit();
-//    graph_obj.readAAG(read,file_name);
-    
-     
+    graph_obj.readAIG(read,file_name);
     LEAVE_CONSTANTS=1;
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
     new_name=graph_obj.getName();
     script<<"&r "<<new_name<<".aig"<<endl<<"&w "<<new_name<<"_ABC.aig"<<endl<<"quit";
     system("./../abc -c 'source script.scr'");
-    
-//    LEAVE_CONSTANTS=0;
-//    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
-//    graph_obj.propagateAndDeletePIBased(mnist_obj);
-//    graph_obj.setDepthsInToOut();
-
+    new_name+="_ABC.aig";
+    graph_obj.clearCircuit();
+    graph_obj.setThrehsold(min_th);
+    graph_obj.readAIG(read,new_name);
 #if ONLY_REDUCE == 0
     graph_obj.applyMnistRecursive(mnist_obj);
 
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    graph_obj.applyMnistRecursive(mnist_obj);
+#endif
+//////////////////////////////////////////////////////////////////////////////////
+    graph_obj.clearCircuit();
+    graph_obj.setThrehsold(min_th);
 
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    
+    graph_obj.readAIG(read,file_name);
+    LEAVE_CONSTANTS=0;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
+
+#if ONLY_REDUCE == 0
+    graph_obj.applyMnistRecursive(mnist_obj);
 
     mnist_obj.clearMnist();
     read_mnist.close();

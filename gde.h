@@ -31,7 +31,7 @@
 #define FIX_DOUBLED_NODES 1
 #define EXECUTE_ONCE 1
 #define ONLY_REDUCE 0
-#define WRITE_AIG 0
+#define WRITE_AIG 1
 #define WRITE_AAG 0
 
 

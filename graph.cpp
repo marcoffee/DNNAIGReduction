@@ -1893,7 +1893,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
   simpl_info<<"Threshold:"<<th_value<<endl;
   simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
   
-#if TEST == 1
+//#if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
   all_inputs.find(4)->second.setSignal(1);
         for(int g=0;g<all_inputs.find(4)->second.getOutputs().size();g++)
@@ -1911,8 +1911,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 //            else if(all_inputs.find(1)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(1)->second.getId())
 //                all_inputs.find(1)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(1)->second.getOutputs()[g]->getInputPolarities()[1]);
 //        }
-//  all_inputs.find(8)->second.setSignal(2);
-//  all_inputs.find(10)->second.setSignal(2);
+  all_inputs.find(8)->second.setSignal(2);;
+  all_inputs.find(10)->second.setSignal(2);
 #endif
   
 #if PROBS_FROM_FILE ==1

@@ -27,9 +27,9 @@
 #define TEST 0
 #define RENUMBER 1
 #define REMOVE_PI 1
-#define LEAVE_CONSTANTS 0
+//#define LEAVE_CONSTANTS 0
 #define FIX_DOUBLED_NODES 1
-#define EXECUTE_ONCE 0
+#define EXECUTE_ONCE 1
 #define ONLY_REDUCE 0
 #define WRITE_AIG 0
 #define WRITE_AAG 0
@@ -349,6 +349,7 @@ public:
     map<unsigned int,latch>* getLatches();
     map<unsigned int,output>* getOutputs();
     map<unsigned int,AND>* getANDS();
+    string getName();
     
     
     //operations
@@ -361,7 +362,8 @@ public:
     void propagateAndDeletePIBased(mnist&);
     void cutAIG();
     void setANDsProbabilities(mnist&);
-    void propagateAndDeleteAll(mnist&,int option,float min_th,int alpha);
+    void propagateAndDeleteAll(mnist&,int option,float min_th,int alpha, int LEAVE_CONSTANTS);
+//    void writeFileWithConstantNodes();
     
     
     void assignBits(mnist&);

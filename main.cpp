@@ -25,20 +25,21 @@ int main(int argc, char** argv) {
     if(getrusage(RUSAGE_SELF,&buf)==-1)
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-    string file_name;
-    file_name="../A1.aig";
-//    file_name="andre.aig";
-    ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv");
+    string file_name,new_name,command;
+//    file_name="../A1.aig";
+    file_name="andre.aig";
+    ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr");
     exec_times<<"Min_th, Simplification Time, Train Images Time, Test Images Time"<<endl;
     dump_append.close();
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=52,alpha=2;
+    int option=1,alpha=2,LEAVE_CONSTANTS=0;
     float min_th=0.9999;
     //1->linear, 2->sqrt, 3->exp, 4->sigmod, 51->#nodes_linear, 52->#nodes_root,53->#nodes_exp
    
+#if EXECUTE_ONCE == 3
 //    cout<<"threhsold:"<<min_th<<", 1-threshold:"<<(float)1-min_th<<endl;
 //    cout<<"Calculating th_inverted:"<<endl;
 //    float th_inverted=min_th;
@@ -80,9 +81,9 @@ int main(int argc, char** argv) {
 //        for(int k=0;k<new_ths.size();k++)
 //            new_ths[k]=(th_inverted*(-pow((((float)depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
 //    }
+//    system("./../abc -c 'source script.scr'");;
 
-
-#if EXECUTE_ONCE ==1
+#elif EXECUTE_ONCE ==1
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(min_th);
 
@@ -96,11 +97,15 @@ int main(int argc, char** argv) {
 //    graph_obj.printCircuit();
 //    graph_obj.readAAG(read,file_name);
     
-//    graph_obj.setName("andre_PI_Fix");
-//    graph_obj.writeAIG();;
+     
+    LEAVE_CONSTANTS=1;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
+    new_name=graph_obj.getName();
+    script<<"&r "<<new_name<<".aig"<<endl<<"&w "<<new_name<<"_ABC.aig"<<endl<<"quit";
+    system("./../abc -c 'source script.scr'");
     
-    
-    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);;
+//    LEAVE_CONSTANTS=0;
+//    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
 //    graph_obj.propagateAndDeletePIBased(mnist_obj);
 //    graph_obj.setDepthsInToOut();
 
@@ -117,7 +122,7 @@ int main(int argc, char** argv) {
     graph_obj.applyMnistRecursive(mnist_obj);
 #endif
 
-#else
+#elif EXECUTE_ONCE == 0
 
     for(min_th=0.9999;min_th>0.999;min_th-=0.0001)
     {

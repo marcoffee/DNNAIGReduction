@@ -33,6 +33,10 @@ void graph::setName(string param){
     this->name=param;
 }
 
+string graph::getName(){
+    return this->name;
+}
+
 void graph::setThrehsold(float param) {
     cout<<"Setting threshold to: "<<param<<endl;
     this->threshold=param;
@@ -1715,7 +1719,7 @@ void graph::setANDsProbabilities(mnist& mnist_obj){
     
 }
 
-void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int alpha) {
+void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int alpha,int LEAVE_CONSTANTS) {
     float th_inverted=0;
     int aux=0;
     string th_value,info_file_name;
@@ -2117,7 +2121,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     bool polarity,pol_new_node;
     node* new_node;
 
-#if LEAVE_CONSTANTS == 0
+    if(LEAVE_CONSTANTS == 0)
+    {
+//#if LEAVE_CONSTANTS == 0
     //DFS to propagate constants
     for(it_out=this->all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
@@ -2513,12 +2519,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
    }
    cout<<"Constant POs:"<<constant_POs<<endl;
 #endif
-
-#endif
+}
+//#endif
+    
     //Reordering AND's inputs (bigger first)
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         it_and->second.invertInputs();
-
 
     this->name+="_ANDs_removed_";
     if(LEAVE_CONSTANTS==1)

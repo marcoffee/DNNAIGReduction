@@ -1893,7 +1893,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
   simpl_info<<"Threshold:"<<th_value<<endl;
   simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
   
-//#if TEST == 1
+#if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
   all_inputs.find(4)->second.setSignal(1);
         for(int g=0;g<all_inputs.find(4)->second.getOutputs().size();g++)

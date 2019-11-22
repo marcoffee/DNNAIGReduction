@@ -16,9 +16,24 @@
 
 using namespace std;
 
-/*
- * 
- */
+
+void abcWrite(string new_name,string abc_name){
+    ofstream script("script.scr");
+    script<<"&r "<<new_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<new_name<<"_ABC.aig"<<endl<<"quit";
+    script.close();
+    system("./../abc -c 'source script.scr' >> log.txt");
+}
+
+void abcCeC(string new_name,string abc_name,int min_th,int option){
+    ofstream script("script.scr"),log("log.txt",ios::app);
+    script<<"&cec "<<new_name<<".aig "<<abc_name<<endl<<"quit";
+    script.close();
+    log.open("log.txt",ios::app);
+    log<<"CEC on circuits: "<<new_name<<" VS: "<<abc_name<<endl<<"TH:"<<min_th<<", OPTION:"<<option<<endl;
+    system("./../abc -c 'source script.scr' >> log.txt");
+}
+
+
 int main(int argc, char** argv) {
     struct rusage buf;
     int start,stop,start_simplf,stop_simplf,start_app,stop_app;
@@ -85,6 +100,7 @@ int main(int argc, char** argv) {
 //    system("./../abc -c 'source script.scr'");;
 
 #elif EXECUTE_ONCE ==1
+///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(min_th);
 
@@ -99,10 +115,7 @@ int main(int argc, char** argv) {
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
     new_name=graph_obj.getName();
     abc_name=new_name+"_ABC.aig";
-    script<<"&r "<<new_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<new_name<<"_ABC.aig"<<endl<<"quit";
-    script.close();
-    system("./../abc -c 'source script.scr' >> log.txt");
-    
+    abcWrite(new_name,abc_name);    
 
 #if ONLY_REDUCE == 0
     graph_obj.clearCircuit();
@@ -117,7 +130,7 @@ int main(int argc, char** argv) {
     mnist_obj.setBitsProbabilities(read_mnist);
     graph_obj.applyMnistRecursive(mnist_obj);
 #endif
-//////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////Generating file with my own simplification/////////////////////////////////////////////////
     graph_obj.clearCircuit();
     graph_obj.setThrehsold(min_th);
 
@@ -131,6 +144,7 @@ int main(int argc, char** argv) {
     LEAVE_CONSTANTS=0;
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
     new_name=graph_obj.getName();
+    abcCeC(new_name,abc_name,min_th,option);
 #if ONLY_REDUCE == 0
     graph_obj.applyMnistRecursive(mnist_obj);
 
@@ -141,18 +155,13 @@ int main(int argc, char** argv) {
     mnist_obj.setBitsProbabilities(read_mnist);
     graph_obj.applyMnistRecursive(mnist_obj);
 #endif
-    //calling CEC
-    script.open("script.scr");
-    script<<"&cec "<<new_name<<".aig "<<abc_name<<endl<<"quit";
-    script.close();
-    log.open("log.txt",ios::app);
-    log<<"CEC on circuits: "<<new_name<<" VS: "<<abc_name<<endl<<"TH:"<<min_th<<", OPTION:"<<option<<endl;
-    system("./../abc -c 'source script.scr' >> log.txt");
+    
 
-#elif EXECUTE_ONCE == 0
+//#elif EXECUTE_ONCE == 0
 
     for(min_th=0.9999;min_th>0.999;min_th-=0.0001)
     {
+///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);
         
@@ -164,17 +173,19 @@ int main(int argc, char** argv) {
         
         graph_obj.readAIG(read,file_name);
 
-//        graph_obj.setANDsProbabilities(mnist_obj);
-        start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        LEAVE_CONSTANTS=1;  
+        getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
-        stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-//        graph_obj.propagateAndDeletePIBased(mnist_obj);
-//        graph_obj.setDepthsInToOut();
-        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
+        getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
+        
+        new_name=graph_obj.getName();
+        abc_name=new_name+"_ABC.aig";
+        abcWrite(new_name,abc_name);  
 #if ONLY_REDUCE == 0
-        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
-        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         exec_times<<(stop_app-start_app)<<",";
         
         mnist_obj.clearMnist();
@@ -182,17 +193,52 @@ int main(int argc, char** argv) {
         read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
         mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
         mnist_obj.setBitsProbabilities(read_mnist);
-        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
-        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         exec_times<<(stop_app-start_app)<<endl;
+#endif  
+/////////////////////////////Generating file with my own simplification/////////////////////////////////////////////////
+    graph_obj.clearCircuit();
+    graph_obj.setThrehsold(min_th);
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    
+    graph_obj.readAIG(read,file_name);
+    LEAVE_CONSTANTS=0;
+    getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
+    getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
+    
+    new_name=graph_obj.getName();
+    abcCeC(new_name,abc_name,min_th,option);
+#if ONLY_REDUCE == 0
+    getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    graph_obj.applyMnistRecursive(mnist_obj);
+    getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    exec_times<<(stop_app-start_app)<<",";
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    graph_obj.applyMnistRecursive(mnist_obj);
+    getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 #endif
     }
 
 
     for(min_th=0.999;min_th>0.99;min_th-=0.001)
     {
-                graph_obj.clearCircuit();
+     ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
+        graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);
         
         mnist_obj.clearMnist();
@@ -203,17 +249,19 @@ int main(int argc, char** argv) {
         
         graph_obj.readAIG(read,file_name);
 
-//        graph_obj.setANDsProbabilities(mnist_obj);
-        start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        LEAVE_CONSTANTS=1;  
+        getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
-        stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-//        graph_obj.propagateAndDeletePIBased(mnist_obj);
-//        graph_obj.setDepthsInToOut();
-        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
+        getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
+        
+        new_name=graph_obj.getName();
+        abc_name=new_name+"_ABC.aig";
+        abcWrite(new_name,abc_name);  
 #if ONLY_REDUCE == 0
-        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
-        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         exec_times<<(stop_app-start_app)<<",";
         
         mnist_obj.clearMnist();
@@ -221,16 +269,51 @@ int main(int argc, char** argv) {
         read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
         mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
         mnist_obj.setBitsProbabilities(read_mnist);
-        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
-        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         exec_times<<(stop_app-start_app)<<endl;
+#endif  
+/////////////////////////////Generating file with my own simplification/////////////////////////////////////////////////
+    graph_obj.clearCircuit();
+    graph_obj.setThrehsold(min_th);
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    
+    graph_obj.readAIG(read,file_name);
+    LEAVE_CONSTANTS=0;
+    getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
+    getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
+    
+    new_name=graph_obj.getName();
+    abcCeC(new_name,abc_name,min_th,option);
+#if ONLY_REDUCE == 0
+    getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    graph_obj.applyMnistRecursive(mnist_obj);
+    getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    exec_times<<(stop_app-start_app)<<",";
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    graph_obj.applyMnistRecursive(mnist_obj);
+    getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 #endif
     }
     
     for(min_th=0.99;min_th>0.9;min_th-=0.01)
     {
-               graph_obj.clearCircuit();
+       ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
+        graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);
         
         mnist_obj.clearMnist();
@@ -241,17 +324,19 @@ int main(int argc, char** argv) {
         
         graph_obj.readAIG(read,file_name);
 
-//        graph_obj.setANDsProbabilities(mnist_obj);
-        start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        LEAVE_CONSTANTS=1;  
+        getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
-        stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-//        graph_obj.propagateAndDeletePIBased(mnist_obj);
-//        graph_obj.setDepthsInToOut();
-        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
+        getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
+        
+        new_name=graph_obj.getName();
+        abc_name=new_name+"_ABC.aig";
+        abcWrite(new_name,abc_name);  
 #if ONLY_REDUCE == 0
-        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
-        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         exec_times<<(stop_app-start_app)<<",";
         
         mnist_obj.clearMnist();
@@ -259,10 +344,44 @@ int main(int argc, char** argv) {
         read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
         mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
         mnist_obj.setBitsProbabilities(read_mnist);
-        start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.applyMnistRecursive(mnist_obj);
-        stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+        getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         exec_times<<(stop_app-start_app)<<endl;
+#endif  
+/////////////////////////////Generating file with my own simplification/////////////////////////////////////////////////
+    graph_obj.clearCircuit();
+    graph_obj.setThrehsold(min_th);
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    
+    graph_obj.readAIG(read,file_name);
+    LEAVE_CONSTANTS=0;
+    getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
+    getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//        exec_times<<min_th<<","<<(stop_simplf-start_app)<<",";
+    
+    new_name=graph_obj.getName();
+    abcCeC(new_name,abc_name,min_th,option);
+#if ONLY_REDUCE == 0
+    getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    graph_obj.applyMnistRecursive(mnist_obj);
+    getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    exec_times<<(stop_app-start_app)<<",";
+
+    mnist_obj.clearMnist();
+    read_mnist.close();
+    read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+    mnist_obj.setBitsProbabilities(read_mnist);
+    getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+    graph_obj.applyMnistRecursive(mnist_obj);
+    getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 #endif
     }
 #endif

@@ -130,7 +130,7 @@ int main(int argc, char** argv) {
     graph_obj.readAIG(read,file_name);
     LEAVE_CONSTANTS=0;
     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
-
+    new_name=graph_obj.getName();
 #if ONLY_REDUCE == 0
     graph_obj.applyMnistRecursive(mnist_obj);
 

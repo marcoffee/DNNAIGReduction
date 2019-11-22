@@ -1878,7 +1878,6 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 
 #if TEST == 0
             it_in->second.setSignal(0);
-            it_in->second.clearOutputs();
             for(int g=0;g<it_in->second.getOutputs().size();g++)
             {
                 if(it_in->second.getOutputs()[g]->getInputs()[0]->getId()==it_in->second.getId())
@@ -1886,6 +1885,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                 else if(it_in->second.getOutputs()[g]->getInputs()[1]->getId()==it_in->second.getId())
                     it_in->second.getOutputs()[g]->replaceInput(1,&constant0,it_in->second.getOutputs()[g]->getInputPolarities()[1]);
             }
+            it_in->second.clearOutputs();
 #endif
             PI_constant++;
         }   
@@ -1912,6 +1912,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             else if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(4)->second.getId())
                 all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
         }
+  all_inputs.find(4)->second.clearOutputs();
   all_inputs.find(6)->second.setSignal(2);
 //          for(int g=0;g<all_inputs.find(6)->second.getOutputs().size();g++)
 //        {
@@ -2530,9 +2531,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     if(LEAVE_CONSTANTS==1)
         this->name+="_WITH_CONSTANTS_";
     else
-        this->name+="_NO_CONSTANTS_";
+        this->name+="_NO_CONSTANTS_ANDs_removed_";
     if(FIX_DOUBLED_NODES==1)
-        this->name+="WITH_FIX_";
+        this->name+="FIXED_";
 //   this->name+=to_string(1-threshold);
 #if WRITE_AIG == 1
     cout<<"Writing output file (AIG):"<<this->name<<endl;

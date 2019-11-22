@@ -166,7 +166,7 @@ int main(int argc, char** argv) {
 
 //        graph_obj.setANDsProbabilities(mnist_obj);
         start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-        graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+        graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
         stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.propagateAndDeletePIBased(mnist_obj);
 //        graph_obj.setDepthsInToOut();
@@ -205,7 +205,7 @@ int main(int argc, char** argv) {
 
 //        graph_obj.setANDsProbabilities(mnist_obj);
         start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-        graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+        graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
         stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.propagateAndDeletePIBased(mnist_obj);
 //        graph_obj.setDepthsInToOut();
@@ -243,7 +243,7 @@ int main(int argc, char** argv) {
 
 //        graph_obj.setANDsProbabilities(mnist_obj);
         start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-        graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha);
+        graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
         stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.propagateAndDeletePIBased(mnist_obj);
 //        graph_obj.setDepthsInToOut();

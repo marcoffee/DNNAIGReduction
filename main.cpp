@@ -157,7 +157,7 @@ int main(int argc, char** argv) {
 #endif
     
 
-//#elif EXECUTE_ONCE == 0
+#elif EXECUTE_ONCE == 0
 
     for(min_th=0.9999;min_th>0.999;min_th-=0.0001)
     {

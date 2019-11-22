@@ -2526,9 +2526,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         it_and->second.invertInputs();
 
-    this->name+="_ANDs_removed_";
+    
     if(LEAVE_CONSTANTS==1)
-        this->name+="WITH_CONSTANTS_";
+        this->name+="_WITH_CONSTANTS_";
+    else
+        this->name+="_NO_CONSTANTS_";
     if(FIX_DOUBLED_NODES==1)
         this->name+="WITH_FIX_";
 //   this->name+=to_string(1-threshold);

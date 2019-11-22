@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name,new_name,abc_name;
     file_name="../A1.aig";
-//    file_name="andre.aig";
+//    file_name="andre.aig";;
     ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr"),log("log.txt");
     exec_times<<"Min_th, Simplification Time, Train Images Time, Test Images Time"<<endl;
     log.close();

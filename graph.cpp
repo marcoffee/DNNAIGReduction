@@ -1730,7 +1730,7 @@ void graph::setANDsProbabilities(mnist& mnist_obj){
 void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int alpha,int LEAVE_CONSTANTS) {
     float th_inverted=0;
     int aux=0;
-    string th_value,info_file_name;
+    string th_value;//,info_file_name;
     if(option==0)
     {
         th_value="_fixed_";
@@ -1764,12 +1764,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     map<unsigned int, input>::iterator it_in;
     map<unsigned int, output>::iterator it_out;
     map<unsigned int, AND>::iterator it_and;
-    info_file_name=this->name;
-    info_file_name+="_";
-    info_file_name+=th_value;
-    info_file_name+="_simplif_info.txt";
-    ofstream simpl_info(info_file_name),dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt"),dump_PO("dump_PO.txt"),dump_hash("dump_hash.txt");
-    ofstream dump_append("dump_append.txt",ios::app),removed_inputs("removed_inputs.txt");
+//    info_file_name=this->name; info_file_name+="_"; info_file_name+=th_value; info_file_name+="_simplif_info.txt";
+    ofstream dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt"),dump_PO("dump_PO.txt"),dump_hash("dump_hash.txt");
+    ofstream dump_append("dump_append.txt",ios::app),removed_inputs("removed_inputs.txt");//,simpl_info(info_file_name);
+    
+    dump1.close();dump2.close();dump3.close();dump_probs.close();dump_PO.close();dump_hash.close();dump_append.close(); removed_inputs.close();
     map<unsigned int,float>::iterator probs_it;
     vector<int> visits;
     visits.push_back(2);
@@ -1825,10 +1824,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         all_depths.push_back(0);
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         all_depths.push_back(it_and->second.getDepth());
-    simpl_info<<"AIG depth:"<<this->graph_depth<<", nodes with such depth:";
-    for(int a=0;a<this->greatest_depths_ids.size();a++)
-        simpl_info<<greatest_depths_ids[a]<<",";
-    simpl_info<<endl; 
+//    simpl_info<<"AIG depth:"<<this->graph_depth<<", nodes with such depth:";
+//    for(int a=0;a<this->greatest_depths_ids.size();a++)
+//        simpl_info<<greatest_depths_ids[a]<<",";
+//    simpl_info<<endl; 
     
 #if DEBUG >= 1
     ofstream all_depths_out;
@@ -1858,10 +1857,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         if(mnist_obj.getPIsProbabilities()[posY][posX]<= 1-min_th)        
         {
 //            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<th_inverted<<endl;
-            dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<(1-min_th)<<endl;
+//  valendo->          dump3<<"input:"<<it_in->second.getId()<<" probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<" <= th:"<<(1-min_th)<<endl;
             if(it_in->second.getId()<=6)
 //                dump_append<<"input:"<<it_in->second.getId()<<", probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<", min_th:"<<min_th<<", th_inverted (PI):"<<th_inverted<<endl;
-                dump_append<<"input:"<<it_in->second.getId()<<", probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<", min_th:"<<min_th<<", th_inverted (PI):"<<(1-min_th)<<endl;
+//  valendo->              dump_append<<"input:"<<it_in->second.getId()<<", probab:"<<mnist_obj.getPIsProbabilities()[posY][posX]<<", min_th:"<<min_th<<", th_inverted (PI):"<<(1-min_th)<<endl;
 
 #if TEST == 0
             it_in->second.setSignal(0);
@@ -1885,9 +1884,9 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                 posY=0;
         }
     }
-  cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
-  simpl_info<<"Threshold:"<<th_value<<endl;
-  simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
+  cout<<"Threshold:"<<th_value<<", # of PI that pass threshold:"<<PI_constant<<endl;
+//  simpl_info<<"Threshold:"<<th_value<<endl;
+//  simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
   
 #if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
@@ -2011,21 +2010,20 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
             new_ths[k]=threshold;
     }
 //    dump1<<probs_it->first<<":"<<all_depths[probs_it->first/2]<<", new_th:"<<new_th<<endl;
+#if DEBBUG >= 1
     for(int k=0;k<new_ths.size();k++)
     {
         dump1<<k<<":"<<new_ths[k]<<",";
         dump1<<(1-new_ths[k])<<endl;
     }
+#endif
     
     int one_count=0,zero_count=0;
     struct rusage buf; 
     int start,stop;
     AND* and_ptr; 
-    if(getrusage(RUSAGE_SELF,&buf)==-1)
-        cout<<"GETRUSAGE FAILURE!"<<endl;
-    start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     
-    dump_append<<endl<<endl;
+//    dump_append<<endl<<endl;
   //ANDs with probability of being 0 or 1 higher than threshold are set to constant    
     for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
     {
@@ -2076,22 +2074,18 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         one_count++;
         }
     }
-    
-    if(getrusage(RUSAGE_SELF,&buf)==-1)
-        cout<<"GETRUSAGE FAILURE!"<<endl;
-    stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-    cout<<"Time to recursive remove outputs:"<<stop-start<<endl;
-  cout<<"# of ANDs to be constant 1:"<<one_count<<endl;
-  cout<<"# of ANDs to be constant 0:"<<zero_count<<endl;
-  simpl_info<<"# of ANDs to be constant 1:"<<one_count<<endl;
-  simpl_info<<"# of ANDs to be constant 0:"<<zero_count<<endl;
+
+//  cout<<"# of ANDs to be constant 1:"<<one_count<<endl;
+//  cout<<"# of ANDs to be constant 0:"<<zero_count<<endl;
+//  simpl_info<<"# of ANDs to be constant 1:"<<one_count<<endl;
+//  simpl_info<<"# of ANDs to be constant 0:"<<zero_count<<endl;
 //  for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
 //      dump1<<it_and->second.getId()<<":"<<it_and->second.getSignal()<<endl;
   
     stack<node*>stackzin;
     vector<node*> AUX;
     node* current;
-    cout<<"POs size:"<<all_outputs.size()<<endl<<endl;
+//    cout<<"POs size:"<<all_outputs.size()<<endl<<endl;
     bool polarity,pol_new_node;
     node* new_node;
 
@@ -2132,10 +2126,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                         //if they have the same polarity, means A*A=A, !(0^0)=1
                         if(!(current->getInputPolarities()[0])^(current->getInputPolarities()[1]))
                         {
-                            cout<<"SAME POLARITIES!!!!"<<endl;
+//                            cout<<"SAME POLARITIES!!!!"<<endl;
                             if(all_outputs.find(current->getId())!=all_outputs.end())
                             {
-                                dump_PO<<"Replacing PO. Node: "<<current->getId()<<" has the same input:"<<current->getInputs()[0]->getId()<<endl;
+                                dump_PO.open("drump_PO",ios::app); dump_PO<<"Replacing PO. Node: "<<current->getId()<<" has the same input:"<<current->getInputs()[0]->getId()<<endl; dump_PO.close();
                                 all_outputs.find(current->getId())->second.pushInput(current->getInputs()[0],(bool)all_outputs.find(current->getId())->second.getInputPolarity());
                                 all_outputs.find(current->getId())->second.setId(current->getInputs()[0]->getId());
                             }
@@ -2165,14 +2159,15 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                         //if polarities are different means A*!A=0, !(1^0)=0
                         else
                         {
-                            cout<<"DIFFERNT POLARITIES!!!! Current:";
-                            current->printNode();
+//                            cout<<"DIFFERNT POLARITIES!!!! Current:";
+//                            current->printNode();
                             if(all_outputs.find(current->getId())!=all_outputs.end())
                             {
-                                cout<<"current is a PO"<<endl;
+                                dump_PO.open("drump_PO",ios::app);
                                 dump_PO<<"PO is a constant 0, has the same input with inverted polarities:";
                                 current->writeNode(dump_PO);
                                 dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
+                                dump_PO.close();
 //                                all_outputs.find(current->getId())->second.clearInput();
                                 all_outputs.find(current->getId())->second.pushInput(&constant0,(bool)all_outputs.find(current->getId())->second.getInputPolarity());
                                 all_outputs.find(current->getId())->second.setId(0);
@@ -2207,10 +2202,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                              //treating if constant=0 node is a PO.
                             if(all_outputs.find(current->getId())!=all_outputs.end())
                             {
-                    
+                                dump_PO.open("drump_PO",ios::app);
                                 dump_PO<<"PO is a constant 0:";
                                 current->writeNode(dump_PO);
                                 dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
+                                dump_PO.close();
                                 all_outputs.find(current->getId())->second.clearInput();
                                 all_outputs.find(current->getId())->second.setId(0);
                             }
@@ -2227,10 +2223,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
                         {
                             if(all_outputs.find(current->getId())!=all_outputs.end())
                             {
-#if DEBUG >= 0                       
+#if DEBUG >= 0
+                                dump_PO.open("drump_PO",ios::app);
                                 dump_PO<<"PO is a constant 1:";
                                 current->writeNode(dump_PO);
                                 dump_PO<<current->getId()<<" probability:"<<ANDs_probabilities.find(current->getId())->second<<endl;
+                                dump_PO.close();
 #endif
         //                        simpl_info<<"PO is a constant 1:"<<current->getId()<<endl;;
                                 all_outputs.find(current->getId())->second.clearInput();
@@ -2343,7 +2341,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         if(it_out->second.getSignal()!=2)
         {
             cout<<"WARNING: output "<<it_out->second.getId()<<" has signal after constant propagation:"<<it_out->second.getSignal()<<endl;
-            simpl_info<<"WARNING: output "<<it_out->second.getId()<<" has signal after constant propagation:"<<it_out->second.getSignal()<<endl;
+            dump_PO.open("drump_PO",ios::app); dump_PO<<"WARNING: output "<<it_out->second.getId()<<" has signal after constant propagation:"<<it_out->second.getSignal()<<endl; dump_PO.close();
         }
     }
     cout<<"Signal propagation doneeeeeeeeeeeeeeee."<<endl; 
@@ -2372,13 +2370,13 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     vector<int> removed_nodes_counter_by_depth(graph_depth+1,0);
 //    dump1<<"graph depth:"<<this->graph_depth<<endl;
 //    dump1<<"removed_nodes_counter_by_depth size:"<<removed_nodes_counter_by_depth.size()<<endl;
-    ofstream write2("removed_ANDs.txt");  
     it_and=all_ANDS.begin();
     while(it_and!=all_ANDS.end())
     {
         if(it_and->second.getOutputs().size()==0) //&& all_outputs.find(it_and->first)==all_outputs.end())
         {
 #if DEBUG >= 2
+            ofstream write2("removed_ANDs.txt"); 
             write2<<it_and->first<<",";
 #endif
 //            dump1<<"AND:"<<it_and->second.getId()<<", depth:"<<this->all_depths[it_and->second.getId()/2]<<", depth counter:"<<removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]<<endl;
@@ -2406,6 +2404,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     }
 #endif
     
+#if DEBUG >= 2
     int sum=0;
     for(int t=0;t<removed_nodes_counter_by_depth.size();t++)
         sum+=removed_nodes_counter_by_depth[t];
@@ -2420,14 +2419,15 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         write5<<","<<removed_nodes_counter_by_depth[a];
     write5<<endl;
     write5.close();
+#endif
     
     this->setDepthsInToOut();
-    cout<<"ANDs removed:"<<ands_removed<<endl;
-    cout<<"Inputs removed:"<<PIs_removed<<endl;
-    simpl_info<<"ANDs removed:"<<ands_removed<<endl;
-    simpl_info<<"Inputs removed:"<<PIs_removed<<endl;
-    simpl_info<<"all_ands.size():"<<all_ANDS.size()<<endl;
-    simpl_info<<"new depth:"<<this->graph_depth<<endl;
+//    cout<<"ANDs removed:"<<ands_removed<<endl;
+//    cout<<"Inputs removed:"<<PIs_removed<<endl;
+//    simpl_info<<"ANDs removed:"<<ands_removed<<endl;
+//    simpl_info<<"Inputs removed:"<<PIs_removed<<endl;
+//    simpl_info<<"all_ands.size():"<<all_ANDS.size()<<endl;
+//    simpl_info<<"new depth:"<<this->graph_depth<<endl;
     
     if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
         this->name+="_train";
@@ -2438,10 +2438,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     
     ofstream csv_final;
     csv_final.open("todos_scores.csv",ios::app);
-    simpl_info<<endl<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<",,"<<graph_depth<<",,"<<endl;
+//    simpl_info<<endl<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<",,"<<graph_depth<<",,"<<endl;
     csv_final<<this->name<<","<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<",,"<<graph_depth<<",,,,";
 #if ONLY_REDUCE == 1
     csv_final<<endl;
+    csv_final.close();
 #endif
 
 #if DEBUG >= debug_value
@@ -2489,7 +2490,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
        else
            constant_POs++;
    }
-   cout<<"Constant POs:"<<constant_POs<<endl;
+//   cout<<"Constant POs:"<<constant_POs<<endl;
 #endif
 }
 //#endif
@@ -2506,14 +2507,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     if(FIX_DOUBLED_NODES==1)
         this->name+="FIXED_";
 //   this->name+=to_string(1-threshold);
-#if WRITE_AIG == 1
-    cout<<"Writing output file (AIG):"<<this->name<<endl;
-    this->writeAIG();
-#endif
-#if WRITE_AAG == 1
-    cout<<"Writing output file (AAG):"<<this->name<<endl;
-    this->writeAAG();
-#endif
+//#if WRITE_AIG == 1
+//    cout<<"Writing output file (AIG):"<<this->name<<endl;
+//    this->writeAIG();
+//#endif
+//#if WRITE_AAG == 1
+//    cout<<"Writing output file (AAG):"<<this->name<<endl;
+//    this->writeAAG();
+//#endif
 }
 
 

@@ -37,6 +37,10 @@ string graph::getName(){
     return this->name;
 }
 
+int graph::getDepth(){
+    return this->graph_depth;
+}
+
 void graph::setThrehsold(float param) {
     cout<<"Setting threshold to: "<<param<<endl;
     this->threshold=param;

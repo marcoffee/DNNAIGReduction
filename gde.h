@@ -350,7 +350,7 @@ public:
     map<unsigned int,output>* getOutputs();
     map<unsigned int,AND>* getANDS();
     string getName();
-    
+    int getDepth();
     
     //operations
     void setDepthsInToOut();

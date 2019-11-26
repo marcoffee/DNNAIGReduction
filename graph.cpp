@@ -2429,12 +2429,12 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
 //    simpl_info<<"all_ands.size():"<<all_ANDS.size()<<endl;
 //    simpl_info<<"new depth:"<<this->graph_depth<<endl;
     
-    if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
-        this->name+="_train";
-    else if (mnist_obj.getAllBits().size()==10000 && this->name.find("test")==string::npos)
-        this->name+="_test";
-    else
-        cout<<"mnist size unknown"<<endl;
+//    if(mnist_obj.getAllBits().size()==60000 && this->name.find("train")==string::npos)
+//        this->name+="_train";
+//    else if (mnist_obj.getAllBits().size()==10000 && this->name.find("test")==string::npos)
+//        this->name+="_test";
+//    else
+//        cout<<"mnist size unknown"<<endl;
     
     ofstream csv_final;
     csv_final.open("todos_scores.csv",ios::app);
@@ -2442,9 +2442,8 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     csv_final<<this->name<<","<<th_value<<","<<PI_constant<<","<<PIs_removed<<","<<one_count<<","<<zero_count<<",,"<<ands_removed<<","<<all_ANDS.size()<<",,"<<graph_depth<<",,,,";
 #if ONLY_REDUCE == 1
     csv_final<<endl;
-    csv_final.close();
 #endif
-
+csv_final.close();
 #if DEBUG >= debug_value
     dump3<<"ANDs removed:"<<ands_removed<<endl;
     dump3<<"Inputs removed:"<<PIs_removed<<endl;

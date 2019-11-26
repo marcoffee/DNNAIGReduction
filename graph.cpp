@@ -2404,7 +2404,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         {
             removed_inputs<<it_in->first<<endl;
             it_in=all_inputs.erase(it_in);
-            PIs_removed++;
+//            PIs_removed++;
         }
         else
             it_in++;

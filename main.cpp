@@ -168,7 +168,6 @@ int main(int argc, char** argv) {
 
     for(min_th=0.9999;min_th>0.999;min_th-=0.0001)
     {
-        
 ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
         mnist_obj.clearMnist();
         read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);

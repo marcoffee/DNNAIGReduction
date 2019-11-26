@@ -198,7 +198,7 @@ int main(int argc, char** argv) {
         
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);        
-        graph_obj.readAIG(read,abc_name);
+        graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
         abc_info<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
 #if ONLY_REDUCE == 0
         graph_obj.clearCircuit();
@@ -286,7 +286,7 @@ int main(int argc, char** argv) {
         
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);        
-        graph_obj.readAIG(read,abc_name);
+        graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
         abc_info<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
 #if ONLY_REDUCE == 0
         graph_obj.clearCircuit();
@@ -373,7 +373,7 @@ int main(int argc, char** argv) {
         
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);        
-        graph_obj.readAIG(read,abc_name);
+        graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
         abc_info<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
 #if ONLY_REDUCE == 0
         graph_obj.clearCircuit();

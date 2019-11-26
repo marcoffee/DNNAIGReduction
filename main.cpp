@@ -1,21 +1,6 @@
- /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   main.cpp
- * Author: gudeh
- *
- * Created on 3 de Julho de 2019, 01:16
- */
-
 #include "gde.h"
 #include "mnist.h"
-
 using namespace std;
-
 
 void abcWrite(string new_name,string abc_name){
     ofstream script("script.scr");
@@ -177,11 +162,13 @@ int main(int argc, char** argv) {
 #endif
         exec_times<<endl;
     
+}
 
 #elif EXECUTE_ONCE == 0
 
     for(min_th=0.9999;min_th>0.999;min_th-=0.0001)
     {
+        
 ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
         mnist_obj.clearMnist();
         read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);

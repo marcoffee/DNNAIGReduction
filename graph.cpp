@@ -1933,7 +1933,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         ands_probs_name="ands_probs.txt";
         cout<<"Using:"<<ands_probs_name<<endl;
     }
-    dump1<<"circuit name:"<<this->name<<". Probs file name:"<<ands_probs_name<<endl;
+//    dump1<<"circuit name:"<<this->name<<". Probs file name:"<<ands_probs_name<<endl;;
     ifstream in_file (ands_probs_name);
 
     it_and=all_ANDS.begin();

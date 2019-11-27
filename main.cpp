@@ -9,7 +9,7 @@ void abcWrite(string new_name,string abc_name){
     system("./../abc -c 'source script.scr' >> log.txt ");
 }
 
-void abcCeC(string new_name,string abc_name,int min_th,int option){
+void abcCeC(string new_name,string abc_name,float min_th,int option){
     ofstream script("script.scr"),log("log.txt",ios::app);
     script<<"&cec "<<new_name<<".aig "<<abc_name<<endl<<"quit";
     script.close();
@@ -29,19 +29,19 @@ int main(int argc, char** argv) {
     string file_name,new_name,abc_name;
     file_name="../A1.aig";
 //    file_name="andre.aig";;
-    ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr"),log("log.txt"),abc_info("abc_info.csv");
+    ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr"),log("log.txt"),abc_info("abc_info.txt");
     log.close(); dump_append.close();
     ifstream read,read_mnist;
     read.open(file_name.c_str(),ifstream::binary);
     mnist mnist_obj;
     graph graph_obj;
-    int option=8,alpha=2,LEAVE_CONSTANTS=0;
+    int option,alpha=2,LEAVE_CONSTANTS=0;
     float min_th=0.9999;
     stringstream ss(argv[1]);  ss>>option;
     cout<<"Setting option to:"<<option<<endl;
           
     //1->linear, 2->sqrt, 3->exp, 4->sigmod, 51->#nodes_linear, 52->#nodes_root,53->#nodes_exp
-#if ONLY_REDUCE == 0
+#if APPLY_MNIST == 0
     exec_times<<"Otption:"<<option<<", Circuit:"<<file_name<<endl<<"Min_th, Set Constants, Train Set ABC, Test Set ABC, My Simplification, Train Set, Test Set"<<endl;
 #else
     exec_times<<"Otption:"<<option<<", Circuit:"<<file_name<<endl<<"Min_th, Set Constants, My Simplification"<<endl;
@@ -199,8 +199,8 @@ int main(int argc, char** argv) {
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
-        abc_info<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
-#if ONLY_REDUCE == 0
+        abc_info<<graph_obj.getName()<<","<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+#if APPLY_MNIST == 0
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,abc_name);
@@ -220,6 +220,7 @@ int main(int argc, char** argv) {
         getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         exec_times<<((stop_app-start_app)/(float)3600)<<",";
 #endif  
+#if CEC == 1
 /////////////////////////////Generating file with my own simplification/////////////////////////////////////////////////
         mnist_obj.clearMnist();
         read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
@@ -238,9 +239,10 @@ int main(int argc, char** argv) {
         exec_times<<((stop_simplf-start_simplf)/(float)3600)<<",";
         graph_obj.writeAIG();
 
-        new_name=graph_obj.getName();
-        abcCeC(new_name,abc_name,min_th,option);
-#if ONLY_REDUCE == 0
+        new_name=graph_obj.getName(); 
+        abcCeC(new_name,abc_name,min_th,option); 
+
+#if APPLY_MNIST == 0
 //        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.applyMnistRecursive(mnist_obj);
 //        getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -255,6 +257,7 @@ int main(int argc, char** argv) {
 //        graph_obj.applyMnistRecursive(mnist_obj);
 //        getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        exec_times<<((stop_app-start_app)/(float)3600)<<",";
+#endif
 #endif
         exec_times<<endl;
     }
@@ -287,8 +290,8 @@ int main(int argc, char** argv) {
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
-        abc_info<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
-#if ONLY_REDUCE == 0
+        abc_info<<graph_obj.getName()<<","<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+#if APPLY_MNIST == 0
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,abc_name);
@@ -308,6 +311,7 @@ int main(int argc, char** argv) {
         getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         exec_times<<((stop_app-start_app)/(float)3600)<<",";
 #endif  
+#if CEC == 1
 /////////////////////////////Generating file with my own simplification/////////////////////////////////////////////////
         mnist_obj.clearMnist();
         read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
@@ -326,9 +330,10 @@ int main(int argc, char** argv) {
         exec_times<<((stop_simplf-start_simplf)/(float)3600)<<",";
         graph_obj.writeAIG();
 
-        new_name=graph_obj.getName();
-        abcCeC(new_name,abc_name,min_th,option);
-#if ONLY_REDUCE == 0
+        new_name=graph_obj.getName(); 
+        abcCeC(new_name,abc_name,min_th,option); 
+
+#if APPLY_MNIST == 0
 //        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.applyMnistRecursive(mnist_obj);
 //        getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -343,6 +348,7 @@ int main(int argc, char** argv) {
 //        graph_obj.applyMnistRecursive(mnist_obj);
 //        getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        exec_times<<((stop_app-start_app)/(float)3600)<<",";
+#endif
 #endif
         exec_times<<endl;
     }
@@ -374,8 +380,8 @@ int main(int argc, char** argv) {
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
-        abc_info<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
-#if ONLY_REDUCE == 0
+        abc_info<<graph_obj.getName()<<","<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+#if APPLY_MNIST == 0
         graph_obj.clearCircuit();
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,abc_name);
@@ -395,6 +401,7 @@ int main(int argc, char** argv) {
         getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         exec_times<<((stop_app-start_app)/(float)3600)<<",";
 #endif  
+#if CEC == 1
 /////////////////////////////Generating file with my own simplification/////////////////////////////////////////////////
         mnist_obj.clearMnist();
         read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
@@ -413,9 +420,10 @@ int main(int argc, char** argv) {
         exec_times<<((stop_simplf-start_simplf)/(float)3600)<<",";
         graph_obj.writeAIG();
 
-        new_name=graph_obj.getName();
-        abcCeC(new_name,abc_name,min_th,option);
-#if ONLY_REDUCE == 0
+        new_name=graph_obj.getName(); 
+        abcCeC(new_name,abc_name,min_th,option); 
+
+#if APPLY_MNIST == 0
 //        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.applyMnistRecursive(mnist_obj);
 //        getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -430,6 +438,7 @@ int main(int argc, char** argv) {
 //        graph_obj.applyMnistRecursive(mnist_obj);
 //        getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        exec_times<<((stop_app-start_app)/(float)3600)<<",";
+#endif
 #endif
         exec_times<<endl;
     }

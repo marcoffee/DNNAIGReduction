@@ -30,8 +30,9 @@
 //#define LEAVE_CONSTANTS 0
 #define FIX_DOUBLED_NODES 1
 #define EXECUTE_ONCE 0
-#define ONLY_REDUCE 1
-#define WRITE_AIG 1
+#define APPLY_MNIST 1
+#define CEC 0
+#define WRITE_AIG 0
 #define WRITE_AAG 0
 
 

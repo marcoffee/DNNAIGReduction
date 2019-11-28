@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name,new_name,abc_name;
-//    file_name="../A1.aig";;
-    file_name="andre.aig";;
+    file_name="../A1.aig";;
+//    file_name="andre.aig";;
     ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr"),log("log.txt"),abc_info("abc_info.txt");
     log.close(); dump_append.close();
     ifstream read,read_mnist;
@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,file_name);
 
-        LEAVE_CONSTANTS=1;  
+        LEAVE_CONSTANTS=0;  
         getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
         graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
         getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -111,12 +111,12 @@ int main(int argc, char** argv) {
         new_name=graph_obj.getName();
         abc_name="ABC_"+new_name+".aig";
         cout<<abc_name<<endl;
-//        abcWrite(new_name,abc_name);  
-//        
-//        graph_obj.clearCircuit();
-//        graph_obj.setThrehsold(min_th);        
-//        graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
-//        abc_info<<graph_obj.getName()<<","<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+        abcWrite(new_name,abc_name);  
+        
+        graph_obj.clearCircuit();
+        graph_obj.setThrehsold(min_th);        
+        graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
+        abc_info<<graph_obj.getName()<<","<<min_th<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
 //#if APPLY_MNIST == 0
 //        graph_obj.clearCircuit();
 //        graph_obj.setThrehsold(min_th);        

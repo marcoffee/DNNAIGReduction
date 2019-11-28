@@ -2431,12 +2431,10 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(int t=0;t<removed_nodes_counter_by_depth.size();t++)
         sum+=removed_nodes_counter_by_depth[t];
     string file_name;
-    file_name="Nodes_in_level";
-    file_name+=this->name;
-    file_name+=".csv";
+    file_name="Nodes_in_level.csv";
     ofstream nodes_per_level(file_name,ios::app);
 //    dump1<<file_name<<":"<<sum<<","<<ands_removed<<endl;
-    nodes_per_level<<this->name<<th_value;
+    nodes_per_level<<this->name<<","<<th_value;
     for(int a=0;a<removed_nodes_counter_by_depth.size();a++)
         nodes_per_level<<","<<nodes_in_level[a]-removed_nodes_counter_by_depth[a];
     nodes_per_level<<endl;

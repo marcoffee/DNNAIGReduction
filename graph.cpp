@@ -1828,6 +1828,16 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         all_depths.push_back(0);
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         all_depths.push_back(it_and->second.getDepth());
+    
+#if WRITE_NODES_DEPTHS == 1
+    vector<int> nodes_in_level(0,this->graph_depth+1);
+    for(int v=0;v<all_depths.size();v++)
+        nodes_in_level[all_depths[v]]++;
+    
+    ofstream original_nodes_level("original_nodes_level");
+    for(int v=0;v<nodes_in_level.size();v++)
+        original_nodes_level<<v<<":"<<nodes_in_level[v]<<endl;
+#endif
 //    simpl_info<<"AIG depth:"<<this->graph_depth<<", nodes with such depth:";
 //    for(int a=0;a<this->greatest_depths_ids.size();a++)
 //        simpl_info<<greatest_depths_ids[a]<<",";
@@ -2416,21 +2426,21 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     }
 #endif
     
-#if DEBUG >= 2
+#if DEBUG >= 0
     int sum=0;
     for(int t=0;t<removed_nodes_counter_by_depth.size();t++)
         sum+=removed_nodes_counter_by_depth[t];
     string file_name;
-    file_name="Removed_nodes_depths_";
+    file_name="Nodes_in_level";
     file_name+=this->name;
     file_name+=".csv";
-    ofstream write5(file_name,ios::app);
-    dump1<<file_name<<":"<<sum<<","<<ands_removed<<endl;
-    write5<<this->name<<th_value;
+    ofstream nodes_per_level(file_name,ios::app);
+//    dump1<<file_name<<":"<<sum<<","<<ands_removed<<endl;
+    nodes_per_level<<this->name<<th_value;
     for(int a=0;a<removed_nodes_counter_by_depth.size();a++)
-        write5<<","<<removed_nodes_counter_by_depth[a];
-    write5<<endl;
-    write5.close();
+        nodes_per_level<<","<<nodes_in_level[a]-removed_nodes_counter_by_depth[a];
+    nodes_per_level<<endl;
+    nodes_per_level.close();
 #endif
     
     this->setDepthsInToOut();
@@ -2678,7 +2688,6 @@ void graph::writeProbsHistogram(){
             probs_concentration[10]++;
         if(probs_it->second==1)
             probs_concentration[11]++;
-        
     }
     
     string file_name="Prob(1)_histogram_";

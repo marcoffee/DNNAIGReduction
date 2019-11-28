@@ -1830,7 +1830,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
         all_depths.push_back(it_and->second.getDepth());
     
 #if WRITE_NODES_DEPTHS == 1
-    vector<int> nodes_in_level(0,this->graph_depth+1);
+    vector<int> nodes_in_level(this->graph_depth+1,0);
     for(int v=0;v<all_depths.size();v++)
         nodes_in_level[all_depths[v]]++;
     

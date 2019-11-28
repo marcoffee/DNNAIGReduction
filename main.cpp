@@ -214,7 +214,7 @@ int main(int argc, char** argv) {
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
         abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
-#if APPLY_MNIST == 0
+#if APPLY_MNIST == 1
         cout<<"APPLYING MNIST WITH ABC's SIMPLIFICATION -> ";
         graph_obj.clearCircuit(); read.close(); read.open(abc_name.c_str(),ifstream::binary);
         graph_obj.setThrehsold(min_th);        
@@ -256,7 +256,7 @@ int main(int argc, char** argv) {
 
         new_name=graph_obj.getName(); 
         abcCeC(new_name,abc_name,min_th,option);
-#if APPLY_MNIST == 0
+#if APPLY_MNIST == 1
         cout<<"APPLYING MNIST WITH MY OWN SIMPLIFICATION"<<endl;
 //        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.applyMnistRecursive(mnist_obj);
@@ -307,7 +307,7 @@ int main(int argc, char** argv) {
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
         abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
-#if APPLY_MNIST == 0
+#if APPLY_MNIST == 1
         cout<<"APPLYING MNIST WITH ABC's SIMPLIFICATION -> ";
         graph_obj.clearCircuit(); read.close(); read.open(abc_name.c_str(),ifstream::binary);
         graph_obj.setThrehsold(min_th);        
@@ -349,7 +349,7 @@ int main(int argc, char** argv) {
 
         new_name=graph_obj.getName(); 
         abcCeC(new_name,abc_name,min_th,option);
-#if APPLY_MNIST == 0
+#if APPLY_MNIST == 1
         cout<<"APPLYING MNIST WITH MY OWN SIMPLIFICATION"<<endl;
 //        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.applyMnistRecursive(mnist_obj);
@@ -399,7 +399,7 @@ int main(int argc, char** argv) {
         graph_obj.setThrehsold(min_th);        
         graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
         abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
-#if APPLY_MNIST == 0
+#if APPLY_MNIST == 1
         cout<<"APPLYING MNIST WITH ABC's SIMPLIFICATION -> ";
         graph_obj.clearCircuit(); read.close(); read.open(abc_name.c_str(),ifstream::binary);
         graph_obj.setThrehsold(min_th);        
@@ -441,7 +441,7 @@ int main(int argc, char** argv) {
 
         new_name=graph_obj.getName(); 
         abcCeC(new_name,abc_name,min_th,option);
-#if APPLY_MNIST == 0
+#if APPLY_MNIST == 1
         cout<<"APPLYING MNIST WITH MY OWN SIMPLIFICATION"<<endl;
 //        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.applyMnistRecursive(mnist_obj);

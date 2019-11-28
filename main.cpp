@@ -28,8 +28,11 @@ int main(int argc, char** argv) {
         cout<<"GETRUSAGE FAILURE!"<<endl;
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name,new_name,abc_name;
-//    file_name="../A1.aig";;
+#if TEST == 0
+    file_name="../A1.aig";;
+#elif TEST == 1
     file_name="andre.aig";;
+#endif
 //    file_name="ABC_andre_NO_CONSTANTS_ANDs_removed_FIXED_.aig";
     ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr"),log("log.txt"),abc_info("abc_info.txt"),nodes_file("Nodes_in_level.csv");
     log.close(); dump_append.close(); nodes_file.close();

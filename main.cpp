@@ -13,7 +13,6 @@ void abcCeC(string new_name,string abc_name,float min_th,int option){
     ofstream script("script.scr"),log("log.txt",ios::app);
     script<<"&cec "<<new_name<<".aig "<<abc_name<<endl<<"quit";
     script.close();
-    log.open("log.txt",ios::app);
     log<<"CEC on circuits: "<<new_name<<" VS: "<<abc_name<<endl<<"TH:"<<min_th<<", OPTION:"<<option<<endl;
     log.close();
     system("./../abc -c 'source script.scr' >> log.txt");

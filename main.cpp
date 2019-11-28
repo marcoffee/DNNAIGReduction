@@ -4,7 +4,7 @@ using namespace std;
 
 void abcWrite(string new_name,string abc_name){
     ofstream script("script.scr");
-    script<<"&r "<<new_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<abc_name<<".aig"<<endl<<"quit";
+    script<<"&r "<<new_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<abc_name<<endl<<"quit";
     script.close();
     system("./../abc -c 'source script.scr' >> log.txt ");
 }

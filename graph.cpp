@@ -363,6 +363,8 @@ void graph::clearCircuit(){
     this->log.close();
     this->all_depths.clear();
     this->greatest_depths_ids.clear();
+    this->graph_depth=0;
+    this->threshold=0;
 }
 
 map<unsigned int,input>* graph::getInputs(){
@@ -522,7 +524,7 @@ void graph::readAIG(ifstream& file, string param_name){
     if(param_name.find("."))
         param_name.erase(param_name.find_last_of('.'),param_name.size());
     this->setName(param_name);
-     cout<<"Reading AIG circuit:"<<name<<endl;
+     cout<<endl<<"READING AIG CIRCUIT:"<<name<<endl;
     //reading the first line in the file
     file.seekg(file.beg);
     getline(file,line);
@@ -539,7 +541,7 @@ void graph::readAIG(ifstream& file, string param_name){
     for(int ii=0;ii<O;ii++)
         getline(file,line);
     
-    cout<<"Reading Inputs"<<endl;
+    cout<<"Reading Inputs, ";
     //////////////////////INPUTS//////////////////////
     for(int i=1;i<=I;i++)
     {
@@ -552,7 +554,7 @@ void graph::readAIG(ifstream& file, string param_name){
     
 //    this->printCircuit();
     
-    cout<<"Reading ANDs"<<endl;
+    cout<<"Reading ANDs, ";
     /////////////ANDS/////////////////////////
     int and_index=I+L;
     bool polar=false;
@@ -1732,6 +1734,10 @@ void graph::setANDsProbabilities(mnist& mnist_obj){
 }
 
 void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int alpha,int LEAVE_CONSTANTS) {
+    if(LEAVE_CONSTANTS==0)
+        cout<<endl<<"SIMPLIFING CIRCUIT: "<<this->name<<", THRESHOLD:"<<min_th<<endl;
+    else
+        cout<<endl<<"SETTING CONSTANTS: "<<this->name<<", THRESHOLD:"<<min_th<<endl;
     float th_inverted=0;
     int aux=0;
     string th_value;//,info_file_name;
@@ -1833,10 +1839,11 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     vector<int> nodes_in_level(this->graph_depth+1,0);
     for(int v=0;v<all_depths.size();v++)
         nodes_in_level[all_depths[v]]++;
+    nodes_in_level[0]--;
     
     ofstream original_nodes_level("original_nodes_level");
     for(int v=0;v<nodes_in_level.size();v++)
-        original_nodes_level<<v<<":"<<nodes_in_level[v]<<endl;
+        original_nodes_level<<v<<","<<nodes_in_level[v]<<endl;
 #endif
 //    simpl_info<<"AIG depth:"<<this->graph_depth<<", nodes with such depth:";
 //    for(int a=0;a<this->greatest_depths_ids.size();a++)
@@ -2389,7 +2396,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     {
         if(it_and->second.getOutputs().size()==0) //&& all_outputs.find(it_and->first)==all_outputs.end())
         {
-#if DEBUG >= 2
+#if DEBUG >= 1
             ofstream write2("removed_ANDs.txt"); 
             write2<<it_and->first<<",";
 #endif

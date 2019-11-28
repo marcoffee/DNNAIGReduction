@@ -24,7 +24,7 @@
 #define DEBUG 0
 #define debug_value 3
 
-#define TEST 0
+#define TEST 1
 #define RENUMBER 1
 #define REMOVE_PI 0
 //#define LEAVE_CONSTANTS 0

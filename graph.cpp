@@ -685,12 +685,10 @@ void graph::readAIG(ifstream& file, string param_name){
 }
 
 void graph::applyMnistRecursive(mnist& mnist_obj){
-    
-        cout<<"Applying image to AIG recursively."<<endl;
+    cout<<endl<<"APPLYING IMAGES TO AIG!"<<endl;
     map<unsigned int, AND>::iterator it_and;
     map<unsigned int, input>::iterator it_in;
     map<unsigned int, output>::iterator it_out;
-    
     int posY=0,posX=0;
     int correct_answers=0,img_count=0,offset=0;
     ofstream vamo;
@@ -715,13 +713,13 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         cout<<"mnist size unknown"<<endl;
     program_output_name+=this->name;
     program_output_name+=".csv";
-    
-        vamo.open(program_output_name);
-        dump_app.open("dump_app.txt");
-        check_bits.open("input_bits.txt");
-        fix.open("dumpDFS.csv");
-//    }
-        int num_imgs;
+#if DEBUG >= 1
+    vamo.open(program_output_name);
+    dump_app.open("dump_app.txt");
+    check_bits.open("input_bits.txt");
+    fix.open("dumpDFS.csv");
+#endif
+    int num_imgs;
     num_imgs=mnist_obj.getAllBits().size();
 #if TEST == 0
     for(int counter=0;counter<num_imgs;counter=counter+BITS_PACKAGE_SIZE)
@@ -729,10 +727,9 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
     for(int counter=0;counter<65;counter=counter+BITS_PACKAGE_SIZE)
 #endif
         {
+#if DEBUG >= 1
         cout<<"Applying images from "<<offset<<" to "<<offset+BITS_PACKAGE_SIZE<<endl;
-        
-        
-
+#endif
 #if TEST == 0
         //getting input signals from MNIST image
         set<int> removed_inputs;
@@ -773,12 +770,8 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                 else if (((posY)*(posX_max)+posX)>0)
                 {
                     if((posX+1)%8 == 0)
-                    {
-//                        cout<<(posY)*(posX_max) +posX<<",";
                         it_in->second.setBitVector(bits.to_ullong());
-                    }
                 }
-//                it_in->second.setSignal(mnist_obj.getBit(img_count,posY,posX));
 #if DEBUG >= 1
                 dump_app<<it_in->second.getId()<<"="<<((((posY)*(posX_max)) +posX+1)*2)<<endl;
 #endif
@@ -799,7 +792,6 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                             posY=0;
             }
        }
-        cout<<endl<<"pixel_count:"<<pixel_count<<endl;
 #else 
         cout<<"RJAEIRJEOI"<<endl;
         bitset<BITS_PACKAGE_SIZE> bits;
@@ -869,34 +861,26 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         //initializing all Outputs with -1
         for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
             it_out->second.setSignal(-1);
-
-        //////////////////////////////////////////////////////////////////////////////////////////
-       /////////////////////////////////////DFS//////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////////
+        
         struct rusage buf; 
         int start,stop;
-        if(getrusage(RUSAGE_SELF,&buf)==-1)
-            cout<<"GETRUSAGE FAILURE!"<<endl;
-        start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-
-        cout<<"DFS START"<<endl;
+//        if(getrusage(RUSAGE_SELF,&buf)==-1)
+//            cout<<"GETRUSAGE FAILURE!"<<endl;
+//        start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//
+//        cout<<"DFS START"<<endl;
         for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         {
 //            int ret;
             if(it_out->second.getId()>1)
                 it_out->second.runDFS();
         }
-        
-        
-        if(getrusage(RUSAGE_SELF,&buf)==-1)
-            cout<<"GETRUSAGE FAILURE!"<<endl;
-        stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-        //cout<<"DFS done on image "<<img_count<<endl;
-        
-        cout<<"Time to DFS:"<<stop-start<<endl;
+//        if(getrusage(RUSAGE_SELF,&buf)==-1)
+//            cout<<"GETRUSAGE FAILURE!"<<endl;
+//        stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//        
+//        cout<<"Time to DFS:"<<stop-start<<endl;
 
-        
-        
        int aux=0;
        vector<vector<int> > PO_signals;
        map<node*,int>::iterator it_sig;
@@ -904,7 +888,6 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
        vector<vector<int> > images_bits(64);
        map<node*,int>::iterator iter;
        
-
        unsigned long long int mask=1;
        //inverting outputs depending on node's polarity
         for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
@@ -914,9 +897,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                 if(it_out->second.getInputPolarity())
                     it_out->second.setBitVector(~it_out->second.getBitVector());
             }
-        }
-       
-       
+        }       
 #if DEBUG >=1
         {
 //            dump_app<<"image index:"<<img_count+1<<". Label:"<<mnist_obj.getLabel(img_count)<<endl;
@@ -1024,9 +1005,9 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                 cout<<"ERROR, unexpected circuit size of primary outputs!!"<<endl;
 
                aux_vec.clear();
-
-
+#if DEBUG >= 1
                vamo<<"image index:"<<img_count+1<<". Label:"<<mnist_obj.getLabel(img_count);
+#endif
 
                //counting number of 0s and 1s
                int ones=0,zeroes=0;
@@ -1042,8 +1023,10 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                            cout<<"ERROR, output signal is neither 0 or 1:"<<PO_signals[i][j]<<endl;
                    }
                }
+#if DEBUG >= 1
                vamo<<", #1:"<<ones<<" #0:"<<zeroes;
                vamo<<endl;
+#endif
 
 
                //from binary to decimal
@@ -1064,13 +1047,13 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                    else
                        cout<<"Error, all outputs size is not either 10 or 160. (apply mnist recursive)"<<endl;
                     aux_vec.push_back(soma);
+#if DEBUG >= 1
                     vamo<<w<<","<<soma;
-                   
                     vamo<<",,'";
                     for(int tt=0;tt<PO_signals[w].size();tt++)
                         vamo<<PO_signals[w][tt];
-
                    vamo<<endl;
+#endif
                }
                 PO_signals.clear();
 //               map<int,vector<int> > img_scores;
@@ -1110,8 +1093,6 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                aux_vec.clear();
                if(count>1)
                    highest_score=0;
-               
-               
 //               if(highest_score<=0)
 //               {
 //                   cout<<"Highest score number on image "<<img_count+1<<" is negative or 0:"<<highest_score<<endl;
@@ -1121,20 +1102,25 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                if(highest_index==mnist_obj.getLabel(img_count))
                {
                    correct_answers++;
+#if DEBUG >= 1
                    cout<<"RIGHT ANSWER ON IMAGE "<<img_count+1<<". Label:"<<mnist_obj.getLabel(img_count)<<". Score:"<<highest_score<<endl;
                    vamo<<"RIGHT ANSWER"<<endl;
+#endif
                }
                else
                {
+#if DEBUG >= 1
                    cout<<"WRONG ANSWER ON IMAGE "<<img_count+1<<". Label:"<<mnist_obj.getLabel(img_count)<<endl;
                    vamo<<"WRONG ANSWER"<<endl;
+#endif
                }
-               
+#if DEBUG >= 1
                vamo<<"total right answers:"<<correct_answers<<endl;
                if(correct_answers==0)
                    vamo<<"precision:0"<<endl;
                else
                    vamo<<"precision:"<<(float)correct_answers/(img_count+1)<<endl;
+#endif
 
         }
     offset=offset+BITS_PACKAGE_SIZE;

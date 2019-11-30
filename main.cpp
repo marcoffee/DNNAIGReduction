@@ -256,6 +256,7 @@ int main(int argc, char** argv) {
 
         new_name=graph_obj.getName(); 
         abcCeC(new_name,abc_name,min_th,option);
+        ofstream csv_final; csv_final.open("todos_scores.csv",ios::app); csv_final<<endl;
 #if APPLY_MNIST == 1
         cout<<"APPLYING MNIST WITH MY OWN SIMPLIFICATION"<<endl;
 //        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -350,6 +351,7 @@ int main(int argc, char** argv) {
 
         new_name=graph_obj.getName(); 
         abcCeC(new_name,abc_name,min_th,option);
+        ofstream csv_final; csv_final.open("todos_scores.csv",ios::app); csv_final<<endl;
 #if APPLY_MNIST == 1
         cout<<"APPLYING MNIST WITH MY OWN SIMPLIFICATION"<<endl;
 //        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -365,7 +367,7 @@ int main(int argc, char** argv) {
 //        getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.applyMnistRecursive(mnist_obj);
 //        getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-//        exec_times<<((stop_app-start_app)/(float)3600)<<","; cout<<"TEST DONE, "<<endl;
+//        exec_times<<((stop_app-start_app)/(float)3600)<<","; cout<<"TEST DONE, ";
 #endif
 #endif
         exec_times<<endl;
@@ -443,6 +445,7 @@ int main(int argc, char** argv) {
 
         new_name=graph_obj.getName(); 
         abcCeC(new_name,abc_name,min_th,option);
+        ofstream csv_final; csv_final.open("todos_scores.csv",ios::app); csv_final<<endl;
 #if APPLY_MNIST == 1
         cout<<"APPLYING MNIST WITH MY OWN SIMPLIFICATION"<<endl;
 //        getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -458,7 +461,7 @@ int main(int argc, char** argv) {
 //        getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
 //        graph_obj.applyMnistRecursive(mnist_obj);
 //        getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-//        exec_times<<((stop_app-start_app)/(float)3600)<<","; cout<<"TEST DONE, "<<endl;
+//        exec_times<<((stop_app-start_app)/(float)3600)<<","; cout<<"TEST DONE, ";
 #endif
 #endif
         exec_times<<endl;

@@ -361,7 +361,7 @@ public:
     void writeAIG();
     void writeProbsHistogram();
     void applyMnistRecursive(mnist&);
-    void propagateAndDeletePIBased(mnist&);
+    void propagateAndDeletePIBased(mnist&,float,int);
     void cutAIG();
     void setANDsProbabilities(mnist&);
     void propagateAndDeleteAll(mnist&,int option,float min_th,int alpha, int LEAVE_CONSTANTS);

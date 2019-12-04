@@ -374,7 +374,7 @@ int main(int argc, char** argv) {
 //        iterations++;
 //    }
     
-    for(min_th=0.97;min_th>=0.9;min_th-=0.01)
+    for(min_th=0.95;min_th>=0.9;min_th-=0.01)
     {
 ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
         cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;

@@ -1167,7 +1167,7 @@ void graph::propagateAndDeletePIBased(mnist& mnist_obj,float th,int LEAVE_CONSTA
     for(int v=0;v<all_depths.size();v++)
         nodes_in_level[all_depths[v]]++;
     nodes_in_level[0]--;
-#if WRITE_NODES_DEPTHS == 1
+#if WRITE_ORIGINAL_DEPTHS == 1
     ofstream original_nodes_level("original_nodes_level");
     for(int v=0;v<nodes_in_level.size();v++)
         original_nodes_level<<v<<","<<nodes_in_level[v]<<endl;
@@ -1846,7 +1846,7 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     for(int v=0;v<all_depths.size();v++)
         nodes_in_level[all_depths[v]]++;
     nodes_in_level[0]--;
-#if WRITE_NODES_DEPTHS == 1
+#if WRITE_ORIGINAL_DEPTHS == 1
     ofstream original_nodes_level("original_nodes_level");
     for(int v=0;v<nodes_in_level.size();v++)
         original_nodes_level<<v<<","<<nodes_in_level[v]<<endl;

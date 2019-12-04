@@ -34,7 +34,7 @@
 #define CEC 1
 #define WRITE_AIG 0
 #define WRITE_AAG 0
-#define WRITE_NODES_DEPTHS 0
+#define WRITE_ORIGINAL_DEPTHS 0
 
 
 

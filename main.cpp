@@ -507,6 +507,8 @@ int main(int argc, char** argv) {
             iterations++;
             if(min_th==higher_than)
             {   min_th=0.85;higher_than=0.55,minus=0.05;}
+            if(min_th==higher_than==0.55)
+                break;
         }
     }
 #endif

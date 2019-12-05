@@ -740,7 +740,7 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
         while(getline(in_file,line))
             removed_inputs.insert(stoi(line));
     
-        cout<<"Removed inputs size:"<<removed_inputs.size()<<endl;
+//        cout<<"Removed inputs size:"<<removed_inputs.size()<<endl;
         it_in=all_inputs.begin();
         bitset<BITS_PACKAGE_SIZE> bits;
         posY=0;

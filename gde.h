@@ -31,7 +31,7 @@
 #define FIX_DOUBLED_NODES 1
 #define EXECUTE_ONCE 0
 #define APPLY_MNIST 1
-#define CEC 1
+#define CEC 0
 #define WRITE_AIG 0
 #define WRITE_AAG 0
 #define WRITE_ORIGINAL_DEPTHS 0

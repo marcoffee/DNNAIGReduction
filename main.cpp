@@ -426,10 +426,13 @@ int main(int argc, char** argv) {
     }
     else if (option==-1)
     {
-        int higher_than=0.90, minus=0.02;
+        float higher_than=0.90, minus=0.02;
         min_th=1;
-        for(min_th;min_th>=higher_than;min_th-=minus)
+        for(min_th;min_th>=higher_than;min_th=min_th-minus)
         {
+//            cout<<"minus:"<<minus<<endl;
+//            cout<<min_th<<endl;
+            
     ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
             cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;
             mnist_obj.clearMnist();
@@ -506,7 +509,7 @@ int main(int argc, char** argv) {
             exec_times<<endl;
             iterations++;
             if(min_th==higher_than)
-            {   min_th=0.85;higher_than=0.55,minus=0.05;}
+               min_th=0.85;higher_than=0.55,minus=0.05;
             if(min_th==higher_than==0.55)
                 break;
         }

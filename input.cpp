@@ -33,6 +33,12 @@ int input::computeDepthInToOut(){
     return 0; //inputs always return 0 when computing the circuit depth
 }
 
+void input::computeDepthOutToIn(int previous){
+    this->signal=previous+1;
+    cout<<this->id<<endl;
+//    cout<<"PI:"<<this->id<<":signal=="<<this->signal<<"previous:"<<previous<<endl;
+}
+
 
 unsigned int input::enumerateDFS(unsigned int index){
     return index;

@@ -22,6 +22,8 @@ void latch::pushOutput(node* param){
     this->outputs.push_back(param);
 }
 
+void latch::computeDepthOutToIn(int prevous){
+}
 
 
 int latch::computeDepthInToOut(){

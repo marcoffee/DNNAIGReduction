@@ -50,6 +50,11 @@ int output::computeDepthInToOut(){
     return depth;
 }
 
+void output::computeDepthOutToIn(int previous_signal){
+    this->signal=0;
+    this->input->fixLSB()->computeDepthOutToIn(-1);
+}
+
 
 unsigned int output::enumerateDFS(unsigned int param_index) {
     this->id=param_index*2;

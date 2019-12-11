@@ -112,6 +112,7 @@ public:
     
     //operations
     virtual int computeDepthInToOut(){}
+    virtual void computeDepthOutToIn(int previous_signal){}
     virtual unsigned int enumerateDFS(unsigned int index){} //TODO: this is not used anymore
     virtual unsigned long long int runDFS(){}
     //swap_index is the index from the input that will be replaced.
@@ -121,10 +122,8 @@ public:
 //    virtual void recursiveRemoveOutput(unsigned int){}
     virtual void clearOutputs(){}
     
-    
 //    virtual void writeNode(){}
     virtual void writeNode(ofstream&){}
-    //virtual int computeDepthOutToIn(){}
     
     virtual void printNode(){}
     
@@ -154,6 +153,7 @@ public:
    
    //operations
    int computeDepthInToOut() override;
+   void computeDepthOutToIn(int previous_signal) override;
    unsigned int enumerateDFS(unsigned int index) override;
    unsigned long long int  runDFS() override;
 //   void removeOutput(node* node_to_remove) override;
@@ -204,6 +204,7 @@ public:
 
     //operations    
     int computeDepthInToOut() override;
+    void computeDepthOutToIn(int previous_signal) override;
     unsigned int enumerateDFS(unsigned int index) override;
 //    unsigned int enumerateBFS(unsigned int index) override;
 //    void writeNode() override;
@@ -240,6 +241,7 @@ public:
 //    void writeNode() override;
     void writeNode(ofstream&) override;
     int computeDepthInToOut() override;
+    void computeDepthOutToIn(int previous_signal) override;
     unsigned int enumerateDFS(unsigned int param_index) override;
     void printNode() override;
     unsigned long long int runDFS() override;
@@ -278,6 +280,7 @@ public:
    
    //operations
    int computeDepthInToOut() override;
+   void computeDepthOutToIn(int previous_signal) override;
    unsigned int enumerateDFS(unsigned int index) override;
    unsigned long long int runDFS() override;
    
@@ -356,7 +359,7 @@ public:
     
     //operations
     void setDepthsInToOut();
-    void setDepthsOutToIn();
+    void setShortestDistanceToPO();
     void writeAAG();
     void writeAIG();
     void writeProbsHistogram();

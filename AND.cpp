@@ -82,6 +82,19 @@ int AND::computeDepthInToOut(){
 }
 
 
+void AND::computeDepthOutToIn(int previous_depth){
+    cout<<this->id<<endl;
+    if (this->signal > previous_depth+1 || this->signal==-1)
+    {
+        signal=previous_depth+1;
+        if(this->getInputs()[0]->getSignal() > signal+1 || this->getInputs()[0]->getSignal() ==-1)
+            this->getInputs()[0]->computeDepthOutToIn(this->signal);
+        if(this->getInputs()[1]->getSignal() > signal+1 || this->getInputs()[1]->getSignal() ==-1)
+            this->getInputs()[1]->computeDepthOutToIn(this->signal);
+    }    
+}
+
+
 unsigned int AND::enumerateDFS(unsigned int index){
     this->id=index*2;
     unsigned int new_index;

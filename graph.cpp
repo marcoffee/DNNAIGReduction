@@ -2574,7 +2574,7 @@ void graph::recursiveRemoveOutput(unsigned int id_to_remove, node* remove_from){
 }
 
 void graph::setDepthsInToOut(){
-    cout<<"Setting AIG depths."<<endl;
+    cout<<"Setting AIG depths, NODE TO -->PI<--"<<endl;
     int retval,depth=0;
     map<unsigned int,output>::iterator it_out;
     map<unsigned int,AND>::iterator it_and;
@@ -2620,6 +2620,53 @@ void graph::setDepthsInToOut(){
         write<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<endl;
     write.close();
 #endif
+}
+
+void graph::setShortestDistanceToPO(){
+    cout<<"Setting AIG depths, -->PO<--"<<endl;
+    int depth=0;
+    map<unsigned int,output>::iterator it_out;
+    map<unsigned int,AND>::iterator it_and;
+    map<unsigned int,input>::iterator it_in;
+    ofstream write;
+    //Initializing depths
+    for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
+        it_in->second.setDepth(-1);
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        it_and->second.setDepth(-1);
+    for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
+        it_out->second.setDepth(-1);
+    
+    for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
+    {
+        it_out->second.computeDepthOutToIn(0);
+    }
+    
+    
+    
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        cout<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<endl;
+    int greater=-1;
+    for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
+    {
+        cout<<it_in->second.getId()<<":"<<it_in->second.getDepth()<<endl;
+        if(it_in->second.getDepth()>greater)
+        {
+            greater=it_in->second.getDepth();
+            greatest_depths_ids.clear();
+            greatest_depths_ids.push_back(it_in->second.getId());
+        }
+        else if (it_in->second.getDepth()==greater)
+            greatest_depths_ids.push_back(it_in->second.getId());
+    }
+    this->graph_depth=greater;
+    cout<<"graph depth:"<<this->graph_depth<<endl;
+    
+    write.open("Depths.txt");
+    write<<this->name<<","<<greater<<endl;
+    for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
+        write<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<endl;
+    write.close();
 }
 
 void graph::printDepths(){

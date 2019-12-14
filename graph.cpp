@@ -1944,13 +1944,14 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
     string ands_probs_name,line;
     
     ands_probs_name="../ands_probs_";
+    cout<<"ands probs file name:"<<ands_probs_name<<endl;    cout<<"graph file name:"<<this->name<<endl;
     if(this->name.find("A1")!=string::npos)
         ands_probs_name+="A1.txt";
     else if(this->name.find("A2")!=string::npos)
         ands_probs_name+="A2.txt";
     else if(this->name.find("A3")!=string::npos)
         ands_probs_name+="A3.txt";
-    else if(this->name.find("A1")!=string::npos)
+    else if(this->name.find("A4")!=string::npos)
         ands_probs_name+="A4.txt";
     else
     {

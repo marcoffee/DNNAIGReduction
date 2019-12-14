@@ -58,7 +58,11 @@ graph_obj.setShortestDistanceToPO();
 #elif EXECUTE_ONCE == 0
     if(option>=0)
     {
-        for(min_th=0.9999;min_th>0.999;min_th-=0.0001)
+        if(option==1)
+            min_th=1.0;
+        else
+            min_th=0.9999;
+        for(min_th;min_th>0.999;min_th-=0.0001)
         {
     ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
             cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;
@@ -139,7 +143,6 @@ graph_obj.setShortestDistanceToPO();
             exec_times<<endl;
             iterations++;
         }
-
 
         for(min_th=0.999;min_th>0.99;min_th-=0.002)
         {

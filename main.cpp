@@ -58,7 +58,7 @@ graph_obj.setShortestDistanceToPO();
 #elif EXECUTE_ONCE == 0
     if(option>=0)
     {
-        if(option==1)
+        if(option==0)
             min_th=1.0;
         else
             min_th=0.9999;

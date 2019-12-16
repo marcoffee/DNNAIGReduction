@@ -893,6 +893,10 @@ void graph::applyMnistRecursive(mnist& mnist_obj){
                 if(it_out->second.getInputPolarity())
                     it_out->second.setBitVector(~it_out->second.getBitVector());
             }
+            else if (it_out->second.getId()==1)
+                it_out->second.setBitVector(ULLONG_MAX);
+            else if (it_out->second.getId()==0)
+                it_out->second.setBitVector(0);
         }       
 #if DEBUG >=1
         {

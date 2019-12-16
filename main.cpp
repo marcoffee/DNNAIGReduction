@@ -52,8 +52,85 @@ int main(int argc, char** argv) {
     exec_times<<"Otption:"<<option<<", Circuit:"<<file_name<<endl<<"Min_th, Set Constants, My Simplification"<<endl;
 #endif
 #if EXECUTE_ONCE == 3
-graph_obj.readAIG(read,file_name);
-graph_obj.setShortestDistanceToPO();
+    ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
+            cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;
+            mnist_obj.clearMnist();
+            read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+            mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+            mnist_obj.setBitsProbabilities(read_mnist);
+            read_mnist.close();
+
+            graph_obj.clearCircuit(); read.close(); read.open(file_name.c_str(),ifstream::binary);
+            graph_obj.setThrehsold(min_th);        
+            graph_obj.readAIG(read,file_name);
+
+            LEAVE_CONSTANTS=1;  
+            getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            if(option>=0) graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
+            else if(option==-1) graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
+            getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
+            graph_obj.writeAIG();
+            graph_obj.writeAAG();
+
+            new_name=graph_obj.getName();
+            abc_name="ABC_"+new_name+".aig";
+            abcWrite(new_name,abc_name);  
+
+            graph_obj.clearCircuit(); read.close(); read.open(abc_name.c_str(),ifstream::binary);
+            graph_obj.setThrehsold(min_th);        
+            graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
+            abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+#if APPLY_MNIST >0    
+            graph_obj.clearCircuit(); read.close(); read.open(abc_name.c_str(),ifstream::binary);
+            graph_obj.setThrehsold(min_th);        
+            graph_obj.readAIG(read,abc_name);
+#endif
+#if APPLY_MNIST == 2
+            cout<<"APPLYING TRAIN MNIST WITH ABC's SIMPLIFICATION -> "<<endl;
+            getrusage(RUSAGE_SELF,&buf);  start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            graph_obj.applyMnistRecursive(mnist_obj);
+            getrusage(RUSAGE_SELF,&buf);  stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            exec_times<<((stop_app-start_app)/(float)3600)<<","; cout<<"TRAIN DONE, ";
+#endif 
+#if APPLY_MNIST >= 1
+            cout<<"APPLYING TEST MNIST WITH ABC's SIMPLIFICATION -> ";
+            mnist_obj.clearMnist();
+            read_mnist.open("../t10k-images.idx3-ubyte",ifstream::binary);
+            mnist_obj.readIdx(read_mnist,"../t10k-images.idx3-ubyte");
+            mnist_obj.setBitsProbabilities(read_mnist);
+            read_mnist.close();
+            getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            graph_obj.applyMnistRecursive(mnist_obj);
+            getrusage(RUSAGE_SELF,&buf); stop_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            exec_times<<((stop_app-start_app)/(float)3600)<<","; cout<<"TEST DONE, "<<endl;
+#endif
+    #if CEC == 1
+    /////////////////////////////Generating file with my own simplification/////////////////////////////////////////////////
+            mnist_obj.clearMnist();
+            read_mnist.open("../train-images.idx3-ubyte",ifstream::binary);
+            mnist_obj.readIdx(read_mnist,"../train-images.idx3-ubyte");
+            mnist_obj.setBitsProbabilities(read_mnist);
+            read_mnist.close();
+
+            graph_obj.clearCircuit(); read.close(); read.open(file_name.c_str(),ifstream::binary);
+            graph_obj.setThrehsold(min_th);
+            graph_obj.readAIG(read,file_name);
+
+            LEAVE_CONSTANTS=0;
+            getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            if(option>=0) graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
+            else if(option==-1) graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
+            getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            exec_times<<((stop_simplf-start_simplf)/(float)3600)<<",";
+            graph_obj.writeAIG();
+
+            new_name=graph_obj.getName(); 
+            abcCeC(new_name,abc_name,min_th,option);
+            ofstream csv_final; csv_final.open("todos_scores.csv",ios::app); csv_final<<endl;
+    #endif
+            exec_times<<endl;
+            iterations++;
 #elif EXECUTE_ONCE ==1
 #elif EXECUTE_ONCE == 0
     if(option>=0)

@@ -42,10 +42,11 @@ void output::writeNode(ofstream& write){
 }
 
 int output::computeDepthInToOut(){
-    int depth;
+    int depth=0;
     ofstream write;
 //    cout<<"output starting search:"<<this->id<<endl;
-    depth=this->getInput()->fixLSB()->computeDepthInToOut();
+    if(this->id>1)
+        depth=this->getInput()->fixLSB()->computeDepthInToOut();
 
     return depth;
 }

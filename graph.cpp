@@ -1915,15 +1915,15 @@ void graph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int a
   
 #if TEST == 1
   all_inputs.find(2)->second.setSignal(2);
-  all_inputs.find(4)->second.setSignal(0);
-        for(int g=0;g<all_inputs.find(4)->second.getOutputs().size();g++)
-        {
-            if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(4)->second.getId())
-                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[0]);
-            else if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(4)->second.getId())
-                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
-        }
-  all_inputs.find(4)->second.clearOutputs();
+  all_inputs.find(4)->second.setSignal(2);
+//        for(int g=0;g<all_inputs.find(4)->second.getOutputs().size();g++)
+//        {
+//            if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[0]->getId()==all_inputs.find(4)->second.getId())
+//                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(0,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[0]);
+//            else if(all_inputs.find(4)->second.getOutputs()[g]->getInputs()[1]->getId()==all_inputs.find(4)->second.getId())
+//                all_inputs.find(4)->second.getOutputs()[g]->replaceInput(1,&constant0,all_inputs.find(4)->second.getOutputs()[g]->getInputPolarities()[1]);
+//        }
+//  all_inputs.find(4)->second.clearOutputs();
   all_inputs.find(6)->second.setSignal(2);
 //          for(int g=0;g<all_inputs.find(6)->second.getOutputs().size();g++)
 //        {
@@ -2588,7 +2588,6 @@ void graph::setDepthsInToOut(){
         it_and->second.setDepth(-1);
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setDepth(-1);
-    
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
 #if DEBUG >= 3
@@ -2598,7 +2597,6 @@ void graph::setDepthsInToOut(){
         depth=it_out->second.computeDepthInToOut();
         it_out->second.setDepth(depth);
     }
-    
     int greater=-1;
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
@@ -2620,6 +2618,7 @@ void graph::setDepthsInToOut(){
         write<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<endl;
     write.close();
 #endif
+    cout<<"setting depths done."<<endl;
 }
 
 void graph::setShortestDistanceToPO(){

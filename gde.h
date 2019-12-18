@@ -29,7 +29,7 @@
 #define REMOVE_PI 0
 //#define LEAVE_CONSTANTS 0
 #define FIX_DOUBLED_NODES 1
-#define EXECUTE_ONCE 0
+#define EXECUTE_ONCE 1
 #define APPLY_MNIST 1
 #define CEC 0
 #define WRITE_AIG 0

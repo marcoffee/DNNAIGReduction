@@ -51,7 +51,11 @@ int main(int argc, char** argv) {
 #else
     exec_times<<"Otption:"<<option<<", Circuit:"<<file_name<<endl<<"Min_th, Set Constants, My Simplification"<<endl;
 #endif
-#if EXECUTE_ONCE == 3
+    
+#if EXECUTE_ONCE ==1
+     min_th=0.92;
+        for(min_th;min_th>0.88;min_th-=0.01)
+        {
     ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
             cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;
             mnist_obj.clearMnist();
@@ -71,7 +75,6 @@ int main(int argc, char** argv) {
             getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
             graph_obj.writeAIG();
-            graph_obj.writeAAG();
 
             new_name=graph_obj.getName();
             abc_name="ABC_"+new_name+".aig";
@@ -131,7 +134,7 @@ int main(int argc, char** argv) {
     #endif
             exec_times<<endl;
             iterations++;
-#elif EXECUTE_ONCE ==1
+        }
 #elif EXECUTE_ONCE == 0
     if(option>=0)
     {

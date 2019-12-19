@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name,new_name,abc_name;
 #if TEST == 0
-    file_name="../A4.aig";;
+    file_name="../A2.aig";;
 #elif TEST == 1
     file_name="andre.aig";;
 #endif
@@ -53,9 +53,7 @@ int main(int argc, char** argv) {
 #endif
     
 #if EXECUTE_ONCE ==1
-     min_th=0.92;
-        for(min_th;min_th>0.88;min_th-=0.01)
-        {
+     min_th=1;
     ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
             cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;
             mnist_obj.clearMnist();
@@ -134,7 +132,7 @@ int main(int argc, char** argv) {
     #endif
             exec_times<<endl;
             iterations++;
-        }
+        
 #elif EXECUTE_ONCE == 0
     if(option>=0)
     {

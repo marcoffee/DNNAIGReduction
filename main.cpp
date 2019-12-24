@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name,new_name,abc_name;
 #if TEST == 0
-    file_name="../A4.aig";;
+    file_name="../A1.aig";;
 #elif TEST == 1
     file_name="andre.aig";;
 #endif
@@ -142,7 +142,7 @@ int main(int argc, char** argv) {
             min_th=1.0;
         else
             min_th=0.9999;
-        for(min_th;min_th>0.999;min_th-=0.0001)
+        for(min_th;min_th>0.999;min_th-=0.0002)
         {
     ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
             cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;
@@ -156,7 +156,7 @@ int main(int argc, char** argv) {
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read,file_name);
 
-            LEAVE_CONSTANTS=1;  
+//            LEAVE_CONSTANTS=1;  
             getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             if(option>=0) graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
             else if(option==-1) graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
@@ -164,6 +164,7 @@ int main(int argc, char** argv) {
             exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
             graph_obj.writeAIG();
 
+#if USE_ABC == 1
             new_name=graph_obj.getName();
             abc_name="ABC_"+new_name+".aig";
             abcWrite(new_name,abc_name);  
@@ -172,6 +173,7 @@ int main(int argc, char** argv) {
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
             abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+#endif
 #if APPLY_MNIST >0    
             graph_obj.clearCircuit(); read.close(); read.open(abc_name.c_str(),ifstream::binary);
             graph_obj.setThrehsold(min_th);        
@@ -238,7 +240,7 @@ int main(int argc, char** argv) {
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read,file_name);
 
-            LEAVE_CONSTANTS=1;  
+//            LEAVE_CONSTANTS=1;  
             getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             if(option>=0) graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
             else if(option==-1) graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
@@ -246,6 +248,7 @@ int main(int argc, char** argv) {
             exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
             graph_obj.writeAIG();
 
+#if USE_ABC == 1
             new_name=graph_obj.getName();
             abc_name="ABC_"+new_name+".aig";
             abcWrite(new_name,abc_name);  
@@ -254,6 +257,7 @@ int main(int argc, char** argv) {
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
             abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+#endif
 #if APPLY_MNIST >0    
             graph_obj.clearCircuit(); read.close(); read.open(abc_name.c_str(),ifstream::binary);
             graph_obj.setThrehsold(min_th);        
@@ -320,7 +324,7 @@ int main(int argc, char** argv) {
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read,file_name);
 
-            LEAVE_CONSTANTS=1;  
+//            LEAVE_CONSTANTS=1;  
             getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             if(option>=0) graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
             else if(option==-1) graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
@@ -328,6 +332,7 @@ int main(int argc, char** argv) {
             exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
             graph_obj.writeAIG();
 
+#if USE_ABC == 1
             new_name=graph_obj.getName();
             abc_name="ABC_"+new_name+".aig";
             abcWrite(new_name,abc_name);  
@@ -336,6 +341,7 @@ int main(int argc, char** argv) {
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
             abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+#endif
 #if APPLY_MNIST >0    
             graph_obj.clearCircuit(); read.close(); read.open(abc_name.c_str(),ifstream::binary);
             graph_obj.setThrehsold(min_th);        
@@ -409,7 +415,7 @@ int main(int argc, char** argv) {
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read,file_name);
 
-            LEAVE_CONSTANTS=1;  
+//            LEAVE_CONSTANTS=1;  
             getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             if(option>=0) graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
             else if(option==-1) graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
@@ -417,6 +423,7 @@ int main(int argc, char** argv) {
             exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
             graph_obj.writeAIG();
 
+#if USE_ABC == 1
             new_name=graph_obj.getName();
             abc_name="ABC_"+new_name+".aig";
             abcWrite(new_name,abc_name);  
@@ -425,6 +432,7 @@ int main(int argc, char** argv) {
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read,abc_name); graph_obj.setDepthsInToOut();
             abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+#endif
 #if APPLY_MNIST >0    
             graph_obj.clearCircuit(); read.close(); read.open(abc_name.c_str(),ifstream::binary);
             graph_obj.setThrehsold(min_th);        

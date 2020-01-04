@@ -1419,12 +1419,14 @@ if(LEAVE_CONSTANTS == 0)
     
     //Removing ANDs with 0 fanouts
     int ands_removed=0,PIs_removed=0,id=0;
+    vector<int> removed_nodes_counter_by_depth(graph_depth+1,0);
     it_and=all_ANDS.begin();
     while(it_and!=all_ANDS.end())
     {
         if(it_and->second.getOutputs().size()==0) //&& all_outputs.find(it_and->first)==all_outputs.end())
         {
 //            cout<<"Erasing AND:"<<it_and->first<<endl;
+            removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]++;
             it_and=all_ANDS.erase(it_and);
             ands_removed++;
         }
@@ -1469,6 +1471,24 @@ if(LEAVE_CONSTANTS == 0)
         this->name+="_test_old";
     else
         cout<<"mnist size unknown"<<endl;
+    
+#if DEBUG >= 0
+    int sum=0;
+    for(int t=0;t<removed_nodes_counter_by_depth.size();t++)
+        sum+=removed_nodes_counter_by_depth[t];
+    string file_name;
+    file_name="Nodes_in_level.csv";
+    ofstream nodes_per_level(file_name,ios::app);
+//    dump1<<file_name<<":"<<sum<<","<<ands_removed<<endl;
+    nodes_per_level<<this->name<<","<<th;
+    for(int a=0;a<removed_nodes_counter_by_depth.size();a++)
+        nodes_per_level<<","<<nodes_in_level[a]-removed_nodes_counter_by_depth[a];
+    nodes_per_level<<endl;
+    nodes_per_level.close();
+#endif
+    
+    this->setDepthsInToOut();
+    
     ofstream csv_final;
     csv_final.open("todos_scores.csv",ios::app);
 //    simpl_info<<endl<<to_string(1-threshold)<<","<<PI_constant<<","<<PIs_removed<<","<<ands_removed<<","<<all_ANDS.size()<<endl;

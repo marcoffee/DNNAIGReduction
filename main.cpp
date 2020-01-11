@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name,new_name,abc_name;
 #if TEST == 0
-    file_name="../A4.aig";;
+    file_name="../A1.aig";;
 #elif TEST == 1
     file_name="andre.aig";;
 #endif
@@ -53,9 +53,9 @@ int main(int argc, char** argv) {
 #endif
     
 #if EXECUTE_ONCE ==1
-     min_th=0.92;
-    for(min_th;min_th>0.89;min_th-=0.02)
-    {
+     min_th=0.9999;
+//    for(min_th;min_th>0.89;min_th-=0.02)
+//    {
     ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
             cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;
             mnist_obj.clearMnist();
@@ -132,9 +132,9 @@ int main(int argc, char** argv) {
             abcCeC(new_name,abc_name,min_th,option);
             ofstream csv_final; csv_final.open("todos_scores.csv",ios::app); csv_final<<endl;
     #endif
-            exec_times<<endl;
-            iterations++;
-    }
+//            exec_times<<endl;
+//            iterations++;
+//    }
 #elif EXECUTE_ONCE == 0
     if(option>=0)
     {

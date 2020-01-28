@@ -30,7 +30,7 @@
 //#define LEAVE_CONSTANTS 0
 #define USE_ABC 0
 #define FIX_DOUBLED_NODES 1
-#define EXECUTE_ONCE 1
+#define EXECUTE_ONCE 0
 #define APPLY_MNIST 0
 #define CEC 0
 #define WRITE_AIG 0

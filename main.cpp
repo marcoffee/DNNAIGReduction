@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     start=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
     string file_name,new_name,abc_name;
 #if TEST == 0
-    file_name="../A2.aig";;
+    file_name="../A4.aig";;
 #elif TEST == 1
     file_name="andre.aig";;
 #endif

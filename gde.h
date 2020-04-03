@@ -305,7 +305,7 @@ public:
 
 
 
-class graph {
+class aigraph {
 protected:
     map<unsigned int,input> all_inputs;
     map<unsigned int,latch> all_latches;
@@ -328,9 +328,9 @@ protected:
    // mypapi papi_obj;
     
 public:
-    graph();
+    aigraph();
 //    graph(float);
-   virtual ~graph();
+   virtual ~aigraph();
     
     
     //modifiers
@@ -391,7 +391,7 @@ private:
 
 
 
-class synthesizer : public graph{
+class synthesizer : public aigraph{
     deque<node*> circ_deque;
     unsigned int M,I,L,O,A,AND_index;
     

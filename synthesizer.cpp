@@ -143,7 +143,7 @@ void synthesizer::create(int num_PI,int function, bool balance,int enumeration){
 
 
 void synthesizer::addAND(int num_inputs, bool balance){
-    deque<node*> cell_deque;
+    deque<nodeAig*> cell_deque;
     cell_deque=buildCellDeque(num_inputs,false);
     struct rusage buf; 
 
@@ -205,7 +205,7 @@ void synthesizer::addAND(int num_inputs, bool balance){
 
 void synthesizer::addNAND(int num_inputs,bool balance){
 
-    deque<node*> cell_deque;
+    deque<nodeAig*> cell_deque;
     cell_deque=buildCellDeque(num_inputs,false);
 
 //    cout<<"CELL_DEQUE BEFORE:";
@@ -266,7 +266,7 @@ void synthesizer::addNAND(int num_inputs,bool balance){
 
 
 void synthesizer::addOR(int num_inputs,bool balance){
-    deque<node*> cell_deque;
+    deque<nodeAig*> cell_deque;
     cell_deque=buildCellDeque(num_inputs,true);
     
     AND* AND_aux;
@@ -317,7 +317,7 @@ void synthesizer::addOR(int num_inputs,bool balance){
 
 
 void synthesizer::addNOR(int num_inputs,bool balance){
-  deque<node*> cell_deque;
+  deque<nodeAig*> cell_deque;
     cell_deque=buildCellDeque(num_inputs,true);
     
     AND* AND_aux;
@@ -367,7 +367,7 @@ void synthesizer::addNOR(int num_inputs,bool balance){
 }
 
 void synthesizer::addXOR(int num_inputs,bool balance){
-    deque<node*> cell_deque,aux_deque;
+    deque<nodeAig*> cell_deque,aux_deque;
     aux_deque=buildCellDeque(num_inputs,false);
     
 //    cout<<"AUX_DEQUE BEFORE:";
@@ -467,7 +467,7 @@ void synthesizer::addXOR(int num_inputs,bool balance){
 
 
 void synthesizer::addXNOR(int num_inputs,bool balance){
-    deque<node*> cell_deque,aux_deque;
+    deque<nodeAig*> cell_deque,aux_deque;
     for(int i=0;i<num_inputs;i++)
     {
         aux_deque.push_back(circ_deque.front());
@@ -567,7 +567,7 @@ void synthesizer::addXNOR(int num_inputs,bool balance){
 
 
 
-void synthesizer::connectNodes(node* in, node* destination, bool invert){
+void synthesizer::connectNodes(nodeAig* in, nodeAig* destination, bool invert){
     bool polarity;
     in->fixLSB()->pushOutput(destination);
     polarity=getThisPtrPolarity(in);
@@ -580,8 +580,8 @@ void synthesizer::connectNodes(node* in, node* destination, bool invert){
 }
 
 
-deque<node*> synthesizer::buildCellDeque(int num_inputs,bool input_inverted){
-    deque<node*> cell_deque;
+deque<nodeAig*> synthesizer::buildCellDeque(int num_inputs,bool input_inverted){
+    deque<nodeAig*> cell_deque;
     if(!input_inverted)
     {
         for(int i=0;i<num_inputs;i++)
@@ -605,9 +605,9 @@ deque<node*> synthesizer::buildCellDeque(int num_inputs,bool input_inverted){
 
 void synthesizer::enumerateGraph(int enumeration){
 
-    deque<node*> aux_deque;
-    deque<node*> stack;
-    set<std::reference_wrapper<node*> > s;
+    deque<nodeAig*> aux_deque;
+    deque<nodeAig*> stack;
+    set<std::reference_wrapper<nodeAig*> > s;
     map<unsigned int,output>::iterator it_out;
     map<unsigned int,input>::iterator it_in;
     unsigned int index=I;

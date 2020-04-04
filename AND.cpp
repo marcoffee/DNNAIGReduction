@@ -11,8 +11,8 @@ AND::AND(){}
 
 AND::~AND(){}
 
-vector<node*> AND::getInputs(){
-    vector<node*> ret(2);
+vector<nodeAig*> AND::getInputs(){
+    vector<nodeAig*> ret(2);
     ret[0]=this->inputs[0]->fixLSB();
     ret[1]=this->inputs[1]->fixLSB();
     //    ret[0]=(node*)(inputs[0]/2);
@@ -22,7 +22,7 @@ vector<node*> AND::getInputs(){
 
 
 
-void AND::pushInput(node* param, bool param_polarity){
+void AND::pushInput(nodeAig* param, bool param_polarity){
     if(this->inputs.size()>=2)
         cout<<"ERROR, trying to add more then 2 inputs on AND node: "<<this->id<<endl;
     else
@@ -32,7 +32,7 @@ void AND::pushInput(node* param, bool param_polarity){
         {
 //            cout<<"INVERTING "<<param->getId()<<" as input on node:"<<this->getId()<<endl;
 //            cout<<(param)<<"AAAAAAAA:"<<param->getId()<<"|";
-            param=((node*)(((uintptr_t)param) ^ 01));
+            param=((nodeAig*)(((uintptr_t)param) ^ 01));
 //            cout<<(param)<<endl;
             
         }
@@ -42,7 +42,7 @@ void AND::pushInput(node* param, bool param_polarity){
                 inputs.push_back(param);
             else
             {
-                node* aux;
+                nodeAig* aux;
                 aux=inputs[0];
                 inputs[0]=param;
                 inputs.push_back(aux);
@@ -206,7 +206,7 @@ unsigned long long int AND::runDFS(){
 
 }
 
-void AND::replaceInput(int swap_index,node* new_node,bool polarity) {
+void AND::replaceInput(int swap_index,nodeAig* new_node,bool polarity) {
 //	if(new_node->getId()==inputs[swap_index^1]->fixLSB()->getId())
 //	{
 //		cout<<"before:";
@@ -228,11 +228,11 @@ void AND::replaceInput(int swap_index,node* new_node,bool polarity) {
 
 
 #if IGNORE_OUTPUTS ==0
-void AND::pushOutput(node* param){
+void AND::pushOutput(nodeAig* param){
     this->outputs.push_back(param);
 }
 
-vector<node*> AND::getOutputs(){
+vector<nodeAig*> AND::getOutputs(){
     return this->outputs;
 }
 
@@ -274,7 +274,7 @@ void AND::removeOutput(unsigned int id_to_remove) {
 #endif
 
 void AND::invertInputs() {
-        node* aux;
+        nodeAig* aux;
     if(inputs[0]->fixLSB()->getId()<inputs[1]->fixLSB()->getId())
     {
 		// cout<<"Inverting AND:"<<id<<" inputs:"<<inputs[0]->fixLSB()->getId()<<","<<inputs[1]->fixLSB()->getId()<<endl;

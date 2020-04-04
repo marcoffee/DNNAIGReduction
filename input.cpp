@@ -21,7 +21,7 @@ input::input() {
 input::~input() {
 }
 
-void input::pushOutput(node* param){
+void input::pushOutput(nodeAig* param){
     this->outputs.push_back(param);
 }
 
@@ -49,7 +49,7 @@ unsigned int input::enumerateDFS(unsigned int index){
 //}
 
 
-vector<node*> input::getOutputs(){
+vector<nodeAig*> input::getOutputs(){
     return this->outputs;
 }
 

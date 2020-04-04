@@ -17,14 +17,14 @@ output::~output(){}
 
 
 
-void output::pushInput(node* param, bool param_polarity) {
+void output::pushInput(nodeAig* param, bool param_polarity) {
     //TRUE to invert FALSE to regular
     if(param_polarity)
-            param=((node*)(((uintptr_t)param) ^ 01));
+            param=((nodeAig*)(((uintptr_t)param) ^ 01));
         input=param;
 }
 
-node* output::getInput(){
+nodeAig* output::getInput(){
     return this->input->fixLSB();
 }
 
@@ -86,6 +86,6 @@ unsigned long long int output::runDFS(){
 
 
 void output::clearInput(){
-    node* null_node=NULL;
+    nodeAig* null_node=NULL;
     this->input=null_node;
 }

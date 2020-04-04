@@ -86,7 +86,7 @@ output* aigraph::findOutput(unsigned int param){
     return &this->all_outputs.find(param)->second;
 }
 
-node* aigraph::findAny(unsigned int param){
+nodeAig* aigraph::findAny(unsigned int param){
     if(all_ANDS.find(param)!=all_ANDS.end())
         return &all_ANDS.find(param)->second;
     else if(all_inputs.find(param)!=all_inputs.end())
@@ -879,10 +879,10 @@ void aigraph::applyMnistRecursive(mnist& mnist_obj){
 
        int aux=0;
        vector<vector<int> > PO_signals;
-       map<node*,int>::iterator it_sig;
+       map<nodeAig*,int>::iterator it_sig;
        vector<int> aux_vec;
        vector<vector<int> > images_bits(64);
-       map<node*,int>::iterator iter;
+       map<nodeAig*,int>::iterator iter;
        
        unsigned long long int mask=1;
        //inverting outputs depending on node's polarity
@@ -1233,12 +1233,12 @@ void aigraph::propagateAndDeletePIBased(mnist& mnist_obj,float th,int LEAVE_CONS
     
 //  int debug_value=2;
     
-    vector<node*> stack;
-    vector<node*> AUX;
-    node* current;
+    vector<nodeAig*> stack;
+    vector<nodeAig*> AUX;
+    nodeAig* current;
     cout<<"POs size:"<<all_outputs.size()<<endl<<endl;
     bool polarity,pol_new_node;
-    node* new_node;
+    nodeAig* new_node;
     
 if(LEAVE_CONSTANTS == 0)
 {
@@ -1565,8 +1565,8 @@ void aigraph::cutAIG(){
     map<unsigned int, AND>::iterator it_and;
     
     aigraph AIG_cut;
-    vector<node*> stack;
-    node* current;
+    vector<nodeAig*> stack;
+    nodeAig* current;
     input* aux_PI;
     AND* aux_AND;
     
@@ -2132,12 +2132,12 @@ void aigraph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int
 //  for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
 //      dump1<<it_and->second.getId()<<":"<<it_and->second.getSignal()<<endl;
   
-    stack<node*>stackzin;
-    vector<node*> AUX;
-    node* current;
+    stack<nodeAig*>stackzin;
+    vector<nodeAig*> AUX;
+    nodeAig* current;
 //    cout<<"POs size:"<<all_outputs.size()<<endl<<endl;
     bool polarity,pol_new_node;
-    node* new_node;
+    nodeAig* new_node;
 
     if(LEAVE_CONSTANTS == 0)
     {
@@ -2574,7 +2574,7 @@ csv_final.close();
 
 
 
-void aigraph::recursiveRemoveOutput(unsigned int id_to_remove, node* remove_from){
+void aigraph::recursiveRemoveOutput(unsigned int id_to_remove, nodeAig* remove_from){
     for(int i=0;i<remove_from->getOutputs().size();i++)
     {
         if(remove_from->getOutputs()[i]->getId()==id_to_remove)

@@ -5,7 +5,7 @@
  */
 
 /* 
- * File:   gde.h
+ * File:   AIG.h
  * Author: augusto
  *
  * Created on 23 de Março de 2018, 16:56
@@ -78,22 +78,21 @@ using namespace std;
 
 
 
-class node{
+class nodeAig{
     
 protected:
     unsigned int id;
     int signal;
     unsigned long long int bit_vector;
-//    int depth;
     
 public:
-    node();
-    node(unsigned int);
-    virtual ~node();
+    nodeAig();
+    nodeAig(unsigned int);
+    virtual ~nodeAig();
     
     //modifiers
-    virtual void pushOutput(node* param){}
-    virtual void pushInput(node* param,bool param_polarity){}
+    virtual void pushOutput(nodeAig* param){}
+    virtual void pushInput(nodeAig* param,bool param_polarity){}
     void setId(unsigned int);
     void setDepth(int);
     void setSignal(int);
@@ -104,10 +103,10 @@ public:
     int getDepth();
     int getSignal();
     unsigned long long int getBitVector();
-    node* fixLSB();    
-    node* forceInvert();
-    virtual vector<node*> getInputs(){}
-    virtual vector<node*> getOutputs(){}
+    nodeAig* fixLSB();    
+    nodeAig* forceInvert();
+    virtual vector<nodeAig*> getInputs(){}
+    virtual vector<nodeAig*> getOutputs(){}
     virtual vector<int> getInputPolarities(){}
     
     
@@ -117,7 +116,7 @@ public:
     virtual unsigned int enumerateDFS(unsigned int index){} //TODO: this is not used anymore
     virtual unsigned long long int runDFS(){}
     //swap_index is the index from the input that will be replaced.
-    virtual void replaceInput(int swap_index,node* new_node,bool polarity){}
+    virtual void replaceInput(int swap_index,nodeAig* new_node,bool polarity){}
 //    virtual void removeOutput(node*){}
     virtual void removeOutput(unsigned int){}
 //    virtual void recursiveRemoveOutput(unsigned int){}
@@ -127,7 +126,6 @@ public:
     virtual void writeNode(ofstream&){}
     
     virtual void printNode(){}
-    
 };
 
 
@@ -137,20 +135,20 @@ public:
 
 
 
-class input: public node {
-    vector<node*> outputs;
+class input: public nodeAig {
+    vector<nodeAig*> outputs;
     
 public:
     input();
-    using node::node; //enable use of constructor from node
-    using node::setDepth;
-    using node::getDepth;
-    using node::getId;
-    using node::getSignal;
+    using nodeAig::nodeAig; //enable use of constructor from node
+    using nodeAig::setDepth;
+    using nodeAig::getDepth;
+    using nodeAig::getId;
+    using nodeAig::getSignal;
    virtual ~input();
    
    //modifiers
-   void pushOutput(node* param) override;
+   void pushOutput(nodeAig* param) override;
    
    //operations
    int computeDepthInToOut() override;
@@ -168,7 +166,7 @@ public:
    void writeNode(ofstream&) override;
    void printNode() override;
    //member access
-   vector<node*> getOutputs() override;
+   vector<nodeAig*> getOutputs() override;
 //   vector<bool> getInputPolarities() override;
    
 
@@ -182,26 +180,26 @@ public:
 
 
 
-class latch : public node{
-    node* input;
-    vector <node*> outputs;
+class latch : public nodeAig{
+    nodeAig* input;
+    vector <nodeAig*> outputs;
 public:
     //constructor
     latch();
-    using node::node; //enable use of constructor from node
+    using nodeAig::nodeAig; //enable use of constructor from node
     virtual ~latch();
     
     //member access
-    using node::getDepth;
-    using node::getId;
-    using node::getSignal;
+    using nodeAig::getDepth;
+    using nodeAig::getId;
+    using nodeAig::getSignal;
 //    int getInputPolarity();
-    node* getInput();
+    nodeAig* getInput();
     
     //modifiers
-    using node::setDepth;
-    void pushInput(node* param,bool param_polarity) override; 
-    void pushOutput(node* param) override;
+    using nodeAig::setDepth;
+    void pushInput(nodeAig* param,bool param_polarity) override; 
+    void pushOutput(nodeAig* param) override;
 
     //operations    
     int computeDepthInToOut() override;
@@ -219,23 +217,23 @@ public:
 
 
 
-class output : public node{
-    node* input;
+class output : public nodeAig{
+    nodeAig* input;
     
 public:
     output();
-    using node::node; //enable use of constructor from node
+    using nodeAig::nodeAig; //enable use of constructor from node
     virtual ~output();
-    using node::setDepth;
-    using node::getDepth;
-    using node::getSignal;
+    using nodeAig::setDepth;
+    using nodeAig::getDepth;
+    using nodeAig::getSignal;
     
     //modifiers
-    void pushInput(node* param,bool param_polarity);
+    void pushInput(nodeAig* param,bool param_polarity);
     void clearInput();
             
     //member access
-    node* getInput();
+    nodeAig* getInput();
     int getInputPolarity();
     
     //operations
@@ -251,32 +249,32 @@ public:
 
 
 
-class AND : public node{
-    vector <node*> inputs;
+class AND : public nodeAig{
+    vector <nodeAig*> inputs;
 #if IGNORE_OUTPUTS == 0
-    vector <node*> outputs;
+    vector <nodeAig*> outputs;
 #endif
     
 public:
     AND();
-    using node::node; 
-    using node::setDepth;
-    using node::getDepth;
-    using node::getSignal;
+    using nodeAig::nodeAig; 
+    using nodeAig::setDepth;
+    using nodeAig::getDepth;
+    using nodeAig::getSignal;
     virtual ~AND();
     
     //member access
-   vector<node*> getInputs() override; 
+   vector<nodeAig*> getInputs() override; 
 #if IGNORE_OUTPUTS == 0
-       vector<node*> getOutputs() override;
+       vector<nodeAig*> getOutputs() override;
 #endif
 
    vector<int> getInputPolarities() override;
    
    //modifiers
    
-   void pushInput(node* param,bool param_polarity) override;
-   void replaceInput(int swap_index,node* new_node,bool polarity) override;
+   void pushInput(nodeAig* param,bool param_polarity) override;
+   void replaceInput(int swap_index,nodeAig* new_node,bool polarity) override;
    void invertInputs();
    
    //operations
@@ -290,7 +288,7 @@ public:
    void removeOutput(unsigned int id_to_remove) override;
 //   void recursiveRemoveOutput(unsigned int id_to_remove) override;
    void clearOutputs() override;
-   void pushOutput(node* param) override;
+   void pushOutput(nodeAig* param) override;
 #endif
    
    
@@ -321,15 +319,12 @@ protected:
     float threshold;
     int graph_depth;
     vector<unsigned int> greatest_depths_ids;
-    node constant1,constant0;
+    nodeAig constant1,constant0;
     
     ofstream log;
     
-   // mypapi papi_obj;
-    
 public:
     aigraph();
-//    graph(float);
    virtual ~aigraph();
     
     
@@ -343,14 +338,14 @@ public:
     void pushLatch(unsigned int index,latch latch_obj);
     void pushPO(unsigned int index,output output_obj);
     AND* pushAnd(unsigned int index,AND AND_obj);
-    void recursiveRemoveOutput(unsigned int id_to_remove,node* remove_from);
+    void recursiveRemoveOutput(unsigned int id_to_remove,nodeAig* remove_from);
     
     //member access
     input* findInput(unsigned int);
     latch* findLatch(unsigned int);
     output* findOutput(unsigned int);
     AND* findAnd(unsigned int);
-    node* findAny(unsigned int);
+    nodeAig* findAny(unsigned int);
     map<unsigned int,input>* getInputs();
     map<unsigned int,latch>* getLatches();
     map<unsigned int,output>* getOutputs();
@@ -392,12 +387,12 @@ private:
 
 
 class synthesizer : public aigraph{
-    deque<node*> circ_deque;
+    deque<nodeAig*> circ_deque;
     unsigned int M,I,L,O,A,AND_index;
     
 private:
-    void connectNodes(node* in, node* destination, bool invert);
-    deque<node*> buildCellDeque(int num_inputs,bool input_inverted);
+    void connectNodes(nodeAig* in, nodeAig* destination, bool invert);
+    deque<nodeAig*> buildCellDeque(int num_inputs,bool input_inverted);
     
     void addAND(int num_inputs,bool balance);
     void addNAND(int num_inputs,bool balance);
@@ -424,7 +419,7 @@ public:
 
 
 struct aux_struct{
-    vector<node*> outputs;
+    vector<nodeAig*> outputs;
     vector<bool> firsts_polarity;
 };
 
@@ -432,7 +427,7 @@ struct aux_struct{
 string wordSelector(string line, int word_index);
 
 //checks the pointer address passed as reference if it is inverted or not.
-bool getThisPtrPolarity(node* param);
+bool getThisPtrPolarity(nodeAig* param);
 
 int binToDec(vector<int> param);
 

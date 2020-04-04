@@ -24,8 +24,8 @@ string wordSelector(string line, int word_index){
 
 
 
-bool getThisPtrPolarity(node* param){
-    node* aux;
+bool getThisPtrPolarity(nodeAig* param){
+    nodeAig* aux;
     
     aux=param->fixLSB();
 //    cout<<aux->getId()<<"->"<<((int)((uintptr_t)param) & 01)<<endl;

@@ -11,14 +11,14 @@ latch::latch(){}
 latch::~latch(){}
 
 
-void latch::pushInput(node* param,bool param_polarity){
+void latch::pushInput(nodeAig* param,bool param_polarity){
     //TRUE to invert FALSE to regular
     if(param_polarity)
-        param=((node*)(((uintptr_t)param) ^ 01));
+        param=((nodeAig*)(((uintptr_t)param) ^ 01));
     input=param;
 }
 
-void latch::pushOutput(node* param){
+void latch::pushOutput(nodeAig* param){
     this->outputs.push_back(param);
 }
 
@@ -32,7 +32,7 @@ int latch::computeDepthInToOut(){
 
     if(depth==-1)
     {
-        depth= ((node*)input)->computeDepthInToOut() +1 ;
+        depth= ((nodeAig*)input)->computeDepthInToOut() +1 ;
 
         return depth;
     }
@@ -67,6 +67,6 @@ unsigned int latch::enumerateDFS(unsigned int index){
 ////    return input & 0x1;
 //}
 
-node* latch::getInput(){
+nodeAig* latch::getInput(){
     return this->input->fixLSB();
 }

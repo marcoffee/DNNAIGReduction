@@ -6,7 +6,7 @@
 
 #include <typeinfo>
 
-#include "gde.h"
+#include "AIG.h"
 
 //
 synthesizer::synthesizer(){}

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-#include "gde.h"
+#include "AIG.h"
 
 latch::latch(){}
 

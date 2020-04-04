@@ -12,7 +12,7 @@
  */
 
 #include "mnist.h"
-#include "gde.h"
+#include "AIG.h"
 
 
 using namespace std;

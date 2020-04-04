@@ -13,7 +13,7 @@
  
 #include <bits/c++config.h>
 
-#include "gde.h"
+#include "AIG.h"
 
 aigraph::aigraph(){
     this->constant1.setId(1);

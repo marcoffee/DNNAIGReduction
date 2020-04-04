@@ -1,4 +1,4 @@
-#include "gde.h"
+#include "AIG.h"
 #include "mnist.h"
 using namespace std;
 

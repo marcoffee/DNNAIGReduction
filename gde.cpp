@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-#include "gde.h"
+#include "AIG.h"
 
 string wordSelector(string line, int word_index){
     int i=1;

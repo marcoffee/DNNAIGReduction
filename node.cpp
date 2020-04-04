@@ -11,7 +11,7 @@
  * Created on 23 de Março de 2018, 17:00
  */
 
-#include "gde.h"
+#include "AIG.h"
 
 node::node() {
     this->id=0;

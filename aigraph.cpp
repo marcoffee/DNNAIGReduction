@@ -869,7 +869,7 @@ void aigraph::applyMnistRecursive(mnist& mnist_obj){
         for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         {
             if(it_out->second.getId()>1)
-                it_out->second.runDFS();
+                it_out->second.PropagSignalDFS();
         }
 //        if(getrusage(RUSAGE_SELF,&buf)==-1)
 //            cout<<"GETRUSAGE FAILURE!"<<endl;
@@ -1710,7 +1710,7 @@ void aigraph::setANDsProbabilities(mnist& mnist_obj){
 
         cout<<"DFS START"<<endl;
         for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
-            it_out->second.runDFS();
+            it_out->second.PropagSignalDFS();
         
         if(getrusage(RUSAGE_SELF,&buf)==-1)
             cout<<"GETRUSAGE FAILURE!"<<endl;
@@ -2661,10 +2661,11 @@ void aigraph::setShortestDistanceToPO(){
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
         it_out->second.setDepth(-1);
     
-    for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
-    {
-        it_out->second.computeDepthOutToIn(0);
-    }
+    //THIS IS REQUIRED TO WORK PROPERLY
+//    for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
+//    {
+//        it_out->second.computeDepthOutToIn(0);
+//    }
     
     
     

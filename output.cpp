@@ -51,17 +51,17 @@ int output::computeDepthInToOut(){
     return depth;
 }
 
-void output::computeDepthOutToIn(int previous_signal){
-    this->signal=0;
-    this->input->fixLSB()->computeDepthOutToIn(-1);
-}
+//void output::computeDepthOutToIn(int previous_signal){
+//    this->signal=0;
+//    this->input->fixLSB()->computeDepthOutToIn(-1);
+//}
 
 
-unsigned int output::enumerateDFS(unsigned int param_index) {
-    this->id=param_index*2;
-    
-    return this->getInput()->enumerateDFS(param_index);
-}
+//unsigned int output::enumerateDFS(unsigned int param_index) {
+//    this->id=param_index*2;
+//    
+//    return this->getInput()->enumerateDFS(param_index);
+//}
 
 //unsigned int output::enumerateBFS(unsigned int param_index) {
 //    this->id=param_index*2;
@@ -76,10 +76,10 @@ void output::printNode(){
     cout<<endl;
 }
         
-unsigned long long int output::runDFS(){
+unsigned long long int output::PropagSignalDFS(){
 //    cout<<"OUT "<<this->id<<"-";
     if(this->signal==-1)
-        this->bit_vector=this->input->fixLSB()->runDFS();
+        this->bit_vector=this->input->fixLSB()->PropagSignalDFS();
         
     return this->signal;
 }

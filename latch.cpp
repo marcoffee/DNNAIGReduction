@@ -22,8 +22,8 @@ void latch::pushOutput(nodeAig* param){
     this->outputs.push_back(param);
 }
 
-void latch::computeDepthOutToIn(int prevous){
-}
+//void latch::computeDepthOutToIn(int prevous){
+//}
 
 
 int latch::computeDepthInToOut(){
@@ -41,11 +41,11 @@ int latch::computeDepthInToOut(){
     
 }
 
-unsigned int latch::enumerateDFS(unsigned int index){
-//    index++;
-    this->id=index*2;
-    return this->getInput()->enumerateDFS(index++);
-}
+//unsigned int latch::enumerateDFS(unsigned int index){
+////    index++;
+//    this->id=index*2;
+//    return this->getInput()->enumerateDFS(index++);
+//}
 
 
 //void latch::writeNode(ofstream& write){

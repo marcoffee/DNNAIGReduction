@@ -112,9 +112,9 @@ public:
     
     //operations
     virtual int computeDepthInToOut(){}
-    virtual void computeDepthOutToIn(int previous_signal){}
-    virtual unsigned int enumerateDFS(unsigned int index){} //TODO: this is not used anymore
-    virtual unsigned long long int runDFS(){}
+//    virtual void computeDepthOutToIn(int previous_signal){}
+//    virtual unsigned int enumerateDFS(unsigned int index){} //TODO: this is not used anymore
+    virtual unsigned long long int PropagSignalDFS(){}
     //swap_index is the index from the input that will be replaced.
     virtual void replaceInput(int swap_index,nodeAig* new_node,bool polarity){}
 //    virtual void removeOutput(node*){}
@@ -152,9 +152,9 @@ public:
    
    //operations
    int computeDepthInToOut() override;
-   void computeDepthOutToIn(int previous_signal) override;
-   unsigned int enumerateDFS(unsigned int index) override;
-   unsigned long long int  runDFS() override;
+//   void computeDepthOutToIn(int previous_signal) override;
+//   unsigned int enumerateDFS(unsigned int index) override;
+   unsigned long long int  PropagSignalDFS() override;
 //   void removeOutput(node* node_to_remove) override;
    void removeOutput(unsigned int id_to_remove) override;
 //   void recursiveRemoveOutput(unsigned int id_to_remove) override;
@@ -203,8 +203,8 @@ public:
 
     //operations    
     int computeDepthInToOut() override;
-    void computeDepthOutToIn(int previous_signal) override;
-    unsigned int enumerateDFS(unsigned int index) override;
+//    void computeDepthOutToIn(int previous_signal) override;
+//    unsigned int enumerateDFS(unsigned int index) override;
 //    unsigned int enumerateBFS(unsigned int index) override;
 //    void writeNode() override;
     
@@ -240,10 +240,10 @@ public:
 //    void writeNode() override;
     void writeNode(ofstream&) override;
     int computeDepthInToOut() override;
-    void computeDepthOutToIn(int previous_signal) override;
-    unsigned int enumerateDFS(unsigned int param_index) override;
+//    void computeDepthOutToIn(int previous_signal) override;
+//    unsigned int enumerateDFS(unsigned int param_index) override;
     void printNode() override;
-    unsigned long long int runDFS() override;
+    unsigned long long int PropagSignalDFS() override;
 
 };
 
@@ -279,9 +279,9 @@ public:
    
    //operations
    int computeDepthInToOut() override;
-   void computeDepthOutToIn(int previous_signal) override;
-   unsigned int enumerateDFS(unsigned int index) override;
-   unsigned long long int runDFS() override;
+//   void computeDepthOutToIn(int previous_signal) override;
+//   unsigned int enumerateDFS(unsigned int index) override;
+   unsigned long long int PropagSignalDFS() override;
    
 #if IGNORE_OUTPUTS == 0
 //   void removeOutput(node* node_to_remove) override;
@@ -315,7 +315,7 @@ protected:
     //Original order of Primary Outputs
     vector<unsigned int> POs_order;
     //all_depths' index is the node ID/2 and the all_depths[ID/2] is the depth for this node.
-     vector<unsigned int> all_depths;
+    vector<unsigned int> all_depths;
     float threshold;
     int graph_depth;
     vector<unsigned int> greatest_depths_ids;

@@ -15,8 +15,6 @@ vector<nodeAig*> AND::getInputs(){
     vector<nodeAig*> ret(2);
     ret[0]=this->inputs[0]->fixLSB();
     ret[1]=this->inputs[1]->fixLSB();
-    //    ret[0]=(node*)(inputs[0]/2);
-//    ret[1]=(node*)(inputs[1]/2);
     return ret;
 } 
 
@@ -82,27 +80,27 @@ int AND::computeDepthInToOut(){
 }
 
 
-void AND::computeDepthOutToIn(int previous_depth){
-    cout<<this->id<<endl;
-    if (this->signal > previous_depth+1 || this->signal==-1)
-    {
-        signal=previous_depth+1;
-        if(this->getInputs()[0]->getSignal() > signal+1 || this->getInputs()[0]->getSignal() ==-1)
-            this->getInputs()[0]->computeDepthOutToIn(this->signal);
-        if(this->getInputs()[1]->getSignal() > signal+1 || this->getInputs()[1]->getSignal() ==-1)
-            this->getInputs()[1]->computeDepthOutToIn(this->signal);
-    }    
-}
+//void AND::computeDepthOutToIn(int previous_depth){
+//    cout<<this->id<<endl;
+//    if (this->signal > previous_depth+1 || this->signal==-1)
+//    {
+//        signal=previous_depth+1;
+//        if(this->getInputs()[0]->getSignal() > signal+1 || this->getInputs()[0]->getSignal() ==-1)
+//            this->getInputs()[0]->computeDepthOutToIn(this->signal);
+//        if(this->getInputs()[1]->getSignal() > signal+1 || this->getInputs()[1]->getSignal() ==-1)
+//            this->getInputs()[1]->computeDepthOutToIn(this->signal);
+//    }    
+//}
 
 
-unsigned int AND::enumerateDFS(unsigned int index){
-    this->id=index*2;
-    unsigned int new_index;
-    index++;
-    new_index=this->getInputs()[0]->enumerateDFS(index);
-    new_index=this->getInputs()[1]->enumerateDFS(new_index);
-    return new_index;
-}
+//unsigned int AND::enumerateDFS(unsigned int index){
+//    this->id=index*2;
+//    unsigned int new_index;
+//    index++;
+//    new_index=this->getInputs()[0]->enumerateDFS(index);
+//    new_index=this->getInputs()[1]->enumerateDFS(new_index);
+//    return new_index;
+//}
 
 
 //unsigned int AND::enumerateBFS(unsigned int index){
@@ -166,12 +164,12 @@ void AND::printNode(){
     cout<<endl;
 }
 
-unsigned long long int AND::runDFS(){
+unsigned long long int AND::PropagSignalDFS(){
     unsigned long long int sig_rhs0,sig_rhs1;
     switch (this->signal){
         case -1:
-        sig_rhs0=inputs[0]->fixLSB()->runDFS();
-        sig_rhs1=inputs[1]->fixLSB()->runDFS();
+        sig_rhs0=inputs[0]->fixLSB()->PropagSignalDFS();
+        sig_rhs1=inputs[1]->fixLSB()->PropagSignalDFS();
 #if DEBUG >= 3
         ofstream dump("dumpDFS.csv",ios::app);
         dump<<this->id<<"-->";    

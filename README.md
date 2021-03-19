@@ -1,4 +1,4 @@
-# Deep Neural Network Reduction Through Approximate Computing
+# Deep Neural Network Circit Reduction Through Approximate Computing
 
 This software is able to optmize the size and depth of neural networks represented in the And-Inverter Graph format, the optmization is applied with an approximate computing strategy. The simplification is done by calculating the signal probability of internal AND nodes based on the trainig set and defining some nodes as constants. Constant nodes may always be removed. We also go further with the sotware's reduction capability and allow nodes that are almost constants to be considered as real constants.
 

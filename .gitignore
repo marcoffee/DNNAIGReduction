@@ -1,5 +1,5 @@
 nbproject
-*.csv
+*.csv*
 *.txt
 build
 dist
@@ -12,3 +12,7 @@ dist
 *.scr
 *script*
 *.out
+A1.aig
+abc
+*_.aig
+idVsprobs

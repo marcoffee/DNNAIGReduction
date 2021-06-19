@@ -21,7 +21,7 @@
 #define PROBS_FROM_FILE 0
 #define IGNORE_OUTPUTS 1
 #define SIMPLIFIEDAIG 0
-#define DEBUG 0
+#define DEBUG 1
 #define debug_value 3
 
 #define RUN_OPTION 1
@@ -37,17 +37,18 @@
 #define WRITE_AIG 0
 #define WRITE_AAG 0
 #define WRITE_ORIGINAL_DEPTHS 0
+#define MNIST_DS 0
 
 
 
-
-#define posY_max 28
-#define posX_max 224
+//#define posY_max 28
+//#define posX_max 224
 //#define posY_max 32
 //#define posX_max  768//3*32*8
 
 #define BITS_PACKAGE_SIZE 64
-
+extern int posY_max;
+extern int posX_max;
 #include <vector>
 #include <array>
 #include <set>
@@ -69,7 +70,7 @@
 #include <bitset> //check bits on bit-parallel simulation
 //#include "papi.h"
 //#include "mypapi.h"
-#include "mnist.h"
+#include "binaryDS.h"
 
 //#include "include/alice/alice.hpp"
 using namespace std;
@@ -363,15 +364,15 @@ public:
     void writeAAG();
     void writeAIG();
     void writeProbsHistogram();
-    void applyMnistRecursive(mnist&);
-    void propagateAndDeletePIBased(mnist&,float,int);
+    void applyMnistRecursive(binaryDS&);
+    void propagateAndDeletePIBased(binaryDS&,float,int);
     void cutAIG();
-    void setANDsProbabilities(mnist&);
-    void propagateAndDeleteAll(mnist&,int option,float min_th,int alpha, int LEAVE_CONSTANTS);
+    void setANDsProbabilities(binaryDS&);
+    void propagateAndDeleteAll(binaryDS&,int option,float min_th,int alpha, int LEAVE_CONSTANTS);
 //    void writeFileWithConstantNodes();
     
     
-    void assignBits(mnist&);
+    void assignBits(binaryDS&);
     
     
     //debugging

@@ -684,7 +684,7 @@ void aigraph::readAIG(ifstream& file, string param_name){
 //    this->printCircuit();
 }
 
-void aigraph::applyMnistRecursive(mnist& mnist_obj){
+void aigraph::applyMnistRecursive(binaryDS& mnist_obj){
     cout<<endl<<"APPLYING IMAGES TO AIG!"<<endl;
     map<unsigned int, AND>::iterator it_and;
     map<unsigned int, input>::iterator it_in;
@@ -1140,7 +1140,7 @@ void aigraph::applyMnistRecursive(mnist& mnist_obj){
 }
 
 
-void aigraph::propagateAndDeletePIBased(mnist& mnist_obj,float th,int LEAVE_CONSTANTS) {
+void aigraph::propagateAndDeletePIBased(binaryDS& mnist_obj,float th,int LEAVE_CONSTANTS) {
     if(LEAVE_CONSTANTS==0)
         cout<<endl<<"SIMPLIFING CIRCUIT PI ONLY: "<<this->name<<", THRESHOLD:"<<th<<endl;
     else
@@ -1642,7 +1642,7 @@ void aigraph::cutAIG(){
     }
 }
 
-void aigraph::setANDsProbabilities(mnist& mnist_obj){
+void aigraph::setANDsProbabilities(binaryDS& mnist_obj){
     map<unsigned int,AND>::iterator it_and;
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         this->ANDs_probabilities.insert(pair<unsigned int,float>(it_and->second.getId(),0.0));
@@ -1765,7 +1765,7 @@ void aigraph::setANDsProbabilities(mnist& mnist_obj){
     
 }
 
-void aigraph::propagateAndDeleteAll(mnist& mnist_obj,int option,float min_th,int alpha,int LEAVE_CONSTANTS) {
+void aigraph::propagateAndDeleteAll(binaryDS& mnist_obj,int option,float min_th,int alpha,int LEAVE_CONSTANTS) {
     if(LEAVE_CONSTANTS==0)
         cout<<endl<<"SIMPLIFING CIRCUIT: "<<this->name<<", THRESHOLD:"<<min_th<<endl;
     else

@@ -1,0 +1,14 @@
+nbproject
+*.csv
+*.txt
+build
+dist
+*Makefile*
+.dep.inc
+.idea
+*dump*
+*log*
+*debug*
+*.scr
+*script*
+*.out

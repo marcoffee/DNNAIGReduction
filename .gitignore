@@ -16,3 +16,5 @@ A1.aig
 abc
 *_.aig
 idVsprobs
+*serverRun.sh
+*data_complete.bin

@@ -270,7 +270,7 @@ void binaryDS::setBitsProbabilities(ifstream& file){
     }
 #endif
     
-#if DEBUG >=2
+#if DEBUG >=1
     ofstream out3("probs density.csv");
     for (int i=0;i<input_probabilities.size();i++)
     {

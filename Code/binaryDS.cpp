@@ -32,8 +32,8 @@ void binaryDS::readIdx(ifstream& file,string imgs_name){
     int char_count=0;
     #if MNIST_DS != 1
     file.close();
-//    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
-    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
+    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
+//    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
     #endif
     cout<<endl<<"Reading dataset file "<<endl;
     if(file.is_open())
@@ -205,8 +205,8 @@ void binaryDS::setBitsProbabilities(ifstream& file){
     file.seekg(16); //jumping the header line
     #else
     file.close();
-//    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
-    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
+    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
+//    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
     #endif
     while(file.get(c))
     {

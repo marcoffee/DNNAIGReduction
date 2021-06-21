@@ -2,23 +2,7 @@
 #include "binaryDS.h"
 using namespace std;
 
-void abcWrite(string new_name,string abc_name){
-    cout<<endl<<"ABC WRITE: ("<<new_name<<") -> ("<<abc_name<<")"<<endl;
-    ofstream script("abc_stuff/script.scr");
-    script<<"&r "<<new_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<abc_name<<endl<<"quit";
-    script.close();
-    system("./abc -c 'source abc_stuff/script.scr' >> log.txt ");
-}
 
-void abcCeC(string new_name,string abc_name,float min_th,int option){
-    cout<<endl<<"ABC CEC: ("<<new_name<<") VS ("<<abc_name<<")"<<endl;
-    ofstream script("abc_stuff/script.scr"),log("log.txt",ios::app);
-    script<<"&cec "<<new_name<<".aig "<<abc_name<<endl<<"quit";
-    script.close();
-    log<<"CEC on circuits: "<<new_name<<" VS: "<<abc_name<<endl<<"TH:"<<min_th<<", OPTION:"<<option<<endl;
-    log.close();
-    system("./abc -c 'source abc_stuff/script.scr' >> log.txt");
-}
 
 int posY_max,posX_max;
 int main(int argc, char** argv) {
@@ -40,7 +24,7 @@ int main(int argc, char** argv) {
     file_name="exemploBrunno.aig";;
 #endif
 //    file_name="ABC_andre_NO_CONSTANTS_ANDs_removed_FIXED_.aig";
-    ofstream dump_append("dumps/dump_append.txt"),exec_times("exec_times.csv"),script("abc_stuff/script.scr"),log("log.txt"),abc_info("dumps/abc_info.txt"),nodes_file("Nodes_in_level.csv");
+    ofstream dump_append("dumps/dump_append.txt"),exec_times("exec_times.csv"),script("abc_stuff/script.scr"),log("abc_stuff/log.txt"),abc_info("dumps/abc_info.txt"),nodes_file("Nodes_in_level.csv");
     log.close(); dump_append.close(); nodes_file.close();
     ifstream read_aig,read_mnist;
     read_aig.open(file_name.c_str(),ifstream::binary);
@@ -499,7 +483,7 @@ int main(int argc, char** argv) {
         }
     }
 #endif
-    ifstream check_log("log.txt"); string line; int equivalent_count=0;
+    ifstream check_log("abc_stuff/log.txt"); string line; int equivalent_count=0;
     while(getline(check_log,line))
     {
         if(line.find("Networks are equivalent")!=string::npos)

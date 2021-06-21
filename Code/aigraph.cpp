@@ -470,6 +470,40 @@ void aigraph::writeAIG(){
     }
 }
 
+void aigraph::writeAIG(string destination, string aig_name){
+    ofstream write;
+    int M=all_inputs.size()+all_ANDS.size()-2;
+    write.open((destination+aig_name).c_str(),ios::binary|ios::out|ios::trunc);
+//    if(write.is_open())
+//        cout<<"write aig file opened:"<<(destination+aig_name)<<endl;
+//    else
+//        cout<<"ERROR WRITE AIG FILE NOT OPENED!!"<<(destination+aig_name)<<endl;
+
+    write<<"aig "<<M<<" "<<all_inputs.size()-1<<" 0 "<<all_outputs.size()<<" "<<all_ANDS.size()-1<<endl;
+    for(int i=0;i<all_outputs.size();i++)    
+        write<<all_outputs[i].getId()+((int)all_outputs[i].getInputPolarity())<<endl;
+    //deltas 
+    int counter=0;
+    unsigned int first;
+    for(int i=1;i<all_ANDS.size();i++){
+//        cout<<i<<",";
+//        if(all_ANDS.back().getId()!=all_ANDS[i].getId() && (all_ANDS[i].getId()>=all_ANDS[i+1].getId()))
+//            cout<<"all_ANDS[i].getId()>=all_ANDS[i+1].getId():TRUE!! "<<all_ANDS[i].getId()<<"<"<<all_ANDS[i+1].getId()<<endl;
+//        if(all_ANDS[i].getId()>1)
+        {
+//            if(all_ANDS[i].getId()<all_ANDS[i].getInputs()[0]->getId())
+//                {  cout<<"THIS IS WRONG1:"<<all_ANDS[i].getId()<<"<"<<all_ANDS[i].getInputs()[0]->getId()<<endl;    all_ANDS[i].printNode();}
+//           if(all_ANDS[i].getId()<all_ANDS[i].getInputs()[1]->getId())
+//           {  cout<<"THIS IS WRONG2:"<<all_ANDS[i].getId()<<"<"<<all_ANDS[i].getInputs()[1]->getId()<<endl;    all_ANDS[i].printNode();}
+            counter++;
+            encodeToFile(write,(all_ANDS[i].getId())-(all_ANDS[i].getInputs()[0]->getId()+(all_ANDS[i].getInputPolarities()[0])));
+            first=(all_ANDS[i].getInputs()[0]->getId()+(all_ANDS[i].getInputPolarities()[0]));
+            encodeToFile(write,(first)-(all_ANDS[i].getInputs()[1]->getId()+all_ANDS[i].getInputPolarities()[1]));
+        }
+    }
+    write.close();
+}
+
 void aigraph::encodeToFile(ofstream& file, unsigned x){
         unsigned char ch;
         while (x & ~0x7f)
@@ -2803,4 +2837,103 @@ void aigraph::writeProbsHistogram(){
     for(int a=0;a<depth_counter.size();a++)
         write2<<a<<","<<depth_counter[a]<<endl;
     write2.close();
+}
+
+void aigraph::evaluateScorseAbcCommLine21(vector<int>* popu_list,int ds_start,int ds_end){
+    string cifar_path=fs::current_path();
+#if cifarv2 != 1
+    string my_path="cifar-10-batches-bin/";
+#else
+    string my_path="cifarV2/";
+#endif
+    cifar_path=cifar_path+"/../../"+my_path;
+#if write_times >=2
+        ofstream function_times("function_times.csv",ios::app);
+        auto begin = std::chrono::high_resolution_clock::now();
+#endif
+    int ANDs_size=0, correct_count=0; string line;
+    ifstream input_file;
+#if write_learning >= 2
+    ofstream ABC_output;
+    ABC_output.open("ABC_output.csv",ios::app); ABC_output<<endl;
+    ABC_output<<"evaluation method called,name:"<<cifar_path<<", number to be avaliate:"<<num_to_evaluate<<endl;
+#endif
+    string curr_folder=fs::current_path();
+    string abc_aigs_path="/AIGs/";
+    system(("rm -rf "+abc_aigs_path+"*").c_str());
+    
+//    for(int ith=0;ith<num_to_evaluate;ith++)
+    vector<int>::iterator iter; int ith;
+//    for(iter=popu_list->begin();iter!=popu_list->end();iter++)
+    {
+//        ith=*iter;
+        this->writeAIG(curr_folder+abc_aigs_path,"temp.aig");
+        float aux_score=0; //int dataset_size=5;
+        ANDs_size=0; float correct_count=0;
+        string cifar_full_name;
+#if cifarv2 != 1
+        for (int q=ds_start;q<=ds_end;q++)
+        {
+            cifar_full_name=cifar_path+"data_batch_"+to_string(q+1)+".bin";
+#else
+        {
+            int q=ds_start;
+            if(ds_start==ds_end){
+                cifar_full_name=cifar_path+"mini_test_batch.bin";
+                #if COUT >= 1
+                cout<<"Using MINI TEST SET! path:"<<cifar_full_name<<endl;
+                #endif
+            }
+            else{
+                cifar_full_name=cifar_path+"red_data_batch.bin";
+                #if COUT >= 1
+                cout<<"Using reduced TRAIN SET (without mini test)! path:"<<cifar_full_name<<endl;
+                #endif
+                
+            }
+#endif
+//            cout<<"full name:"<<full_name<<endl;
+            abcCall21(curr_folder+abc_aigs_path, "offspring"+to_string(ith),cifar_full_name);
+            //reading ABC output
+            input_file.close();
+            input_file.open("logAbc.txt");
+            string aux;
+            while(getline(input_file,line))
+            {
+                if(q==ds_start && line.find("and = ")!=string::npos)
+                {
+                    aux=line;
+                    aux.erase(0,aux.find("and = ")+6);
+                    aux.erase(aux.find("lev")-9,aux.back());
+                    ANDs_size+=atoi(aux.c_str());
+//                    cout<<"---------ANDS string:"<<aux<<"!!!"<<endl;
+                }
+                if(line.find("Correct =")!=string::npos)
+                {
+//                    cout<<"---------score string:"<<line<<endl;
+                    line.erase(0,line.find("Correct =")+9);
+//                    cout<<"---------score string:"<<line<<endl;
+                    line.erase(line.find(". ("),line.size());
+//                    cout<<"--------count string:"<<line<<endl;
+                    correct_count+=atoi(line.c_str());
+                }
+            }
+        }
+            this->size=ANDs_size;
+//        this->num_functional_ands[ith]=ANDs_size;
+//        this->aig_population[ith].setSize(ANDs_size);
+#if cifarv2 != 1
+        this->score=correct_count/((ds_end-ds_start+1)*10000);
+#else
+        if(ds_start==ds_end)
+            this->score=correct_count/(1500);
+        else
+            this->score=correct_count/(48500);
+#endif
+//        this->aig_population[ith].setScore(all_scores[ith]);
+        
+#if COUT >=1
+        cout<<"Evaluation with ABC, score "<<this->all_scores[ith]<<", size:"<<this->num_functional_ands[ith]<<endl;
+#endif
+    }
 }

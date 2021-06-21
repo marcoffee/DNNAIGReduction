@@ -38,6 +38,7 @@
 #define WRITE_AAG 0
 #define WRITE_ORIGINAL_DEPTHS 0
 #define MNIST_DS 0
+#define cifarv2 1
 
 
 
@@ -71,6 +72,11 @@ extern int posX_max;
 //#include "papi.h"
 //#include "mypapi.h"
 #include "binaryDS.h"
+
+//#include <filesystem> //requires c++17
+#include <experimental/filesystem> //requires c++17
+//namespace fs = std::filesystem;
+namespace fs = std::experimental::filesystem;
 
 //#include "include/alice/alice.hpp"
 using namespace std;
@@ -328,6 +334,9 @@ protected:
     
     ofstream log;
     
+    int size;
+    float score;
+    
 public:
     aigraph();
    virtual ~aigraph();
@@ -363,6 +372,7 @@ public:
     void setShortestDistanceToPO();
     void writeAAG();
     void writeAIG();
+    void writeAIG(string destination, string aig_name); //from CGP project
     void writeProbsHistogram();
     void applyMnistRecursive(binaryDS&);
     void propagateAndDeletePIBased(binaryDS&,float,int);
@@ -370,6 +380,7 @@ public:
     void setANDsProbabilities(binaryDS&);
     void propagateAndDeleteAll(binaryDS&,int option,float min_th,int alpha, int LEAVE_CONSTANTS);
 //    void writeFileWithConstantNodes();
+    void evaluateScorseAbcCommLine21(vector<int>* popu_list,int ds_start,int ds_end);
     
     
     void assignBits(binaryDS&);
@@ -435,6 +446,11 @@ string wordSelector(string line, int word_index);
 bool getThisPtrPolarity(nodeAig* param);
 
 int binToDec(vector<int> param);
+
+void abcCall21(string aig_name,string cifar_file,string source); //from CGP project
+
+void abcWrite(string new_name,string abc_name);
+void abcCeC(string new_name,string abc_name,float min_th,int option);
 
 #endif /* GDE_H */
 

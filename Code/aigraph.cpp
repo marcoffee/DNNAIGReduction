@@ -516,7 +516,7 @@ void aigraph::readAIG(ifstream& file, string param_name){
     unsigned int M,I,L,O,A;
     unsigned int lhs,rhs0,rhs1, delta1,delta2;
 #if DEBUG >= 2
-    ofstream debs("debug");
+    ofstream debs("dumps/debug");
 #endif
     
     if(param_name.find("/"))
@@ -1150,7 +1150,7 @@ void aigraph::propagateAndDeletePIBased(binaryDS& mnist_obj,float th,int LEAVE_C
     map<unsigned int, output>::iterator it_out;
     map<unsigned int, AND>::iterator it_and;
     map<unsigned int, AND>::reverse_iterator it_rand;
-    ofstream dump1("dump1.txt"); ofstream dump2("dump2.txt"); ofstream dump3("dump3.txt");
+    ofstream dump1("dumps/dump1-signalPropag.txt"); ofstream dump2("dumps/dump2.txt"); ofstream dump3("dumps/dump3-renumbering.txt");
 //    string info_file_name;
 //    info_file_name=this->name;
 //    info_file_name+=to_string(1-threshold);
@@ -1807,10 +1807,10 @@ void aigraph::propagateAndDeleteAll(binaryDS& mnist_obj,int option,float min_th,
     map<unsigned int, output>::iterator it_out;
     map<unsigned int, AND>::iterator it_and;
 //    info_file_name=this->name; info_file_name+="_"; info_file_name+=th_value; info_file_name+="_simplif_info.txt";
-    ofstream dump1("dump1.txt"),dump2("dump2.txt"),dump3("dump3.txt"),dump_probs("dump_probs.txt"),dump_PO("dump_PO.txt"),dump_hash("dump_hash.txt");
-    ofstream dump_append("dump_append.txt",ios::app),removed_inputs("removed_inputs.txt");//,simpl_info(info_file_name);
+    ofstream dump1("dumps/dump1.txt"),dump2("dumps/dump2.txt"),dump3("dumps/dump3.txt"),dump_probs("dumps/dump_probs.txt"),dump_PO("dumps/dump_PO.txt"),dump_hash("dumps/dump_hash.txt");
+    ofstream dump_append("dumps/dump_append.txt",ios::app),removed_inputs("removed_inputs.txt");//,simpl_info(info_file_name);
     
-    dump1.close();dump2.close();dump3.close();dump_probs.close();dump_PO.close();dump_hash.close();dump_append.close(); removed_inputs.close();
+    //dump1.close();dump2.close();dump3.close();dump_probs.close();dump_PO.close();dump_hash.close();dump_append.close(); removed_inputs.close();
     map<unsigned int,float>::iterator probs_it;
     vector<int> visits;
     visits.push_back(2);
@@ -2397,6 +2397,7 @@ void aigraph::propagateAndDeleteAll(binaryDS& mnist_obj,int option,float min_th,
     cout<<"Signal propagation doneeeeeeeeeeeeeeee."<<endl; 
     
     //making sure outputs wont be deleted, by adding themselfs to their fanout list
+    cout<<"Making sure outputs wont be deleted, by adding themselfs to their fanout list"<<endl;
     for(it_out=this->all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
         if(it_out->second.getId()>1)
@@ -2404,6 +2405,7 @@ void aigraph::propagateAndDeleteAll(binaryDS& mnist_obj,int option,float min_th,
     }
     
     //Setting ANDs that wasn't reached in the DFS to be removed.
+    cout<<"Setting ANDs that wasn't reached in the DFS to be removed."<<endl;
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
     {
         if(it_and->second.getSignal()==-1)
@@ -2415,21 +2417,26 @@ void aigraph::propagateAndDeleteAll(binaryDS& mnist_obj,int option,float min_th,
     }
 
     //Removing ANDs with 0 fanouts
-    int ands_removed=0,PIs_removed=0,id=0;
+    cout<<"Removing ANDs with 0 fanouts"<<endl;
     cout<<"graph depth:"<<this->graph_depth<<endl;
+    int ands_removed=0,PIs_removed=0,id=0;
     vector<int> removed_nodes_counter_by_depth(graph_depth+1,0);
-//    dump1<<"graph depth:"<<this->graph_depth<<endl;
-//    dump1<<"removed_nodes_counter_by_depth size:"<<removed_nodes_counter_by_depth.size()<<endl;
+#if DEBUG >= 3
+    dump1<<"graph depth:"<<this->graph_depth<<endl;
+    dump1<<"removed_nodes_counter_by_depth size:"<<removed_nodes_counter_by_depth.size()<<endl;
+#endif    
     it_and=all_ANDS.begin();
     while(it_and!=all_ANDS.end())
     {
+        it_and->second.printNode();
         if(it_and->second.getOutputs().size()==0) //&& all_outputs.find(it_and->first)==all_outputs.end())
         {
 #if DEBUG >= 1
             ofstream write2("removed_ANDs.txt"); 
             write2<<it_and->first<<",";
+            dump1<<"AND:"<<it_and->second.getId()<<", depth:"<<this->all_depths[it_and->second.getId()/2]<<", depth counter:"<<removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]<<endl;
 #endif
-//            dump1<<"AND:"<<it_and->second.getId()<<", depth:"<<this->all_depths[it_and->second.getId()/2]<<", depth counter:"<<removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]<<endl;
+            
             removed_nodes_counter_by_depth[this->all_depths[it_and->second.getId()/2]]++;
             it_and=all_ANDS.erase(it_and);
             ands_removed++;
@@ -2440,6 +2447,7 @@ void aigraph::propagateAndDeleteAll(binaryDS& mnist_obj,int option,float min_th,
     
     it_in=all_inputs.begin();
     //COUNTING inputs with 0 fanouts
+    cout<<"COUNTING inputs with 0 fanouts"<<endl;
     while(it_in!=all_inputs.end())
     {
         if(it_in->second.getOutputs().size()==0)
@@ -2616,7 +2624,7 @@ void aigraph::setDepthsInToOut(){
     for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
     {
 #if DEBUG >= 3
-    write.open("log2.txt",ios::app);
+    write.open("dumps/log2.txt",ios::app);
     write<<"OUTPUT BFS:"<<it_out->first<<endl;
 #endif
         depth=it_out->second.computeDepthInToOut();
@@ -2637,7 +2645,7 @@ void aigraph::setDepthsInToOut(){
     this->graph_depth=greater;
     
 #if DEBUG >= 3
-    write.open("Depths.txt");
+    write.open("dumps/Depths.txt");
     write<<this->name<<","<<greater<<endl;
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         write<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<endl;
@@ -2687,7 +2695,7 @@ void aigraph::setShortestDistanceToPO(){
     this->graph_depth=greater;
     cout<<"graph depth:"<<this->graph_depth<<endl;
     
-    write.open("Depths.txt");
+    write.open("dumps/Depths.txt");
     write<<this->name<<","<<greater<<endl;
     for(it_and=all_ANDS.begin();it_and!=all_ANDS.end();it_and++)
         write<<it_and->second.getId()<<":"<<it_and->second.getDepth()<<endl;

@@ -38,7 +38,7 @@ public:
    
     
     void readIdx(ifstream&,string);
-    void setBitsProbabilities(ifstream&);
+    void setPIsBitsProbabilities(ifstream&);
 private:
 
 };

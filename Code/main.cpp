@@ -4,20 +4,20 @@ using namespace std;
 
 void abcWrite(string new_name,string abc_name){
     cout<<endl<<"ABC WRITE: ("<<new_name<<") -> ("<<abc_name<<")"<<endl;
-    ofstream script("script.scr");
+    ofstream script("abc_stuff/script.scr");
     script<<"&r "<<new_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<abc_name<<endl<<"quit";
     script.close();
-    system("./abc -c 'source script.scr' >> log.txt ");
+    system("./abc -c 'source abc_stuff/script.scr' >> log.txt ");
 }
 
 void abcCeC(string new_name,string abc_name,float min_th,int option){
     cout<<endl<<"ABC CEC: ("<<new_name<<") VS ("<<abc_name<<")"<<endl;
-    ofstream script("script.scr"),log("log.txt",ios::app);
+    ofstream script("abc_stuff/script.scr"),log("log.txt",ios::app);
     script<<"&cec "<<new_name<<".aig "<<abc_name<<endl<<"quit";
     script.close();
     log<<"CEC on circuits: "<<new_name<<" VS: "<<abc_name<<endl<<"TH:"<<min_th<<", OPTION:"<<option<<endl;
     log.close();
-    system("./abc -c 'source script.scr' >> log.txt");
+    system("./abc -c 'source abc_stuff/script.scr' >> log.txt");
 }
 
 int posY_max,posX_max;
@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
     file_name="exemploBrunno.aig";;
 #endif
 //    file_name="ABC_andre_NO_CONSTANTS_ANDs_removed_FIXED_.aig";
-    ofstream dump_append("dump_append.txt"),exec_times("exec_times.csv"),script("script.scr"),log("log.txt"),abc_info("abc_info.txt"),nodes_file("Nodes_in_level.csv");
+    ofstream dump_append("dumps/dump_append.txt"),exec_times("exec_times.csv"),script("abc_stuff/script.scr"),log("log.txt"),abc_info("dumps/abc_info.txt"),nodes_file("Nodes_in_level.csv");
     log.close(); dump_append.close(); nodes_file.close();
     ifstream read_aig,read_mnist;
     read_aig.open(file_name.c_str(),ifstream::binary);
@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
     
 #if EXECUTE_ONCE ==1
 //     min_th=0.999999;
-    min_th=0.5;
+    min_th=0.55;
 //    for(min_th;min_th>0.89;min_th-=0.02)
 //    {
     ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
@@ -69,31 +69,31 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
 
-//            graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
-//            graph_obj.setThrehsold(min_th);        
-//            graph_obj.readAIG(read_aig,file_name);
-//
-//            LEAVE_CONSTANTS=1;  
-//            getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-//            if(option>=0) 
-//                graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
-//            else if(option==-1) 
-//                graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
-//            getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-//            exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
-//            graph_obj.writeAIG();
-//
-//            new_name=graph_obj.getName();
-//            abc_name="ABC_"+new_name+".aig";
-//            abcWrite(new_name,abc_name);  
-//
-//            graph_obj.clearCircuit(); read_aig.close(); read_aig.open(abc_name.c_str(),ifstream::binary);
-//            graph_obj.setThrehsold(min_th);        
-//            graph_obj.readAIG(read_aig,abc_name); graph_obj.setDepthsInToOut();
-//            abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
+            graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
+            graph_obj.setThrehsold(min_th);        
+            graph_obj.readAIG(read_aig,file_name);
+
+            LEAVE_CONSTANTS=1;  
+            getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            if(option>=0) 
+                graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
+            else if(option==-1) 
+                graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
+            getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+            exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
+            graph_obj.writeAIG();
+
+            new_name=graph_obj.getName();
+            abc_name="ABC_"+new_name+".aig";
+            abcWrite(new_name,abc_name);  
+
+            graph_obj.clearCircuit(); read_aig.close(); read_aig.open(abc_name.c_str(),ifstream::binary);
+            graph_obj.setThrehsold(min_th);        
+            graph_obj.readAIG(read_aig,abc_name); graph_obj.setDepthsInToOut();
+            abc_info<<graph_obj.getName()<<","<<min_th<<",option:"<<option<<","<<graph_obj.getDepth()<<","<<graph_obj.getANDS()->size()<<endl;
 //#if APPLY_MNIST >0    
 //            graph_obj.clearCircuit(); read_aig.close(); read_aig.open(abc_name.c_str(),ifstream::binary);
 //            graph_obj.setThrehsold(min_th);        
@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
 
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
@@ -200,7 +200,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/t10k-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/t10k-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
             getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             graph_obj.applyMnistRecursive(mnist_obj);
@@ -212,7 +212,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
 
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
@@ -242,7 +242,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
 
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
@@ -284,7 +284,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/t10k-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/t10k-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
             getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             graph_obj.applyMnistRecursive(mnist_obj);
@@ -296,7 +296,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
 
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
@@ -326,7 +326,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
 
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
@@ -368,7 +368,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/t10k-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/t10k-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
             getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             graph_obj.applyMnistRecursive(mnist_obj);
@@ -380,7 +380,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
 
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
@@ -417,7 +417,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
 
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
@@ -459,7 +459,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/t10k-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/t10k-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
             getrusage(RUSAGE_SELF,&buf); start_app=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             graph_obj.applyMnistRecursive(mnist_obj);
@@ -471,7 +471,7 @@ int main(int argc, char** argv) {
             mnist_obj.clearMnist();
             read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
             mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-            mnist_obj.setBitsProbabilities(read_mnist);
+            mnist_obj.setPIsBitsProbabilities(read_mnist);
             read_mnist.close();
 
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);

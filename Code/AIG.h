@@ -19,12 +19,12 @@
        << #var << " = [" << (var) << "]" << std::endl
 
 #define PROBS_FROM_FILE 0
-#define IGNORE_OUTPUTS 1
+#define IGNORE_OUTPUTS 0
 #define SIMPLIFIEDAIG 0
-#define DEBUG 1
+#define DEBUG 3
 #define debug_value 3
 
-#define RUN_OPTION 1
+#define RUN_OPTION 52
 #define TEST 0
 #define RENUMBER 1
 #define REMOVE_PI 0

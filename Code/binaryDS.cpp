@@ -32,8 +32,9 @@ void binaryDS::readIdx(ifstream& file,string imgs_name){
     int char_count=0;
     #if MNIST_DS != 1
     file.close();
-    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
+//    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
 //    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
+    file.open("cifarV2/red_data_batch.bin",ifstream::binary);
     #endif
     cout<<endl<<"Reading dataset file "<<endl;
     if(file.is_open())
@@ -182,7 +183,7 @@ void binaryDS::readIdx(ifstream& file,string imgs_name){
 }
 
 
-void binaryDS::setBitsProbabilities(ifstream& file){
+void binaryDS::setPIsBitsProbabilities(ifstream& file){
     cout<<"Setting input signals probabilities."<<endl;
      char c;
     int line,column,byte;
@@ -205,8 +206,9 @@ void binaryDS::setBitsProbabilities(ifstream& file){
     file.seekg(16); //jumping the header line
     #else
     file.close();
-    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
+//    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
 //    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
+    file.open("cifarV2/red_data_batch.bin",ifstream::binary);
     #endif
     while(file.get(c))
     {
@@ -271,7 +273,7 @@ void binaryDS::setBitsProbabilities(ifstream& file){
 #endif
     
 #if DEBUG >=1
-    ofstream out3("probs density.csv");
+    ofstream out3("PI_probs_density.csv");
     for (int i=0;i<input_probabilities.size();i++)
     {
         for(int j=0;j<input_probabilities[i].size();j++)

@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     
 #if EXECUTE_ONCE ==1
 //     min_th=0.999999;
-    min_th=0.55;
+    min_th=0.65;
 //    for(min_th;min_th>0.89;min_th-=0.02)
 //    {
     ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////

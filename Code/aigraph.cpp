@@ -2840,35 +2840,20 @@ void aigraph::writeProbsHistogram(){
 }
 
 void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
-    string cifar_path=fs::current_path();
+//    string cifar_path=fs::current_path();
 #if cifarv2 != 1
     string my_path="cifar-10-batches-bin/";
 #else
     string my_path="cifarV2/";
 #endif
+    string cifar_path="./"
     cifar_path=cifar_path+my_path;
-#if write_times >=2
-        ofstream function_times("function_times.csv",ios::app);
-        auto begin = std::chrono::high_resolution_clock::now();
-#endif
     int ANDs_size=0, correct_count=0; string line;
     ifstream input_file;
-#if write_learning >= 2
-    ofstream ABC_output;
-    ABC_output.open("ABC_output.csv",ios::app); ABC_output<<endl;
-    ABC_output<<"evaluation method called,name:"<<cifar_path<<", number to be avaliate:"<<num_to_evaluate<<endl;
-#endif
-    string curr_folder=fs::current_path();
-    string abc_aigs_path="/abc_stuff/";
+    string abc_aigs_path="abc_stuff/";
     system(("rm "+abc_aigs_path+"temp.aig").c_str());
-    
-//    for(int ith=0;ith<num_to_evaluate;ith++)
-    vector<int>::iterator iter; int ith;
-//    for(iter=popu_list->begin();iter!=popu_list->end();iter++)
     {
-//        ith=*iter;
-        this->writeAIG(curr_folder+abc_aigs_path,"temp.aig");
-        float aux_score=0; //int dataset_size=5;
+        this->writeAIG("./"+abc_aigs_path,"temp.aig");
         ANDs_size=0; float correct_count=0;
         string cifar_full_name;
 #if cifarv2 != 1
@@ -2896,7 +2881,7 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
             abcCall21(curr_folder+abc_aigs_path, "temp",cifar_full_name);
             //reading ABC output
             input_file.close();
-            input_file.open("logAbc.txt");
+            input_file.open("abc_stuff/logAbc.txt");
             string aux;
             while(getline(input_file,line))
             {
@@ -2920,8 +2905,6 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
             }
         }
             this->size=ANDs_size;
-//        this->num_functional_ands[ith]=ANDs_size;
-//        this->aig_population[ith].setSize(ANDs_size);
 #if cifarv2 != 1
         this->score=correct_count/((ds_end-ds_start+1)*10000);
 #else
@@ -2930,11 +2913,10 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
         else
             this->score=correct_count/(48500);
 #endif
-//        this->aig_population[ith].setScore(all_scores[ith]);
         
-#if COUT >=1
+//#if COUT >=1
         cout<<"Evaluation with ABC, score "<<this->all_scores[ith]<<", size:"<<this->num_functional_ands[ith]<<endl;
-#endif
+//#endif
     }
 }
     

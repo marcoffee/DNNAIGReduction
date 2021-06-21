@@ -59,7 +59,9 @@ int main(int argc, char** argv) {
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read_aig,file_name);
-
+            
+            graph_obj.evaluateScorseAbcCommLine21(4,4);
+            cout<<"-----------SCORE BEFORE:"<<graph_obj.getScore()<<endl;
             LEAVE_CONSTANTS=1;  
             getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             if(option>=0) 
@@ -68,6 +70,9 @@ int main(int argc, char** argv) {
                 graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
             getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
             exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
+            graph_obj.evaluateScorseAbcCommLine21(4,4);
+            cout<<"-----------SCORE AFTER:"<<graph_obj.getScore()<<endl;
+
             graph_obj.writeAIG();
 
             new_name=graph_obj.getName();

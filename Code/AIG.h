@@ -366,6 +366,7 @@ public:
     map<unsigned int,AND>* getANDS();
     string getName();
     int getDepth();
+    float getScore();
     
     //operations
     void setDepthsInToOut();
@@ -380,7 +381,7 @@ public:
     void setANDsProbabilities(binaryDS&);
     void propagateAndDeleteAll(binaryDS&,int option,float min_th,int alpha, int LEAVE_CONSTANTS);
 //    void writeFileWithConstantNodes();
-    void evaluateScorseAbcCommLine21(vector<int>* popu_list,int ds_start,int ds_end);
+    void evaluateScorseAbcCommLine21(int ds_start,int ds_end);
     
     
     void assignBits(binaryDS&);

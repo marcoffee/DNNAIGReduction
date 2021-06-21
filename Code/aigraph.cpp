@@ -2839,14 +2839,14 @@ void aigraph::writeProbsHistogram(){
     write2.close();
 }
 
-void aigraph::evaluateScorseAbcCommLine21(vector<int>* popu_list,int ds_start,int ds_end){
+void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
     string cifar_path=fs::current_path();
 #if cifarv2 != 1
     string my_path="cifar-10-batches-bin/";
 #else
     string my_path="cifarV2/";
 #endif
-    cifar_path=cifar_path+"/../../"+my_path;
+    cifar_path=cifar_path+my_path;
 #if write_times >=2
         ofstream function_times("function_times.csv",ios::app);
         auto begin = std::chrono::high_resolution_clock::now();
@@ -2859,7 +2859,7 @@ void aigraph::evaluateScorseAbcCommLine21(vector<int>* popu_list,int ds_start,in
     ABC_output<<"evaluation method called,name:"<<cifar_path<<", number to be avaliate:"<<num_to_evaluate<<endl;
 #endif
     string curr_folder=fs::current_path();
-    string abc_aigs_path="/AIGs/";
+    string abc_aigs_path="/abc_stuff/";
     system(("rm -rf "+abc_aigs_path+"*").c_str());
     
 //    for(int ith=0;ith<num_to_evaluate;ith++)
@@ -2936,4 +2936,8 @@ void aigraph::evaluateScorseAbcCommLine21(vector<int>* popu_list,int ds_start,in
         cout<<"Evaluation with ABC, score "<<this->all_scores[ith]<<", size:"<<this->num_functional_ands[ith]<<endl;
 #endif
     }
+}
+    
+float aigraph::getScore(){
+    return this->score;
 }

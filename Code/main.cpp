@@ -19,7 +19,8 @@ int main(int argc, char** argv) {
     string file_name,new_name,abc_name;
 #if TEST == 0
 //    file_name="A1.aig";;
-    file_name="exemploBrunno.aig";
+//    file_name="exemploBrunno.aig";
+    file_name="inputAigsV2/out_forest_numTrees_75_maxDepth_13_bitsPrecision_5_nosynth.aig";
 #elif TEST == 1
     file_name="exemploBrunno.aig";;
 #endif

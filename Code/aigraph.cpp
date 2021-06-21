@@ -2846,7 +2846,7 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
 #else
     string my_path="cifarV2/";
 #endif
-    string cifar_path="./"
+    string cifar_path="./";
     cifar_path=cifar_path+my_path;
     int ANDs_size=0, correct_count=0; string line;
     ifstream input_file;
@@ -2878,10 +2878,10 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
             }
 #endif
 //            cout<<"full name:"<<full_name<<endl;
-            abcCall21(curr_folder+abc_aigs_path, "temp",cifar_full_name);
+            abcCall21("./"+abc_aigs_path, "temp",cifar_full_name);
             //reading ABC output
             input_file.close();
-            input_file.open("abc_stuff/logAbc.txt");
+            input_file.open(abc_aigs_path+"logAbc.txt");
             string aux;
             while(getline(input_file,line))
             {
@@ -2915,7 +2915,7 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
 #endif
         
 //#if COUT >=1
-        cout<<"Evaluation with ABC, score "<<this->all_scores[ith]<<", size:"<<this->num_functional_ands[ith]<<endl;
+        cout<<"Evaluation with ABC, score "<<this->score<<", size:"<<this->size<<endl;
 //#endif
     }
 }

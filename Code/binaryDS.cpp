@@ -253,7 +253,7 @@ void binaryDS::setPIsBitsProbabilities(ifstream& file){
         {
 //            aux.push_back((float)counter[line][column]/60000);
             aux.push_back((float)counter[line][column]/all_bits.size());
-            cout<<(float)counter[line][column]/10000<<" == "<<(float)counter[line][column]/all_bits.size()<<endl;
+//            cout<<(float)counter[line][column]/10000<<" == "<<(float)counter[line][column]/all_bits.size()<<endl;
         }
         
         this->input_probabilities.push_back(aux);

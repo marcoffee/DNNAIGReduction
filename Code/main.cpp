@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
             graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
             graph_obj.setThrehsold(min_th);        
             graph_obj.readAIG(read_aig,file_name);
-            
+            cout<<"Starting evaluation!"<<endl;
             graph_obj.evaluateScorseAbcCommLine21(4,4);
             cout<<"-----------SCORE BEFORE:"<<graph_obj.getScore()<<endl;
             LEAVE_CONSTANTS=1;  

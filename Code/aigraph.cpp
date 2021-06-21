@@ -2860,7 +2860,7 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
 #endif
     string curr_folder=fs::current_path();
     string abc_aigs_path="/abc_stuff/";
-    system(("rm -rf "+abc_aigs_path+"*").c_str());
+    system(("rm "+abc_aigs_path+"temp.aig").c_str());
     
 //    for(int ith=0;ith<num_to_evaluate;ith++)
     vector<int>::iterator iter; int ith;
@@ -2893,7 +2893,7 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
             }
 #endif
 //            cout<<"full name:"<<full_name<<endl;
-            abcCall21(curr_folder+abc_aigs_path, "offspring"+to_string(ith),cifar_full_name);
+            abcCall21(curr_folder+abc_aigs_path, "temp",cifar_full_name);
             //reading ABC output
             input_file.close();
             input_file.open("logAbc.txt");

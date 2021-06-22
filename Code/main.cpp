@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
         cout<<exemplars[s]<<endl;
     for(int s=0;s<exemplars.size();s++){
         for(option=-1;option<=6;option++){
-            for(min_th=0.5;min_th>0.6;min_th+=0.02) {
+            for(min_th=0.5;min_th<0.6;min_th+=0.02) {
                 file_name=exemplars[s];
                 float boots_test_acc=0,boots_train_acc=0;
                 int boots_size=0;

@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
                 graph_obj.readAIG(read_aig,file_name);
                 cout<<"Starting evaluation!"<<endl;
                 graph_obj.evaluateScorseAbcCommLine21(0,3);
-                boots_train_acc=graph_obj.getTestScore();
+                boots_train_acc=graph_obj.getTrainScore();
                 graph_obj.evaluateScorseAbcCommLine21(4,4);
                 boots_test_acc=graph_obj.getTestScore();
                 boots_size=graph_obj.getSize();

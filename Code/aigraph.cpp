@@ -472,34 +472,36 @@ void aigraph::writeAIG(){
 
 void aigraph::writeAIG(string destination, string aig_name){
     ofstream write;
-    int M=all_inputs.size()+all_ANDS.size()-2;
+    int M=all_inputs.size()+all_ANDS.size();
     write.open((destination+aig_name).c_str(),ios::binary|ios::out|ios::trunc);
 //    if(write.is_open())
-//        cout<<"write aig file opened:"<<(destination+aig_name)<<endl;
+        cout<<"write aig file opened:"<<(destination+aig_name)<<endl;
 //    else
 //        cout<<"ERROR WRITE AIG FILE NOT OPENED!!"<<(destination+aig_name)<<endl;
 
-    write<<"aig "<<M<<" "<<all_inputs.size()-1<<" 0 "<<all_outputs.size()<<" "<<all_ANDS.size()-1<<endl;
-    for(int i=0;i<all_outputs.size();i++)    
-        write<<all_outputs[i].getId()+((int)all_outputs[i].getInputPolarity())<<endl;
-    //deltas 
-    int counter=0;
-    unsigned int first;
-    for(int i=1;i<all_ANDS.size();i++){
-//        cout<<i<<",";
-//        if(all_ANDS.back().getId()!=all_ANDS[i].getId() && (all_ANDS[i].getId()>=all_ANDS[i+1].getId()))
-//            cout<<"all_ANDS[i].getId()>=all_ANDS[i+1].getId():TRUE!! "<<all_ANDS[i].getId()<<"<"<<all_ANDS[i+1].getId()<<endl;
-//        if(all_ANDS[i].getId()>1)
+    write<<"aig "<<M<<" "<<all_inputs.size()<<" 0 "<<all_outputs.size()<<" "<<all_ANDS.size()<<endl;
+        for(map<unsigned int,output>::iterator it2=all_outputs.begin();it2!=all_outputs.end();it2++)
+        write<<it2->second.getId()+((int)it2->second.getInputPolarity())<<endl;
+
+    //deltas
+    for(map<unsigned int,AND>::iterator it3=all_ANDS.begin();it3!=all_ANDS.end();it3++)
+    {
+        unsigned int first;
+        if(it3->second.getInputs()[0]->getId()>1)
         {
-//            if(all_ANDS[i].getId()<all_ANDS[i].getInputs()[0]->getId())
-//                {  cout<<"THIS IS WRONG1:"<<all_ANDS[i].getId()<<"<"<<all_ANDS[i].getInputs()[0]->getId()<<endl;    all_ANDS[i].printNode();}
-//           if(all_ANDS[i].getId()<all_ANDS[i].getInputs()[1]->getId())
-//           {  cout<<"THIS IS WRONG2:"<<all_ANDS[i].getId()<<"<"<<all_ANDS[i].getInputs()[1]->getId()<<endl;    all_ANDS[i].printNode();}
-            counter++;
-            encodeToFile(write,(all_ANDS[i].getId())-(all_ANDS[i].getInputs()[0]->getId()+(all_ANDS[i].getInputPolarities()[0])));
-            first=(all_ANDS[i].getInputs()[0]->getId()+(all_ANDS[i].getInputPolarities()[0]));
-            encodeToFile(write,(first)-(all_ANDS[i].getInputs()[1]->getId()+all_ANDS[i].getInputPolarities()[1]));
+            encodeToFile(write,(it3->second.getId())-(it3->second.getInputs()[0]->getId()+(it3->second.getInputPolarities()[0])));
+            first=(it3->second.getInputs()[0]->getId()+(it3->second.getInputPolarities()[0]));
         }
+        else
+        {
+            encodeToFile(write,(it3->second.getId())-((it3->second.getInputs()[0]->getId())^(it3->second.getInputPolarities()[0])));
+            first=((it3->second.getInputs()[0]->getId())^(it3->second.getInputPolarities()[0]));
+        }
+//        encodeToFile(write,(it3->second.getInputs()[0]->getId()+(it3->second.getInputPolarities()[0]))-(it3->second.getInputs()[1]->getId()+((int)it3->second.getInputPolarities()[1])));
+        if(it3->second.getInputs()[1]->getId()>1)
+            encodeToFile(write,(first)-(it3->second.getInputs()[1]->getId()+((int)it3->second.getInputPolarities()[1])));
+        else
+            encodeToFile(write,(first)-((it3->second.getInputs()[1]->getId())^((int)it3->second.getInputPolarities()[1])));
     }
     write.close();
 }
@@ -1821,12 +1823,10 @@ void aigraph::propagateAndDeleteAll(binaryDS& mnist_obj,int option,float min_th,
         else if (option==3)
             th_value="_level_exp";
         else if (option==4)
-            th_value="_level_sigmoidal";
-        else if (option==51)
             th_value="_#of_nodes_linear";
-        else if (option==52)
+        else if (option==5)
             th_value="_#of_nodes_root";
-        else if (option==53)
+        else if (option==6)
             th_value="_#of_nodes_exp";
         th_value+="_min_";
         th_value+=to_string(min_th);
@@ -2057,35 +2057,31 @@ void aigraph::propagateAndDeleteAll(binaryDS& mnist_obj,int option,float min_th,
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(pow((float)k/((float)graph_depth),alpha)))+min_th;
         }
-        else if (option==4) //sigmoidal
-        {
-            for(int k=0;k<new_ths.size();k++)
-            {
-                new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth)) -3))/2))+min_th;
-                if(k>= 0.99*(graph_depth))
-                    new_ths[k]=1;
-                if(k<= 0.01*(graph_depth))
-                    new_ths[k]=min_th;
-            }
-        }
-        else if (option==51) //number of nodes per level, linear
+//        else if (option==4) //sigmoidal
+//        {
+//            for(int k=0;k<new_ths.size();k++)
+//            {
+//                new_ths[k]=((1-min_th)*((1+erf((6*k/(graph_depth)) -3))/2))+min_th;
+//                if(k>= 0.99*(graph_depth))
+//                    new_ths[k]=1;
+//                if(k<= 0.01*(graph_depth))
+//                    new_ths[k]=min_th;
+//            }
+//        }
+        else if (option==4) //number of nodes per level, linear
         {
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*((((float)-depth_counter[k])/(biggest-1))+((float)biggest/(biggest-1))))+min_th;
         }
-        else if (option==52 ) //number of nodes per level, root
+        else if (option==5 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(-pow((((float)depth_counter[k])/(biggest-1)),alpha)+((float)biggest/(biggest-1))))+min_th;
         }
-        else if (option==53 ) //number of nodes per level, root
+        else if (option==6 ) //number of nodes per level, root
         {
             for(int k=0;k<new_ths.size();k++)
                 new_ths[k]=((1-min_th)*(-pow((((float)depth_counter[k])/(biggest-1)),(float)1/alpha)+((float)biggest/(biggest-1))))+min_th;
-        }
-        else if (option==6 ) //MEDIUM VALUE
-        {
-            
         }
     }
     else
@@ -2906,20 +2902,28 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
         }
             this->size=ANDs_size;
 #if cifarv2 != 1
-        this->score=correct_count/((ds_end-ds_start+1)*10000);
+        this->train_score=correct_count/((ds_end-ds_start+1)*10000);
 #else
         if(ds_start==ds_end)
-            this->score=correct_count/(1500);
+            this->test_score=correct_count/(1500);
         else
-            this->score=correct_count/(48500);
+            this->train_score=correct_count/(48500);
 #endif
         
 //#if COUT >=1
-        cout<<"Evaluation with ABC, score "<<this->score<<", size:"<<this->size<<endl;
+        cout<<"Evaluation with ABC, score "<<this->test_score<<", size:"<<this->size<<endl;
 //#endif
     }
 }
     
-float aigraph::getScore(){
-    return this->score;
+float aigraph::getTestScore(){
+    return this->test_score;
+}
+
+float aigraph::getTrainScore(){
+    return this->train_score;
+}
+
+int aigraph::getSize(){
+    return this->size;
 }

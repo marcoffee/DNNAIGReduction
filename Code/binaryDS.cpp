@@ -281,9 +281,6 @@ void binaryDS::setPIsBitsProbabilities(ifstream& file){
         out3<<endl;
     }
 #endif
-
-    
-
 }
 
 

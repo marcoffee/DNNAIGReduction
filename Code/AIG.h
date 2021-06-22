@@ -24,7 +24,7 @@
 #define DEBUG 3
 #define debug_value 3
 
-#define RUN_OPTION 52
+//#define RUN_OPTION 52
 #define TEST 0
 #define RENUMBER 1
 #define REMOVE_PI 0
@@ -335,7 +335,7 @@ protected:
     ofstream log;
     
     int size;
-    float score;
+    float test_score,train_score;
     
 public:
     aigraph();
@@ -366,7 +366,9 @@ public:
     map<unsigned int,AND>* getANDS();
     string getName();
     int getDepth();
-    float getScore();
+    float getTestScore();
+    float getTrainScore();
+    int getSize();
     
     //operations
     void setDepthsInToOut();

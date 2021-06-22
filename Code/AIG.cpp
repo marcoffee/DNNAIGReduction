@@ -64,7 +64,7 @@ int binToDec(vector<int> param){
 //        soma=-1;
     return result;
 }
-string abc_log_name="abc_stuff/log.txt";
+string abc_log_name="abc_stuff/logAbc.txt";
 void abcCall21(string aig_source, string aig_name,string cifar_file){
 //#if DEBUG >= 1
 //    cout<<"Calling ABC, read on:"<<aig_name<<",with &mltest on file:"<<cifar_file<<endl;;
@@ -82,12 +82,18 @@ void abcCall21(string aig_source, string aig_name,string cifar_file){
 //    system((my_root+"abc -c 'source script.scr' >> "+abc_log_name).c_str());
 }
 
-void abcWrite(string new_name,string abc_name){
-    cout<<endl<<"ABC WRITE: ("<<new_name<<") -> ("<<abc_name<<")"<<endl;
-    ofstream script("abc_stuff/script.scr");
-    script<<"&r "<<new_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<abc_name<<endl<<"quit";
-    script.close();
-    system(("./abc -c 'source abc_stuff/script.scr' >> "+abc_log_name).c_str());
+void abcWrite(string old_name,string new_name){
+#if DEBUG >=1
+    cout<<endl<<"ABC WRITE: ("<<old_name<<") -> ("<<new_name<<")"<<endl;
+#endif
+//    ofstream script("abc_stuff/script.scr");
+    string command;
+    ofstream log(abc_log_name); log.close();
+    command="-c '&r "+old_name+".aig' -c '&ps' -c '&w "+new_name+"' -c 'quit'";
+    system(command.c_str());
+//    script<<"&r "<<old_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<new_name<<endl<<"quit";
+//    script.close();
+//    system(("./abc -c 'source abc_stuff/script.scr' >> "+abc_log_name).c_str());
 }
 
 void abcCeC(string new_name,string abc_name,float min_th,int option){

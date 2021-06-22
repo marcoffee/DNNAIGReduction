@@ -2914,7 +2914,7 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
 #endif
         
 //#if COUT >=1
-        cout<<"Evaluation with ABC, score "<<this->test_score<<", size:"<<this->size<<endl;
+        cout<<"Evaluation with ABC, test score "<<this->test_score<<", train score"<<this->train_score<<", size:"<<this->size<<endl;
 //#endif
     }
 }

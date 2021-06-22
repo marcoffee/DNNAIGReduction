@@ -90,6 +90,7 @@ void abcWrite(string old_name,string new_name){
     string command;
     ofstream log(abc_log_name); log.close();
     command="-c '&r "+old_name+".aig' -c '&ps' -c '&w "+new_name+"' -c 'quit'";
+    command=("./abc "+command+" >> "+abc_log_name);
     cout<<"Calling ABC, command:"<<command<<endl;
     system(command.c_str());
 //    script<<"&r "<<old_name<<".aig"<<endl<<"&ps"<<endl<<"&w "<<new_name<<endl<<"quit";

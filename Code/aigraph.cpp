@@ -365,6 +365,9 @@ void aigraph::clearCircuit(){
     this->greatest_depths_ids.clear();
     this->graph_depth=0;
     this->threshold=0;
+    this->train_score=0;
+    this->test_score=0;
+    this->size=0;
 }
 
 map<unsigned int,input>* aigraph::getInputs(){

@@ -23,6 +23,7 @@
 #define SIMPLIFIEDAIG 0
 #define DEBUG 3
 #define debug_value 3
+#define COUT 1
 
 //#define RUN_OPTION 52
 #define TEST 0

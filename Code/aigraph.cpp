@@ -2894,11 +2894,11 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
                 }
                 if(line.find("Correct =")!=string::npos)
                 {
-//                    cout<<"---------score string:"<<line<<endl;
+                    cout<<"---------score string:"<<line<<endl;
                     line.erase(0,line.find("Correct =")+9);
-//                    cout<<"---------score string:"<<line<<endl;
+                    cout<<"---------score string:"<<line<<endl;
                     line.erase(line.find(". ("),line.size());
-//                    cout<<"--------count string:"<<line<<endl;
+                    cout<<"--------count string:"<<line<<endl;
                     correct_count+=atoi(line.c_str());
                 }
             }

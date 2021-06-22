@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 #if EXECUTE_ONCE ==1
 //     min_th=0.999999;
     vector<string> exemplars;
-    for (const auto & entry : fs::directory_iterator("inputAigs/"))
+    for (const auto & entry : fs::directory_iterator("inputAigsV2/"))
     {
         string my_str=entry.path();
         exemplars.push_back(my_str);

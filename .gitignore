@@ -21,3 +21,7 @@ idVsprobs
 *red_data_batch.bin
 *temp*
 *tmp*
+outputAigs/*.aig
+*.aag
+/*.aig
+dnnaig

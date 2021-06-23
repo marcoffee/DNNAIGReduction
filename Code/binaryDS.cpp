@@ -30,12 +30,15 @@ void binaryDS::readIdx(ifstream& file,string imgs_name){
     string labels_name=imgs_name;
     labels_name.replace(labels_name.find_first_of("-"),7,"-labels");
     int char_count=0;
-    #if MNIST_DS != 1
+#if MNIST_DS != 1
     file.close();
-//    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
-//    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
+#if local_test_run != 1
     file.open("cifarV2/red_data_batch.bin",ifstream::binary);
-    #endif
+#else
+    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
+//    file.open("cifarV2/mini_test_batch.bin",ifstream::binary);
+#endif
+#endif
     cout<<endl<<"Reading dataset file "<<endl;
     if(file.is_open())
         cout<<"Dataset file is opened!"<<endl;
@@ -85,11 +88,11 @@ void binaryDS::readIdx(ifstream& file,string imgs_name){
     #if DEBUG >=4
             cout<<"byte:"<<byte<<":";
     #endif
-#if MNIST_DS != 1
-            for(int k=7; k>=0; k--)
-#elif
+//#if MNIST_DS != 1
+//            for(int k=7; k>=0; k--)
+//#elif
             for(int k=0;k<=7;k++)
-#endif
+//#endif
             {
                 bit=((byte & ( 1 << k )) >> k);
 
@@ -202,26 +205,27 @@ void binaryDS::setPIsBitsProbabilities(ifstream& file){
     line=0;
     column=0;
     file.clear();
-    #if MNIST_DS == 1 
+#if MNIST_DS == 1 
     file.seekg(16); //jumping the header line
-    #else
+#else
     file.close();
-//    file.open("cifar-10-batches-bin/data_complete.bin",ifstream::binary);
-//    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
+#if local_test_run != 1
     file.open("cifarV2/red_data_batch.bin",ifstream::binary);
-    #endif
+#else
+    file.open("cifar-10-batches-bin/data_batch_1.bin",ifstream::binary);
+//    file.open("cifarV2/mini_test_batch.bin",ifstream::binary);
+#endif
+#endif
     while(file.get(c))
     {
-        
         byte=(int)c;
         if(byte<0)
             byte=byte+256;
         int bit;
-
 //#if MNIST_DS != 1
-            for(int k=7; k>=0; k--)
+//            for(int k=7; k>=0; k--)
 //#elif
-//            for(int k=0;k<=7;k++)
+            for(int k=0;k<=7;k++)
 //#endif
         {
             bit=((byte & ( 1 << k )) >> k);

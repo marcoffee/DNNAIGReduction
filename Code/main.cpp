@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 #if TEST == 0
 //    file_name="A1.aig";;
 //    file_name="exemploBrunno.aig";
-    file_name="inputAigsV2/out_forest_numTrees_75_maxDepth_13_bitsPrecision_5_nosynth.aig";
+//    file_name="inputAigsV2/out_forest_numTrees_75_maxDepth_13_bitsPrecision_5_nosynth.aig";
 #elif TEST == 1
     file_name="exemploBrunno.aig";;
 #endif
@@ -42,13 +42,20 @@ int main(int argc, char** argv) {
 #else
     exec_times<<"Otption:"<<option<<", Circuit:"<<file_name<<endl<<"Min_th, Set Constants, My Simplification"<<endl;
 #endif
-    ofstream results("results.csv");
-    results<<"OldName,Method,TH,DiffTrain,DiffTest,DiffSize,BootsTrain,BootsTest,BootsSize,NewTrain,NewTest,NewSize,NewName"<<endl;
+    ofstream results("results.csv",ios::app);
+    results<<"OldName,Method,TH,#PIconstant,#ANDConstant,DiffTrain,DiffTest,DiffSize,BootsTrain,BootsTest,BootsSize,NewTrain,NewTest,NewSize,NewName"<<endl;
     results.close();
 #if EXECUTE_ONCE ==1
-//     min_th=0.999999;
+
+    mnist_obj.clearMnist();
+    read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
+    mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
+    mnist_obj.setPIsBitsProbabilities(read_mnist);
+    read_mnist.close();
     vector<string> exemplars;
-    for (const auto & entry : fs::directory_iterator("inputAigsV2/"))
+//    for (const auto & entry : fs::directory_iterator("inputAigsV2/"))
+//    for (const auto & entry : fs::directory_iterator("inputAdicionais/"))
+    for (const auto & entry : fs::directory_iterator("inputFromCgp/"))
     {
         string my_str=entry.path();
         exemplars.push_back(my_str);
@@ -56,13 +63,19 @@ int main(int argc, char** argv) {
     for(int s=0;s<exemplars.size();s++)
         cout<<exemplars[s]<<endl;
     for(int s=0;s<exemplars.size();s++){
-        for(option=-1;option<=6;option++){
-            for(min_th=0.5;min_th<0.6;min_th+=0.02) {
-                file_name=exemplars[s];
+        file_name=exemplars[s];
+        graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);  
+        graph_obj.readAIG(read_aig,file_name);
+        graph_obj.setANDsProbabilities(mnist_obj);
+        for(option=0;option<=6;option++){
+            for(min_th=0.98;min_th<=1;min_th+=0.0001) {
+//        int s=1; option=0; min_th=1;
+//                file_name="/home/gudeh/Desktop/DNNAIGReduction/outputAigs/out_forest_numTrees_15_maxDepth_7_bitsPrecision_3_nosynth_WITH_CONSTANTS_-MethodANTH1.000000BootsTrain0.374400BootsTest0.356000BootsSize7979NewTrain0.356800NewTest0.338667NewSize7862.aig";
                 float boots_test_acc=0,boots_train_acc=0;
                 int boots_size=0;
                 string method_name;
                 if(option==-1) method_name="OPI";
+                else if (option==0) method_name="AN";
                 else if (option==1) method_name="LD-linear";
                 else if (option==2) method_name="LD-root";
                 else if (option==3) method_name="LD-exp";
@@ -71,15 +84,11 @@ int main(int argc, char** argv) {
                 else if (option==6) method_name="NPD-exp";
                 ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
                 cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;
-                mnist_obj.clearMnist();
-                read_mnist.open("mnist/train-images.idx3-ubyte",ifstream::binary);
-                mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
-                mnist_obj.setPIsBitsProbabilities(read_mnist);
-                read_mnist.close();
 
                 graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
                 graph_obj.setThrehsold(min_th);        
                 graph_obj.readAIG(read_aig,file_name);
+//                graph_obj.writeAAG();
                 cout<<"Starting evaluation!"<<endl;
                 graph_obj.evaluateScorseAbcCommLine21(0,3);
                 boots_train_acc=graph_obj.getTrainScore();
@@ -87,6 +96,7 @@ int main(int argc, char** argv) {
                 boots_test_acc=graph_obj.getTestScore();
                 boots_size=graph_obj.getSize();
                 cout<<"-----------SCORE BEFORE:"<<graph_obj.getTestScore()<<endl;
+                
                 LEAVE_CONSTANTS=1;  
                 getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
                 if(option>=0) 
@@ -114,11 +124,13 @@ int main(int argc, char** argv) {
                         +".aig";
                 old_name=graph_obj.getName();
                 abcWrite(old_name,abc_name);  
-    //            results<<"OldName,Method,TH,DiffTrain,DiffTest,DiffSize,BootsTrain,BootsTest,BootsSize,NewTrain,NewTest,NewSize,NewName"<<endl;
+                //results<<"OldName,Method,TH,#PIconstant,#ANDConstant,DiffTrain,DiffTest,DiffSize,BootsTrain,BootsTest,BootsSize,NewTrain,NewTest,NewSize,NewName"<<endl;
                 results.open("results.csv",ios::app);
                 results<<graph_obj.getName()<<","
                         <<method_name<<","
                         <<(min_th)<<","
+                        <<(graph_obj.getPiConstantsSize())<<","
+                        <<(graph_obj.getAndsConstantsSize())<<","
                         <<(graph_obj.getTrainScore()-boots_train_acc)<<","
                         <<(graph_obj.getTestScore()-boots_test_acc)<<","
                         <<(graph_obj.getSize()-boots_size)<<","

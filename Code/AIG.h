@@ -21,9 +21,9 @@
 #define PROBS_FROM_FILE 0
 #define IGNORE_OUTPUTS 0
 #define SIMPLIFIEDAIG 0
-#define DEBUG 3
-#define debug_value 3
-#define COUT 1
+#define DEBUG 0
+#define debug_value -1
+#define COUT 0
 
 //#define RUN_OPTION 52
 #define TEST 0
@@ -40,7 +40,7 @@
 #define WRITE_ORIGINAL_DEPTHS 0
 #define MNIST_DS 0
 #define cifarv2 1
-
+#define local_test_run 0
 
 
 //#define posY_max 28
@@ -335,6 +335,7 @@ protected:
     
     ofstream log;
     
+    int ANDs_constant,ANDs_removed,PIs_constant,PIs_removed;
     int size;
     float test_score,train_score;
     
@@ -370,6 +371,8 @@ public:
     float getTestScore();
     float getTrainScore();
     int getSize();
+    int getPiConstantsSize();
+    int getAndsConstantsSize();
     
     //operations
     void setDepthsInToOut();

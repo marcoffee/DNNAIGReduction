@@ -54,8 +54,8 @@ int main(int argc, char** argv) {
     read_mnist.close();
     vector<string> exemplars;
 //    for (const auto & entry : fs::directory_iterator("inputAigsV2/"))
-//    for (const auto & entry : fs::directory_iterator("inputAdicionais/"))
-    for (const auto & entry : fs::directory_iterator("inputFromCgp/"))
+    for (const auto & entry : fs::directory_iterator("inputAdicionais/"))
+//    for (const auto & entry : fs::directory_iterator("inputFromCgp/"))
     {
         string my_str=entry.path();
         exemplars.push_back(my_str);
@@ -64,11 +64,11 @@ int main(int argc, char** argv) {
         cout<<exemplars[s]<<endl;
     for(int s=0;s<exemplars.size();s++){
         file_name=exemplars[s];
-        graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);  
-        graph_obj.readAIG(read_aig,file_name);
-        graph_obj.setANDsProbabilities(mnist_obj);
+//        graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);  
+//        graph_obj.readAIG(read_aig,file_name);
+//        graph_obj.setANDsProbabilities(mnist_obj);
         for(option=0;option<=6;option++){
-            for(min_th=0.98;min_th<=1;min_th+=0.0001) {
+            for(min_th=0.98;min_th<=1;min_th+=0.0002) {
 //        int s=1; option=0; min_th=1;
 //                file_name="/home/gudeh/Desktop/DNNAIGReduction/outputAigs/out_forest_numTrees_15_maxDepth_7_bitsPrecision_3_nosynth_WITH_CONSTANTS_-MethodANTH1.000000BootsTrain0.374400BootsTest0.356000BootsSize7979NewTrain0.356800NewTest0.338667NewSize7862.aig";
                 float boots_test_acc=0,boots_train_acc=0;
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
                 graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
                 graph_obj.setThrehsold(min_th);        
                 graph_obj.readAIG(read_aig,file_name);
-//                graph_obj.writeAAG();
+                graph_obj.setANDsProbabilities(mnist_obj);
                 cout<<"Starting evaluation!"<<endl;
                 graph_obj.evaluateScorseAbcCommLine21(0,3);
                 boots_train_acc=graph_obj.getTrainScore();

@@ -456,7 +456,7 @@ int binToDec(vector<int> param);
 
 void abcCall21(string aig_name,string cifar_file,string source); //from CGP project
 
-void abcWrite(string new_name,string abc_name);
+void abcWrite(string old_name,string abc_name);
 void abcCeC(string new_name,string abc_name,float min_th,int option);
 
 #endif /* GDE_H */

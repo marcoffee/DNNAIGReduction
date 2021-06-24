@@ -359,7 +359,7 @@ void aigraph::clearCircuit(){
     this->all_outputs.clear();
     this->name.clear();
     this->POs_order.clear();
-    this->ANDs_probabilities.clear();
+//    this->ANDs_probabilities.clear();;
     this->log.close();
     this->all_depths.clear();
     this->greatest_depths_ids.clear();
@@ -372,6 +372,10 @@ void aigraph::clearCircuit(){
     this->ANDs_removed=0;
     this->PIs_constant=0;
     this->PIs_removed=0;
+}
+
+void aigraph::clearAndsProbabilities(){
+    this->ANDs_probabilities.clear();
 }
 
 map<unsigned int,input>* aigraph::getInputs(){
@@ -482,7 +486,9 @@ void aigraph::writeAIG(string destination, string aig_name){
     int M=all_inputs.size()+all_ANDS.size();
     write.open((destination+aig_name).c_str(),ios::binary|ios::out|ios::trunc);
 //    if(write.is_open())
+        #if COUT>=1
         cout<<"write aig file opened:"<<(destination+aig_name)<<endl;
+        #endif
 //    else
 //        cout<<"ERROR WRITE AIG FILE NOT OPENED!!"<<(destination+aig_name)<<endl;
 
@@ -558,16 +564,18 @@ void aigraph::readAIG(ifstream& file, string param_name){
     string type;
     unsigned int M,I,L,O,A;
     unsigned int lhs,rhs0,rhs1, delta1,delta2;
-#if DEBUG >= 2
+    #if DEBUG >= 3
     ofstream debs("dumps/debug");
-#endif
+    #endif
     
     if(param_name.find("/"))
         param_name.erase(0,param_name.find_last_of('/')+1);
     if(param_name.find("."))
         param_name.erase(param_name.find_last_of('.'),param_name.size());
     this->setName(param_name);
-     cout<<endl<<"READING AIG CIRCUIT:"<<name<<endl;
+    #if COUT>=1
+    cout<<endl<<"READING AIG CIRCUIT:"<<name<<endl;
+    #endif
     //reading the first line in the file
     file.seekg(file.beg);
     getline(file,line);
@@ -579,25 +587,27 @@ void aigraph::readAIG(ifstream& file, string param_name){
     O=stoi(wordSelector(line,5));
     A=stoi(wordSelector(line,6));
     bool polarity0,polarity1,lhs_polarity;
+    #if COUT>=1
     cout<<"MILOA:"<<M<<","<<I<<","<<L<<","<<O<<","<<A<<endl;
+    #endif
     
     for(int ii=0;ii<O;ii++)
         getline(file,line);
-    
+    #if COUT>=1
     cout<<"Reading Inputs, ";
+    #endif
     //////////////////////INPUTS//////////////////////
     for(int i=1;i<=I;i++)
     {
         input input_obj(i*2);
         this->pushPI(i*2,input_obj);
-#if DEBUG >= 4
+        #if COUT >= 1
         cout<<"pushing input "<<i*2<<endl;
-#endif
+        #endif
     }
-    
-//    this->printCircuit();
-    
+    #if COUT>=1
     cout<<"Reading ANDs, ";
+    #endif
     /////////////ANDS/////////////////////////
     int and_index=I+L;
     bool polar=false;
@@ -616,7 +626,7 @@ void aigraph::readAIG(ifstream& file, string param_name){
 //         cout<<"AND:"<<and_index*2<<". ";
 //         cout<<"delta1:"<<delta1<<" delta2:"<<delta2<<". ";
 //         cout<<"rhs0:"<<rhs0<<" rhs1:"<<rhs1<<endl;
-#if DEBUG >=2
+#if DEBUG >=3
         debs<<"AND:"<<and_index*2<<". ";
         debs<<"delta1:"<<delta1<<" delta2:"<<delta2<<". ";
         debs<<"rhs0:"<<rhs0<<" rhs1:"<<rhs1<<endl;
@@ -679,10 +689,12 @@ void aigraph::readAIG(ifstream& file, string param_name){
 //            this->findAny(rhs0)->printNode();
 #endif
     }
-#if DEBUG >= 2
+#if DEBUG >= 3
     debs.close();
 #endif
+#if COUT>=1
     cout<<"Reading Outputs"<<endl;
+#endif
         ////////////////////OUTPUTS///////////////////
     //jumping the header, right to outputs list
     file.seekg(file.beg);
@@ -690,9 +702,7 @@ void aigraph::readAIG(ifstream& file, string param_name){
     
     for(int f=0;f<O;f++){
         getline(file,line);
-       lhs=stoi(wordSelector(line,1));
-       
-      
+       lhs=stoi(wordSelector(line,1));      
 //        lhs=decode(file);
 //        cout<<line<<endl;
        if(lhs>1)
@@ -719,7 +729,7 @@ void aigraph::readAIG(ifstream& file, string param_name){
 //        else
 //            cout<<"ERROR, this if statement should not be reached, (readAIG)"<<endl;
         this->pushPO(lhs,output_obj);
-#if DEBUG >= 4
+#if DEBUG >= 3
         cout<<"pushing output "<<lhs<<" Polarity:"<<polarity0<<endl;
 #endif  
     }
@@ -1186,10 +1196,12 @@ void aigraph::applyMnistRecursive(binaryDS& mnist_obj){
 
 
 void aigraph::propagateAndDeletePIBased(binaryDS& mnist_obj,float th,int LEAVE_CONSTANTS) {
+#if COUT>=1
     if(LEAVE_CONSTANTS==0)
         cout<<endl<<"SIMPLIFING CIRCUIT PI ONLY: "<<this->name<<", THRESHOLD:"<<th<<endl;
     else
         cout<<endl<<"SETTING CONSTANTS PI ONLY: "<<this->name<<", THRESHOLD:"<<th<<endl;
+#endif
     int PI_constant=0,posX=0,posY=0;
     map<unsigned int, input>::iterator it_in;
     map<unsigned int, output>::iterator it_out;
@@ -1206,6 +1218,8 @@ void aigraph::propagateAndDeletePIBased(binaryDS& mnist_obj,float th,int LEAVE_C
     constant0.setSignal(0);
     constant0.setId(0);
     
+
+#if WRITE_ORIGINAL_DEPTHS == 1
     this->setDepthsInToOut();
     this->all_depths.push_back(0);
     for(it_in=all_inputs.begin();it_in!=all_inputs.end();it_in++)
@@ -1216,7 +1230,7 @@ void aigraph::propagateAndDeletePIBased(binaryDS& mnist_obj,float th,int LEAVE_C
     for(int v=0;v<all_depths.size();v++)
         nodes_in_level[all_depths[v]]++;
     nodes_in_level[0]--;
-#if WRITE_ORIGINAL_DEPTHS == 1
+    
     ofstream original_nodes_level("original_nodes_level");
     for(int v=0;v<nodes_in_level.size();v++)
         original_nodes_level<<v<<","<<nodes_in_level[v]<<endl;
@@ -1255,7 +1269,9 @@ void aigraph::propagateAndDeletePIBased(binaryDS& mnist_obj,float th,int LEAVE_C
               posY=0;
       }
   }
+#if COUT >= 1
   cout<<"# of PI that pass threshold:"<<PI_constant<<endl;
+#endif
   this->PIs_constant=PI_constant;
 //  simpl_info<<"Threshold:"<<to_string(1-threshold);
 //  simpl_info<<"# of PI that pass threshold:"<<PI_constant<<endl;
@@ -1282,7 +1298,7 @@ void aigraph::propagateAndDeletePIBased(binaryDS& mnist_obj,float th,int LEAVE_C
     vector<nodeAig*> stack;
     vector<nodeAig*> AUX;
     nodeAig* current;
-    cout<<"POs size:"<<all_outputs.size()<<endl<<endl;
+//    cout<<"POs size:"<<all_outputs.size()<<endl<<endl;
     bool polarity,pol_new_node;
     nodeAig* new_node;
     
@@ -1706,7 +1722,7 @@ void aigraph::setANDsProbabilities(binaryDS& mnist_obj){
     for(int counter=59968;counter<num_imgs;counter=counter+BITS_PACKAGE_SIZE)
 #endif
         {
-#if DEBUG>=3
+#if DEBUG>=2
         cout<<"Applying images from "<<offset<<" to "<<offset+BITS_PACKAGE_SIZE<<endl;
 #endif
 //        if(offset+BITS_PACKAGE_SIZE>num_imgs)
@@ -1753,7 +1769,7 @@ void aigraph::setANDsProbabilities(binaryDS& mnist_obj){
         //////////////////////////////////////////////////////////////////////////////////////////
        /////////////////////////////////////DFS//////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////
-#if DEBUG >=2        
+#if DEBUG >=3        
         struct rusage buf; 
         int start,stop;
         if(getrusage(RUSAGE_SELF,&buf)==-1)
@@ -1762,7 +1778,7 @@ void aigraph::setANDsProbabilities(binaryDS& mnist_obj){
 #endif
         for(it_out=all_outputs.begin();it_out!=all_outputs.end();it_out++)
             it_out->second.PropagSignalDFS();
-#if DEBUG >=2
+#if DEBUG >=3
         if(getrusage(RUSAGE_SELF,&buf)==-1)
             cout<<"GETRUSAGE FAILURE!"<<endl;
         stop=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
@@ -1801,26 +1817,29 @@ void aigraph::setANDsProbabilities(binaryDS& mnist_obj){
     }    
         map<unsigned int,float>::iterator probs_it;
         ofstream debuging,debuging2;
+        
+#if DEBUG >= 2
         debuging.open("ands_probs.txt");
         debuging2.open("ands_reps.txt");
-        
         debuging2<<"num_imgs:"<<num_imgs<<endl;
         for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
             debuging2<<probs_it->first<<","<<probs_it->second<<endl;
-        
-        
+#endif
         for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
             probs_it->second=(probs_it->second)/num_imgs;
-        
+#if DEBUG >= 2
         for(probs_it=ANDs_probabilities.begin();probs_it!=ANDs_probabilities.end();probs_it++)
             debuging<<probs_it->first<<","<<probs_it->second<<endl;
+#endif
 }
 
 void aigraph::propagateAndDeleteAll(binaryDS& mnist_obj,int option,float min_th,int alpha,int LEAVE_CONSTANTS) {
+#if COUT>=1
     if(LEAVE_CONSTANTS==0)
         cout<<endl<<"SIMPLIFING CIRCUIT: "<<this->name<<", THRESHOLD:"<<min_th<<endl;
     else
         cout<<endl<<"SETTING CONSTANTS: "<<this->name<<", THRESHOLD:"<<min_th<<endl;
+#endif
     float th_inverted=0;
     int aux=0;
     string th_value;//,info_file_name;
@@ -2847,9 +2866,9 @@ void aigraph::writeProbsHistogram(){
 void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
 //    string cifar_path=fs::current_path();
 #if cifarv2 != 1
-    string my_path="cifar-10-batches-bin/";
+    string my_path="../cifar-10-batches-bin/";
 #else
-    string my_path="cifarV2/";
+    string my_path="../cifarV2/";
 #endif
     string cifar_path="./";
     cifar_path=cifar_path+my_path;
@@ -2878,7 +2897,7 @@ void aigraph::evaluateScorseAbcCommLine21(int ds_start,int ds_end){
                 #if local_test_run != 1
                 cifar_full_name=cifar_path+"red_data_batch.bin";
                 #else
-                cifar_full_name="cifar-10-batches-bin/data_batch_1.bin";
+                cifar_full_name="../cifar-10-batches-bin/data_batch_1.bin";
                 #endif
                 #if COUT >= 1
                 cout<<"Using reduced TRAIN SET (without mini test)! path:"<<cifar_full_name<<endl;

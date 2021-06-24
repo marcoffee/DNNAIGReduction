@@ -52,23 +52,37 @@ int main(int argc, char** argv) {
     mnist_obj.readIdx(read_mnist,"mnist/train-images.idx3-ubyte");
     mnist_obj.setPIsBitsProbabilities(read_mnist);
     read_mnist.close();
+    
+        
     vector<string> exemplars;
-//    for (const auto & entry : fs::directory_iterator("inputAigsV2/"))
-    for (const auto & entry : fs::directory_iterator("inputAdicionais/"))
-//    for (const auto & entry : fs::directory_iterator("inputFromCgp/"))
+//    string input_file="../inputFromCgp-abcFix/";
+//    string input_file="../inputAigsV2/";
+    string input_file="../inputAdicionais/";
+    for (const auto & entry : fs::directory_iterator(input_file))
     {
         string my_str=entry.path();
         exemplars.push_back(my_str);
     }
-    for(int s=0;s<exemplars.size();s++)
+    if(input_file=="../inputFromCgp-abcFix/"){
+        sort(begin(exemplars), end(exemplars), [](string const& a, string const& b){
+            return std::lexicographical_compare(a.begin()+(a.find("CgpAcc")+6), a.begin()+(a.find("CgpSize")) ,
+                                                b.begin()+(b.find("CgpAcc")+6), b.begin()+ (b.find("CgpSize")));
+        });
+    }
+    for(int s=exemplars.size()-1;s>=0;s--)
         cout<<exemplars[s]<<endl;
-    for(int s=0;s<exemplars.size();s++){
+//    for(int s=0;s<exemplars.size();s++){
+    for(int s=exemplars.size()-1;s>=0;s--){
         file_name=exemplars[s];
-//        graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);  
-//        graph_obj.readAIG(read_aig,file_name);
-//        graph_obj.setANDsProbabilities(mnist_obj);
+        graph_obj.clearAndsProbabilities();
+        graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);  
+        graph_obj.readAIG(read_aig,file_name);
+        graph_obj.setANDsProbabilities(mnist_obj);
         for(option=0;option<=6;option++){
-            for(min_th=0.98;min_th<=1;min_th+=0.0002) {
+//            for(min_th=0.999000;min_th<=0.999900;min_th+=0.000010) {
+            int th_int;
+            for(th_int=999000;th_int<=999900;th_int+=000010) {
+                mint=int_th/1000000;
 //        int s=1; option=0; min_th=1;
 //                file_name="/home/gudeh/Desktop/DNNAIGReduction/outputAigs/out_forest_numTrees_15_maxDepth_7_bitsPrecision_3_nosynth_WITH_CONSTANTS_-MethodANTH1.000000BootsTrain0.374400BootsTest0.356000BootsSize7979NewTrain0.356800NewTest0.338667NewSize7862.aig";
                 float boots_test_acc=0,boots_train_acc=0;
@@ -85,11 +99,12 @@ int main(int argc, char** argv) {
                 ///////////////////////////////Generating file WITH CONSTANTS to go trhough ABC/////////////////////////////////////////////////
                 cout<<"//////////////////////////"<<endl<<"/////////"<<min_th<<"///////////"<<endl<<"//////////////////////////"<<endl;
 
+                //clearCircuit won't remove the ANDs probability values
                 graph_obj.clearCircuit(); read_aig.close(); read_aig.open(file_name.c_str(),ifstream::binary);
                 graph_obj.setThrehsold(min_th);        
                 graph_obj.readAIG(read_aig,file_name);
-                graph_obj.setANDsProbabilities(mnist_obj);
-                cout<<"Starting evaluation!"<<endl;
+                
+                cout<<"Starting evaluation! Method:"<<method_name<<endl;
                 graph_obj.evaluateScorseAbcCommLine21(0,3);
                 boots_train_acc=graph_obj.getTrainScore();
                 graph_obj.evaluateScorseAbcCommLine21(4,4);
@@ -99,12 +114,9 @@ int main(int argc, char** argv) {
                 
                 LEAVE_CONSTANTS=1;  
                 getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-                if(option>=0) 
                     graph_obj.propagateAndDeleteAll(mnist_obj,option,min_th,alpha,LEAVE_CONSTANTS);
-                else if(option==-1) 
-                    graph_obj.propagateAndDeletePIBased(mnist_obj,min_th,LEAVE_CONSTANTS);
                 getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
-                exec_times<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
+                exec_times<<method_name<<","<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
                 graph_obj.evaluateScorseAbcCommLine21(0,3);
                 graph_obj.evaluateScorseAbcCommLine21(4,4);
                 cout<<"-----------SCORE AFTER:"<<graph_obj.getTestScore()<<endl;
@@ -124,7 +136,6 @@ int main(int argc, char** argv) {
                         +".aig";
                 old_name=graph_obj.getName();
                 abcWrite(old_name,abc_name);  
-                //results<<"OldName,Method,TH,#PIconstant,#ANDConstant,DiffTrain,DiffTest,DiffSize,BootsTrain,BootsTest,BootsSize,NewTrain,NewTest,NewSize,NewName"<<endl;
                 results.open("results.csv",ios::app);
                 results<<graph_obj.getName()<<","
                         <<method_name<<","
@@ -142,6 +153,58 @@ int main(int argc, char** argv) {
                         <<(graph_obj.getSize())<<","
                         <<abc_name<<endl;
                 results.close();
+                
+//                for(float opi_th=0.51;opi_th<=0.515;opi_th+=0.00025){
+//                    cout<<"//////////////////////////////////////////////////////////////////////////////////////////////////"<<endl;
+//                    cout<<"///////////////////////Running OPI Method on top of last resulting AIG.///////////////////////////"<<endl;
+//                    cout<<"//////////////////////////////////////////////////////////////////////////////////////////////////"<<endl;
+//                    cout<<"Starting evaluation!"<<endl;
+//                    graph_obj.evaluateScorseAbcCommLine21(0,3);
+//                    boots_train_acc=graph_obj.getTrainScore();
+//                    graph_obj.evaluateScorseAbcCommLine21(4,4);
+//                    boots_test_acc=graph_obj.getTestScore();
+//                    boots_size=graph_obj.getSize();
+//                    cout<<"-----------SCORE BEFORE OPI:"<<graph_obj.getTestScore()<<endl;
+//
+//                    LEAVE_CONSTANTS=1;  
+//                    getrusage(RUSAGE_SELF,&buf); start_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//                        graph_obj.propagateAndDeletePIBased(mnist_obj,opi_th,LEAVE_CONSTANTS);
+//                    getrusage(RUSAGE_SELF,&buf); stop_simplf=buf.ru_stime.tv_sec+buf.ru_utime.tv_sec;
+//                    exec_times<<"OPI"<<","<<min_th<<","<<((stop_simplf-start_simplf)/(float)3600)<<",";
+//                    graph_obj.evaluateScorseAbcCommLine21(0,3);
+//                    graph_obj.evaluateScorseAbcCommLine21(4,4);
+//                    cout<<"-----------SCORE AFTER OPI:"<<graph_obj.getTestScore()<<endl;
+//
+//                    graph_obj.writeAIG();
+//                    abc_name="outputAigs/"
+//                            +graph_obj.getName()
+//                            +"-Method"+"OPI"
+//                            +"TH"+to_string(opi_th)
+//                            +"OpiTrain"+to_string(graph_obj.getTrainScore())
+//                            +"OpiTest"+to_string(graph_obj.getTestScore())
+//                            +"OpiSize"+to_string(graph_obj.getSize())
+//                            +".aig";
+//                    old_name=graph_obj.getName();
+//                    abcWrite(old_name,abc_name);  
+//                    results.open("results.csv",ios::app);
+//                    results<<graph_obj.getName()<<","
+//                            <<"OPI"<<","
+//                            <<(opi_th)<<","
+//                            <<(graph_obj.getPiConstantsSize())<<","
+//                            <<(graph_obj.getAndsConstantsSize())<<","
+//                            <<(graph_obj.getTrainScore()-boots_train_acc)<<","
+//                            <<(graph_obj.getTestScore()-boots_test_acc)<<","
+//                            <<(graph_obj.getSize()-boots_size)<<","
+//                            <<(boots_train_acc)<<","
+//                            <<(boots_test_acc)<<","
+//                            <<(boots_size)<<","
+//                            <<(graph_obj.getTrainScore())<<","
+//                            <<(graph_obj.getTestScore())<<","
+//                            <<(graph_obj.getSize())<<","
+//                            <<abc_name<<endl;
+//                    results.close();
+//                }
+                
     //
     //            graph_obj.clearCircuit(); read_aig.close(); read_aig.open(abc_name.c_str(),ifstream::binary);
     //            graph_obj.setThrehsold(min_th);        

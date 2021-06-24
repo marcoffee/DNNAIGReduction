@@ -75,8 +75,8 @@ extern int posX_max;
 #include "binaryDS.h"
 
 //#include <filesystem> //requires c++17
-#include <experimental/filesystem> //requires c++17
 //namespace fs = std::filesystem;
+#include <experimental/filesystem> //requires c++17
 namespace fs = std::experimental::filesystem;
 
 //#include "include/alice/alice.hpp"
@@ -350,6 +350,7 @@ public:
     void setName(string);
     void setThrehsold(float);
     void clearCircuit();
+    void clearAndsProbabilities();
     input* pushPI(unsigned int index,input input_obj);
     void pushLatch(unsigned int index,latch latch_obj);
     void pushPO(unsigned int index,output output_obj);
@@ -382,7 +383,7 @@ public:
     void writeAIG(string destination, string aig_name); //from CGP project
     void writeProbsHistogram();
     void applyMnistRecursive(binaryDS&);
-    void propagateAndDeletePIBased(binaryDS&,float,int);
+    void propagateAndDeletePIBased(binaryDS& mnist_obj,float th,int LEAVE_CONSTANTS);
     void cutAIG();
     void setANDsProbabilities(binaryDS&);
     void propagateAndDeleteAll(binaryDS&,int option,float min_th,int alpha, int LEAVE_CONSTANTS);

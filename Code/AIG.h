@@ -41,6 +41,7 @@
 #define MNIST_DS 0
 #define cifarv2 1
 #define local_test_run 0
+#define final_check 1
 
 
 //#define posY_max 28
